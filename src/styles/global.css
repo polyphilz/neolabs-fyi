@@ -741,7 +741,9 @@ body.is-bare {
 
 .bubble-disc {
   stroke: var(--surface);
-  stroke-width: 2;
+  /* Width is set per node: a fixed value is a rounding error on a large bubble
+     but eats a third of a small one's radius, shrinking the visible disc well
+     inside the geometry its label was fitted to. */
 }
 
 /* Invisible, but still hit-tested — `fill: none` would not be. */

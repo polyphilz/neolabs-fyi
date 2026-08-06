@@ -101,14 +101,37 @@ export type LineageGroup =
  * values) which is too many for a legible palette, so colour keys off this.
  */
 export type DomainId =
-  | 'frontier'
+  | 'general'
+  | 'coding'
+  | 'rsi'
   | 'robotics'
   | 'world'
   | 'science'
-  | 'infra'
+  | 'inference'
+  | 'compute'
   | 'applied'
   | 'safety'
   | 'neuro';
+
+/**
+ * Cross-cutting attributes. Unlike `domain`, which is single-select and drives
+ * layout, a lab can carry several tags — DeepSeek is open-weights *and*
+ * efficient *and* general-purpose, which one field can't express.
+ */
+export type TagId =
+  | 'open-weights'
+  | 'multimodal'
+  | 'efficient'
+  | 'continual-learning'
+  | 'reasoning'
+  | 'agents'
+  | 'video'
+  | 'voice'
+  | 'sovereign'
+  | 'academic-spinout'
+  | 'humanoid'
+  | 'drug-discovery'
+  | 'materials';
 
 export interface Founder {
   name: string;
@@ -137,6 +160,8 @@ export interface Lab {
   /** Optional qualifier, e.g. "Open source". */
   spaceDetail?: string;
   founders: Founder[];
+  /** Cross-cutting attributes; see TagId. */
+  tags?: TagId[];
   knownFor: string;
   location: Location;
   /** `public` = now listed, so its "valuation" is a market cap that moves daily. */

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { DOMAINS, DOMAIN_ORDER, LINEAGE_GROUPS, LINEAGE_ORDER } from '../../data/taxonomy';
-import type { DomainId, Lab, LineageGroup } from '../../data/types';
+import { DOMAINS, DOMAIN_ORDER, LINEAGE_GROUPS, LINEAGE_ORDER, TAGS, TAG_ORDER } from '../../data/taxonomy';
+import type { DomainId, Lab, LineageGroup, TagId } from '../../data/types';
 import {
   applyFilters,
   bounds as computeBounds,
@@ -41,6 +41,13 @@ export function TableControls({ labs }: Props) {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+
+  /** Only offer tags something actually carries, so the group stays empty
+      until the data is populated. */
+  const tagsInUse = useMemo(
+    () => TAG_ORDER.filter((t) => labs.some((l) => l.tags?.includes(t))),
+    [labs]
+  );
 
   /** Everything a search should match, built once. */
   const haystack = useMemo(() => {
@@ -100,7 +107,7 @@ export function TableControls({ labs }: Props) {
 
   const update = (next: Partial<Filters>) => setFilters((f) => ({ ...f, ...next }));
   const dirty = !isDefault(filters, labs);
-  const activeCount = filters.domains.length + filters.lineage.length;
+  const activeCount = filters.domains.length + filters.lineage.length + filters.tags.length;
 
   return (
     <div className="table-controls">
@@ -186,6 +193,14 @@ export function TableControls({ labs }: Props) {
               selected={filters.lineage}
               onToggle={(id) => update({ lineage: toggle(filters.lineage, id as LineageGroup) })}
             />
+            {tagsInUse.length > 0 && (
+              <ChipGroup
+                label="Tags"
+                options={tagsInUse.map((t) => ({ id: t, label: TAGS[t] }))}
+                selected={filters.tags}
+                onToggle={(id) => update({ tags: toggle(filters.tags, id as TagId) })}
+              />
+            )}
           </div>
         )}
       </div>

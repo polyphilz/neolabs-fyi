@@ -42,8 +42,8 @@ const LABEL_WEIGHT = 600;
  * clear space. Lowering it makes labels smaller and appear at deeper zoom —
  * that's the intended trade.
  */
-const INSET = 0.74;
-const LINE_SPACING = 1.12;
+const INSET = 0.70;
+export const LINE_SPACING = 1.12;
 /** Canvas-unit ceiling, so a huge bubble doesn't shout. */
 const MAX_FONT = 15;
 const MAX_LINES = 3;

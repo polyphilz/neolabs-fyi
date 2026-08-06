@@ -1,4 +1,4 @@
-import type { DomainId, LineageGroup, OrgId } from './types';
+import type { DomainId, LineageGroup, OrgId, TagId } from './types';
 
 /**
  * Domains — the coarse buckets shown in the legend and used to cluster the
@@ -6,9 +6,17 @@ import type { DomainId, LineageGroup, OrgId } from './types';
  * level a person can actually hold in their head.
  */
 export const DOMAINS: Record<DomainId, { label: string; blurb: string }> = {
-  frontier: {
-    label: 'Frontier models',
-    blurb: 'General-purpose model labs chasing the capability frontier.',
+  general: {
+    label: 'General-purpose models',
+    blurb: 'Broad frontier model labs without a single narrower thesis.',
+  },
+  coding: {
+    label: 'Coding',
+    blurb: 'Models built specifically to write and reason about software.',
+  },
+  rsi: {
+    label: 'Recursive self-improvement',
+    blurb: 'Systems that automate AI research, or improve from their own experience.',
   },
   robotics: {
     label: 'Robotics',
@@ -22,9 +30,13 @@ export const DOMAINS: Record<DomainId, { label: string; blurb: string }> = {
     label: 'AI for science',
     blurb: 'Bio, drug discovery, materials, formal math, quantum.',
   },
-  infra: {
-    label: 'Infrastructure',
-    blurb: 'Compute, inference, chip design, decentralised training.',
+  inference: {
+    label: 'Inference',
+    blurb: 'Serving models faster and cheaper at scale.',
+  },
+  compute: {
+    label: 'Compute & chips',
+    blurb: 'Training hardware, chip design, and distributed compute.',
   },
   applied: {
     label: 'Applied & agents',
@@ -42,14 +54,53 @@ export const DOMAINS: Record<DomainId, { label: string; blurb: string }> = {
 
 /** Fixed display order — legend, filter chips, and area-view clusters all use it. */
 export const DOMAIN_ORDER: DomainId[] = [
-  'frontier',
+  'general',
+  'coding',
+  'rsi',
   'robotics',
   'world',
   'science',
-  'infra',
+  'inference',
+  'compute',
   'applied',
   'safety',
   'neuro',
+];
+
+/**
+ * Tag vocabulary. Deliberately cross-cutting — anything that would be a second
+ * taxonomy of "what field is this" belongs in DOMAINS instead.
+ */
+export const TAGS: Record<TagId, string> = {
+  'open-weights': 'Open weights',
+  multimodal: 'Multimodal',
+  efficient: 'Efficient / on-device',
+  'continual-learning': 'Continual learning',
+  reasoning: 'Reasoning',
+  agents: 'Agents',
+  video: 'Video',
+  voice: 'Voice',
+  sovereign: 'Sovereign AI',
+  'academic-spinout': 'Academic spinout',
+  humanoid: 'Humanoid',
+  'drug-discovery': 'Drug discovery',
+  materials: 'Materials',
+};
+
+export const TAG_ORDER: TagId[] = [
+  'open-weights',
+  'multimodal',
+  'efficient',
+  'continual-learning',
+  'reasoning',
+  'agents',
+  'video',
+  'voice',
+  'humanoid',
+  'drug-discovery',
+  'materials',
+  'sovereign',
+  'academic-spinout',
 ];
 
 /**

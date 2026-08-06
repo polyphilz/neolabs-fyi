@@ -1,5 +1,5 @@
-import { DOMAIN_ORDER, LINEAGE_ORDER } from '../data/taxonomy';
-import type { DomainId, Lab, LineageGroup } from '../data/types';
+import { DOMAIN_ORDER, LINEAGE_ORDER, TAG_ORDER } from '../data/taxonomy';
+import type { DomainId, Lab, LineageGroup, TagId } from '../data/types';
 import { lineageGroupsOf, type ViewId } from './layout';
 
 export interface Filters {
@@ -12,6 +12,8 @@ export interface Filters {
   /** Empty means "all" — an explicit empty selection would show nothing. */
   domains: DomainId[];
   lineage: LineageGroup[];
+  /** A lab must carry every selected tag, not just one — these narrow. */
+  tags: TagId[];
 }
 
 export function bounds(labs: Lab[]) {
@@ -27,7 +29,7 @@ export function bounds(labs: Lab[]) {
 
 export function defaultFilters(labs: Lab[]): Filters {
   const b = bounds(labs);
-  return { view: 'valuation', ...b, domains: [], lineage: [] };
+  return { view: 'valuation', ...b, domains: [], lineage: [], tags: [] };
 }
 
 export function applyFilters(labs: Lab[], f: Filters): Lab[] {
@@ -36,6 +38,7 @@ export function applyFilters(labs: Lab[], f: Filters): Lab[] {
     if (lab.year < f.minYear || lab.year > f.maxYear) return false;
     if (f.domains.length && !f.domains.includes(lab.domain)) return false;
     if (f.lineage.length && !lineageGroupsOf(lab).some((g) => f.lineage.includes(g))) return false;
+    if (f.tags.length && !f.tags.every((t) => lab.tags?.includes(t))) return false;
     return true;
   });
 }
@@ -48,7 +51,8 @@ export function isDefault(f: Filters, labs: Lab[]): boolean {
     f.minYear === b.minYear &&
     f.maxYear === b.maxYear &&
     !f.domains.length &&
-    !f.lineage.length
+    !f.lineage.length &&
+    !f.tags.length
   );
 }
 
@@ -66,6 +70,7 @@ export function toParams(f: Filters, labs: Lab[], selected: string | null): URLS
   if (f.maxYear !== b.maxYear) p.set('ymax', String(f.maxYear));
   if (f.domains.length) p.set('area', f.domains.join(','));
   if (f.lineage.length) p.set('from', f.lineage.join(','));
+  if (f.tags.length) p.set('tag', f.tags.join(','));
   if (selected) p.set('lab', selected);
   return p;
 }
@@ -98,6 +103,7 @@ export function fromParams(
       maxYear: num('ymax', base.maxYear),
       domains: list('area', DOMAIN_ORDER),
       lineage: list('from', LINEAGE_ORDER),
+      tags: list('tag', TAG_ORDER),
     },
     selected: p.get('lab'),
   };

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { LAB_BY_SLUG } from '../../data/labs';
+import { TAG_ORDER } from '../../data/taxonomy';
 import type { Lab } from '../../data/types';
 import type { Basemap } from '../../lib/basemap';
 import {
@@ -67,6 +68,10 @@ export function Explorer({ labs, basemap }: Props) {
   }, []);
 
   const visible = useMemo(() => applyFilters(labs, filters), [labs, filters]);
+  const tagsInUse = useMemo(
+    () => TAG_ORDER.filter((t) => labs.some((l) => l.tags?.includes(t))),
+    [labs]
+  );
 
   const update = useCallback((next: Partial<Filters>) => {
     setFilters((f) => ({ ...f, ...next }));
@@ -91,6 +96,7 @@ export function Explorer({ labs, basemap }: Props) {
         <ViewIsland view={filters.view} onChange={(view) => update({ view })} />
         <FilterIsland
           filters={filters}
+          tagsInUse={tagsInUse}
           bounds={bounds}
           shown={visible.length}
           total={labs.length}

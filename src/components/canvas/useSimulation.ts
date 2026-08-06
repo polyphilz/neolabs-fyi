@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { forceCollide, forceSimulation, forceX, forceY, type Simulation } from 'd3-force';
 
 import type { Lab } from '../../data/types';
-import { VIEW_H, VIEW_W, radiusFor, type LayoutResult } from '../../lib/layout';
+import { VIEW_H, VIEW_W, radiusFor, type Box, type LayoutResult } from '../../lib/layout';
 
 export interface SimNode {
   slug: string;
@@ -20,14 +20,26 @@ export interface SimNode {
 }
 
 /**
- * Keeps nodes inside the frame. Collision pressure in a dense year like 2026
- * will happily shove bubbles off-canvas otherwise, and a lab you can't see is
- * a lab that isn't on the map.
+ * Keeps nodes inside the frame, and — where the layout supplies per-node boxes
+ * — inside their own cell. Collision pressure will otherwise shove bubbles
+ * off-canvas, or out of one cluster and across a neighbour's heading.
  */
-function forceBounds(nodes: SimNode[]) {
+function forceBounds(nodes: SimNode[], boxes?: Map<string, Box>) {
   return () => {
     for (const n of nodes) {
       const pad = n.r + 4;
+      const box = boxes?.get(n.slug);
+      // A box narrower than the node itself would fight the collision force,
+      // so fall back to centring in that axis rather than clamping to nothing.
+      if (box) {
+        const x0 = box.x0 + pad;
+        const x1 = box.x1 - pad;
+        const y0 = box.y0 + pad;
+        const y1 = box.y1 - pad;
+        n.x = x0 <= x1 ? Math.max(x0, Math.min(x1, n.x)) : (box.x0 + box.x1) / 2;
+        n.y = y0 <= y1 ? Math.max(y0, Math.min(y1, n.y)) : (box.y0 + box.y1) / 2;
+        continue;
+      }
       n.x = Math.max(pad, Math.min(VIEW_W - pad, n.x));
       n.y = Math.max(pad, Math.min(VIEW_H - pad, n.y));
     }
@@ -97,7 +109,7 @@ export function useSimulation(labs: Lab[], layout: LayoutResult) {
         .iterations(2)
     );
     // Registered last so it runs after the other forces have moved everything.
-    sim.force('bounds', layout.bounded ? forceBounds(active) : null);
+    sim.force('bounds', layout.bounded ? forceBounds(active, layout.nodeBounds) : null);
     sim.on('tick', () => forceRender((n) => n + 1));
     sim.alpha(0.85).restart();
 

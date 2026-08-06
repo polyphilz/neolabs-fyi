@@ -40,14 +40,38 @@ export interface Vec {
 
 /** Non-node furniture a layout needs to draw: cluster headings, hubs, basemap. */
 export interface Decorations {
-  clusters?: { id: string; label: string; count: number; x: number; y: number }[];
+  clusters?: {
+    id: string;
+    label: string;
+    count: number;
+    x: number;
+    y: number;
+    /** Fixed heading position. Derived from the grid, never from where the
+        bubbles happen to settle, so a neighbour can't push it around. */
+    labelY: number;
+  }[];
   hubs?: { id: LineageGroup; label: string; x: number; y: number; count: number }[];
   edges?: { from: string; toHub: LineageGroup }[];
   basemap?: { land: string; graticule: string; transform: string };
 }
 
+/** Axis-aligned box a node may not leave. */
+export interface Box {
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+}
+
 export interface LayoutResult {
   targets: Map<string, Vec>;
+  /**
+   * Per-node containment. Where a layout groups nodes into cells, each node is
+   * confined to its own cell so clusters cannot overlap each other or each
+   * other's headings — at any canvas size, since the boxes come from the same
+   * grid that positions the clusters.
+   */
+  nodeBounds?: Map<string, Box>;
   decorations: Decorations;
   /** Some layouts want collision relaxation; the map view mostly doesn't. */
   collideStrength: number;
@@ -204,7 +228,8 @@ function geographyLayout(labs: Lab[], basemap: Basemap): LayoutResult {
 
 function areaLayout(labs: Lab[]): LayoutResult {
   const present = DOMAIN_ORDER.filter((d) => labs.some((l) => l.domain === d));
-  const cols = present.length <= 4 ? present.length : Math.ceil(present.length / 2);
+  // Cap at four columns so clusters keep usable width; add rows instead.
+  const cols = Math.min(4, present.length);
   const rows = Math.ceil(present.length / cols);
 
   const colScale = scalePoint<number>()
@@ -212,7 +237,15 @@ function areaLayout(labs: Lab[]): LayoutResult {
     .range([VIEW_W * 0.11, VIEW_W * 0.89]);
   const rowScale = scalePoint<number>()
     .domain(Array.from({ length: rows }, (_, i) => i))
-    .range([rows === 1 ? VIEW_H / 2 : VIEW_H * 0.34, rows === 1 ? VIEW_H / 2 : VIEW_H * 0.78]);
+    // Leaves headroom at the top for the floating HUD, which would otherwise
+    // sit on the first row's cluster headings.
+    .range([rows === 1 ? VIEW_H / 2 : VIEW_H * 0.31, rows === 1 ? VIEW_H / 2 : VIEW_H * 0.86]);
+
+  // Cell size from the grid spacing, so everything below scales with the frame.
+  const cellW = cols > 1 ? ((VIEW_W * 0.78) / (cols - 1)) * 0.94 : VIEW_W * 0.8;
+  const cellH = rows > 1 ? ((VIEW_H * 0.55) / (rows - 1)) * 0.94 : VIEW_H * 0.7;
+  /** Space above each cluster reserved for its two-line heading. */
+  const HEADING = 42;
 
   const centre = new Map<DomainId, Vec>();
   present.forEach((d, i) => {
@@ -223,27 +256,38 @@ function areaLayout(labs: Lab[]): LayoutResult {
   });
 
   const targets = new Map<string, Vec>();
+  const nodeBounds = new Map<string, Box>();
   const counts = new Map<DomainId, number>();
+
   for (const lab of labs) {
     const c = centre.get(lab.domain);
     if (!c) continue;
-    targets.set(lab.slug, c);
+    // Nodes sit below the reserved heading strip, centred in what remains.
+    const y0 = c.y - cellH / 2 + HEADING;
+    const y1 = c.y + cellH / 2;
+    targets.set(lab.slug, { x: c.x, y: (y0 + y1) / 2 });
+    nodeBounds.set(lab.slug, { x0: c.x - cellW / 2, y0, x1: c.x + cellW / 2, y1 });
     counts.set(lab.domain, (counts.get(lab.domain) ?? 0) + 1);
   }
 
   return {
     targets,
+    nodeBounds,
     decorations: {
-      clusters: present.map((d) => ({
-        id: d,
-        label: DOMAINS[d].label,
-        count: counts.get(d) ?? 0,
-        x: centre.get(d)!.x,
-        y: centre.get(d)!.y,
-      })),
+      clusters: present.map((d) => {
+        const c = centre.get(d)!;
+        return {
+          id: d,
+          label: DOMAINS[d].label,
+          count: counts.get(d) ?? 0,
+          x: c.x,
+          y: c.y,
+          labelY: c.y - cellH / 2 + 14,
+        };
+      }),
     },
     collideStrength: 1,
-    radiusScale: 0.8,
+    radiusScale: 0.42,
     bounded: true,
   };
 }

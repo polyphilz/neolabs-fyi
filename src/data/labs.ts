@@ -35,7 +35,7 @@ export const LABS: Lab[] = [
     // 'undisclosed' qualifier keeps it off the magnitude ramp.
     valuation: { usdM: 1_000, qualifier: 'undisclosed' },
     year: 2026,
-    domain: 'frontier',
+    domain: 'rsi',
     space: 'Frontier lab',
     spaceDetail: 'AI for research',
     founders: [
@@ -53,7 +53,7 @@ export const LABS: Lab[] = [
     name: 'Thinking Machines Lab',
     valuation: { usdM: 50_000, qualifier: 'approx', rumored: true },
     year: 2025,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     founders: [
       { name: 'Mira Murati', prior: ['openai'] },
@@ -82,7 +82,7 @@ export const LABS: Lab[] = [
     name: 'SSI (Safe Superintelligence)',
     valuation: { usdM: 32_000, qualifier: 'exact' },
     year: 2024,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     founders: [
       { name: 'Ilya Sutskever', prior: ['openai', 'google'] },
@@ -97,7 +97,7 @@ export const LABS: Lab[] = [
     name: 'Reflection AI',
     valuation: { usdM: 25_000, qualifier: 'exact', rising: true, rumored: true },
     year: 2024,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     spaceDetail: 'Open source',
     founders: [
@@ -126,7 +126,7 @@ export const LABS: Lab[] = [
     name: 'Poolside',
     valuation: { usdM: 12_000, qualifier: 'exact', rumored: true },
     year: 2023,
-    domain: 'frontier',
+    domain: 'coding',
     space: 'Frontier lab',
     spaceDetail: 'Coding',
     founders: [
@@ -171,7 +171,7 @@ export const LABS: Lab[] = [
     name: 'Ineffable Intelligence',
     valuation: { usdM: 5_100, qualifier: 'exact' },
     year: 2026,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     founders: [{ name: 'David Silver', prior: ['deepmind'] }],
     knownFor: "AlphaGo and AlphaZero's RL lead; Europe's largest seed round.",
@@ -193,7 +193,7 @@ export const LABS: Lab[] = [
     name: 'Recursive Superintelligence',
     valuation: { usdM: 4_500, qualifier: 'gt', rising: true },
     year: 2025,
-    domain: 'frontier',
+    domain: 'rsi',
     space: 'Frontier lab',
     spaceDetail: 'Continual learning',
     founders: [
@@ -224,7 +224,7 @@ export const LABS: Lab[] = [
     name: 'Unconventional AI',
     valuation: { usdM: 4_500, qualifier: 'exact' },
     year: 2025,
-    domain: 'infra',
+    domain: 'compute',
     space: 'Compute',
     founders: [{ name: 'Naveen Rao', prior: ['databricks', 'nvidia'] }],
     knownFor: 'MosaicML founder taking another run at the compute layer.',
@@ -235,7 +235,7 @@ export const LABS: Lab[] = [
     name: 'Humans&',
     valuation: { usdM: 4_500, qualifier: 'exact', rising: true },
     year: 2026,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     founders: [
       { name: 'Eric Zelikman', prior: ['xai', 'stanford'] },
@@ -249,7 +249,7 @@ export const LABS: Lab[] = [
     name: 'Core Automation',
     valuation: { usdM: 4_000, qualifier: 'gt', rumored: true },
     year: 2026,
-    domain: 'frontier',
+    domain: 'rsi',
     space: 'Frontier lab',
     spaceDetail: 'Continual learning',
     founders: [{ name: 'Jerry Tworek', prior: ['openai'] }],
@@ -288,7 +288,7 @@ export const LABS: Lab[] = [
     name: 'Ricursive',
     valuation: { usdM: 4_000, qualifier: 'exact' },
     year: 2025,
-    domain: 'infra',
+    domain: 'compute',
     space: 'Hardware',
     spaceDetail: 'Chip design',
     founders: [
@@ -341,7 +341,7 @@ export const LABS: Lab[] = [
     name: 'Sakana AI',
     valuation: { usdM: 2_650, qualifier: 'exact' },
     year: 2023,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     spaceDetail: 'Efficient models',
     founders: [
@@ -372,7 +372,7 @@ export const LABS: Lab[] = [
     name: 'Liquid AI',
     valuation: { usdM: 2_000, qualifier: 'exact' },
     year: 2023,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     spaceDetail: 'Efficient models',
     founders: [
@@ -424,7 +424,7 @@ export const LABS: Lab[] = [
     name: 'Flapping Airplanes',
     valuation: { usdM: 1_500, qualifier: 'exact', rising: true },
     year: 2025,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     founders: [
       { name: 'Ben Spector', prior: ['stanford'] },
@@ -440,7 +440,7 @@ export const LABS: Lab[] = [
     name: 'Magic',
     valuation: { usdM: 1_500, qualifier: 'exact' },
     year: 2022,
-    domain: 'frontier',
+    domain: 'coding',
     space: 'Frontier lab',
     spaceDetail: 'Coding',
     founders: [
@@ -583,7 +583,7 @@ export const LABS: Lab[] = [
     name: 'Ndea',
     valuation: { usdM: 1_000, qualifier: 'lt' },
     year: 2025,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     spaceDetail: 'Program synthesis',
     founders: [
@@ -612,7 +612,7 @@ export const LABS: Lab[] = [
     name: 'AAI',
     valuation: { usdM: 1_000, qualifier: 'gt' },
     year: 2023,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     founders: [
       { name: 'Amnon Shashua', prior: ['mobileye', 'hebrew'] },
@@ -626,7 +626,7 @@ export const LABS: Lab[] = [
     name: 'Reka',
     valuation: { usdM: 1_000, qualifier: 'exact' },
     year: 2022,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     spaceDetail: 'Multimodal',
     founders: [
@@ -656,7 +656,7 @@ export const LABS: Lab[] = [
     name: 'Prime Intellect',
     valuation: { usdM: 1_000, qualifier: 'gt', rising: true },
     year: 2024,
-    domain: 'infra',
+    domain: 'compute',
     space: 'Decentralised training',
     founders: [
       { name: 'Vincent Weisser', prior: ['startup'] },
@@ -670,7 +670,7 @@ export const LABS: Lab[] = [
     name: 'Arcee AI',
     valuation: { usdM: 1_000, qualifier: 'exact', rumored: true },
     year: 2023,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     spaceDetail: 'Open source',
     founders: [
@@ -686,7 +686,7 @@ export const LABS: Lab[] = [
     name: 'Essential AI',
     valuation: { usdM: 1_000, qualifier: 'exact' },
     year: 2023,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     spaceDetail: 'Open source',
     founders: [
@@ -701,7 +701,7 @@ export const LABS: Lab[] = [
     name: 'Zyphra',
     valuation: { usdM: 1_000, qualifier: 'exact' },
     year: 2021,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     spaceDetail: 'Open source',
     founders: [
@@ -716,7 +716,7 @@ export const LABS: Lab[] = [
     name: 'Mirendil',
     valuation: { usdM: 1_000, qualifier: 'exact' },
     year: 2026,
-    domain: 'frontier',
+    domain: 'rsi',
     space: 'Frontier lab',
     spaceDetail: 'AI for research',
     founders: [
@@ -759,7 +759,7 @@ export const LABS: Lab[] = [
     name: 'Inferact',
     valuation: { usdM: 800, qualifier: 'exact' },
     year: 2026,
-    domain: 'infra',
+    domain: 'inference',
     space: 'Inference',
     founders: [
       { name: 'Simon Mo', prior: ['berkeley'] },
@@ -774,7 +774,7 @@ export const LABS: Lab[] = [
     name: 'Isara',
     valuation: { usdM: 650, qualifier: 'exact' },
     year: 2025,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     spaceDetail: 'Future prediction',
     founders: [
@@ -789,7 +789,7 @@ export const LABS: Lab[] = [
     name: 'Inception Labs',
     valuation: { usdM: 500, qualifier: 'approx' },
     year: 2024,
-    domain: 'frontier',
+    domain: 'coding',
     space: 'Frontier lab',
     spaceDetail: 'Diffusion coding',
     founders: [{ name: 'Stefano Ermon', prior: ['stanford'] }],
@@ -801,7 +801,7 @@ export const LABS: Lab[] = [
     name: 'Elorian',
     valuation: { usdM: 500, qualifier: 'approx' },
     year: 2025,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     spaceDetail: 'Multimodal',
     founders: [
@@ -816,7 +816,7 @@ export const LABS: Lab[] = [
     name: 'Standard Intelligence',
     valuation: { usdM: 500, qualifier: 'exact' },
     year: 2024,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     spaceDetail: 'Computer use',
     founders: [
@@ -831,7 +831,7 @@ export const LABS: Lab[] = [
     name: 'Adaption Labs',
     valuation: { usdM: 500, qualifier: 'approx' },
     year: 2025,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     spaceDetail: 'Continual learning',
     founders: [
@@ -846,7 +846,7 @@ export const LABS: Lab[] = [
     name: 'Poetiq',
     valuation: { usdM: 500, qualifier: 'lt' },
     year: 2025,
-    domain: 'applied',
+    domain: 'rsi',
     space: 'Agents',
     founders: [
       { name: 'Shumeet Baluja', prior: ['google'] },
@@ -889,7 +889,7 @@ export const LABS: Lab[] = [
     name: 'RadixArk',
     valuation: { usdM: 400, qualifier: 'exact' },
     year: 2026,
-    domain: 'infra',
+    domain: 'inference',
     space: 'Inference',
     founders: [
       { name: 'Ying Sheng', prior: ['stanford', 'berkeley'] },
@@ -914,7 +914,7 @@ export const LABS: Lab[] = [
     name: 'Sooth Labs',
     valuation: { usdM: 335, qualifier: 'exact' },
     year: 2026,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     spaceDetail: 'Future prediction',
     founders: [
@@ -939,7 +939,7 @@ export const LABS: Lab[] = [
     // Listed on HKEX 8 Jan 2026 and has run far above its IPO price since.
     valuation: { usdM: 100_000, qualifier: 'approx', rising: true },
     year: 2019,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     spaceDetail: 'Open source',
     founders: [
@@ -957,7 +957,7 @@ export const LABS: Lab[] = [
     // seeking fresh capital as high as $71B ahead of a STAR Market listing.
     valuation: { usdM: 50_000, qualifier: 'gt', rising: true },
     year: 2023,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     spaceDetail: 'Open source',
     founders: [{ name: 'Liang Wenfeng', prior: ['highflyer'] }],
@@ -971,7 +971,7 @@ export const LABS: Lab[] = [
     // $3.5B round closed July 2026 at $35B, well over its $1-2B target.
     valuation: { usdM: 35_000, qualifier: 'exact', rising: true },
     year: 2023,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     founders: [
       { name: 'Yang Zhilin', prior: ['cmu', 'google'] },
@@ -987,7 +987,7 @@ export const LABS: Lab[] = [
     // Doubled on its HKEX debut in Jan 2026, then gave much of it back.
     valuation: { usdM: 28_000, qualifier: 'approx' },
     year: 2021,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     spaceDetail: 'Multimodal',
     founders: [{ name: 'Yan Junjie', prior: ['sensetime'] }],
@@ -1000,7 +1000,7 @@ export const LABS: Lab[] = [
     name: 'StepFun',
     valuation: { usdM: 10_000, qualifier: 'approx', rising: true },
     year: 2023,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     spaceDetail: 'Multimodal',
     founders: [{ name: 'Jiang Daxin', prior: ['microsoft'] }],
@@ -1048,7 +1048,7 @@ export const LABS: Lab[] = [
     // published since it stepped back from frontier pretraining.
     valuation: { usdM: 1_000, qualifier: 'undisclosed' },
     year: 2023,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     spaceDetail: 'Open source',
     founders: [{ name: 'Kai-Fu Lee', prior: ['google', 'microsoft', 'startup'] }],
@@ -1063,7 +1063,7 @@ export const LABS: Lab[] = [
     // Nvidia-led extension in August.
     valuation: { usdM: 1_500, qualifier: 'approx', rising: true },
     year: 2023,
-    domain: 'frontier',
+    domain: 'general',
     space: 'Frontier lab',
     spaceDetail: 'Sovereign AI',
     founders: [
@@ -1079,7 +1079,7 @@ export const LABS: Lab[] = [
     // Launched July 2026. No funding, investors or valuation disclosed.
     valuation: { usdM: 400, qualifier: 'undisclosed' },
     year: 2026,
-    domain: 'frontier',
+    domain: 'rsi',
     space: 'Frontier lab',
     spaceDetail: 'Continual learning',
     founders: [

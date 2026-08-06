@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { DOMAINS, DOMAIN_ORDER, LINEAGE_GROUPS, LINEAGE_ORDER } from '../../data/taxonomy';
-import type { DomainId, LineageGroup } from '../../data/types';
+import { DOMAINS, DOMAIN_ORDER, LINEAGE_GROUPS, LINEAGE_ORDER, TAGS } from '../../data/taxonomy';
+import type { DomainId, LineageGroup, TagId } from '../../data/types';
 import { VALUATION_BUCKETS } from '../../lib/color';
 import type { Filters } from '../../lib/filters';
 import { money } from '../../lib/format';
@@ -9,6 +9,8 @@ import { RangeSlider } from './RangeSlider';
 
 interface Props {
   filters: Filters;
+  /** Tags present in the dataset; the group hides when there are none. */
+  tagsInUse: TagId[];
   bounds: { minUsdM: number; maxUsdM: number; minYear: number; maxYear: number };
   shown: number;
   total: number;
@@ -33,7 +35,16 @@ function toggle<T>(list: T[], value: T): T[] {
   return list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
 }
 
-export function FilterIsland({ filters, bounds, shown, total, dirty, onChange, onReset }: Props) {
+export function FilterIsland({
+  filters,
+  tagsInUse,
+  bounds,
+  shown,
+  total,
+  dirty,
+  onChange,
+  onReset,
+}: Props) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -54,8 +65,8 @@ export function FilterIsland({ filters, bounds, shown, total, dirty, onChange, o
     };
   }, [open]);
 
-  const activeCount =
-    filters.domains.length + filters.lineage.length + (dirty && !filters.domains.length && !filters.lineage.length ? 1 : 0);
+  const chipCount = filters.domains.length + filters.lineage.length + filters.tags.length;
+  const activeCount = chipCount || (dirty ? 1 : 0);
 
   return (
     <div className="island-wrap" ref={rootRef}>
@@ -131,6 +142,14 @@ export function FilterIsland({ filters, bounds, shown, total, dirty, onChange, o
             selected={filters.lineage}
             onToggle={(id) => onChange({ lineage: toggle(filters.lineage, id as LineageGroup) })}
           />
+          {tagsInUse.length > 0 && (
+            <ChipGroup
+              label="Tags"
+              options={tagsInUse.map((t) => ({ id: t, label: TAGS[t] }))}
+              selected={filters.tags}
+              onToggle={(id) => onChange({ tags: toggle(filters.tags, id as TagId) })}
+            />
+          )}
         </div>
       )}
     </div>

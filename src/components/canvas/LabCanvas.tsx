@@ -6,7 +6,7 @@ import { UNKNOWN_FILL, UNKNOWN_INK, fillFor, valuationStep } from '../../lib/col
 import type { Filters } from '../../lib/filters';
 import { VIEW_H, VIEW_W, computeLayout } from '../../lib/layout';
 import { canvasName, spaceLabel, valuationLabel } from '../../lib/format';
-import { fitLabel, refreshLabelMetrics } from '../../lib/labelFit';
+import { LINE_SPACING, fitLabel, refreshLabelMetrics } from '../../lib/labelFit';
 import { useSimulation, type SimNode } from './useSimulation';
 import { useViewport } from './useViewport';
 
@@ -39,6 +39,14 @@ const slopFor = (pointerType: string) => (pointerType === 'mouse' ? SLOP_MOUSE :
 
 /** Minimum on-screen hit radius, so the smallest bubbles are still clickable. */
 const MIN_HIT_SCREEN = 12;
+
+/**
+ * Labels are always drawn at this font-size in user units and scaled to fit by
+ * the group around them. Setting a sub-pixel font-size directly makes the
+ * rasteriser paint glyphs wider than their reported metrics, so the text spills
+ * out of small bubbles even though it measures as fitting.
+ */
+const NOMINAL_FONT = 12;
 
 export function LabCanvas({ labs, basemap, filters, selected, onSelect }: Props) {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -245,14 +253,8 @@ export function LabCanvas({ labs, basemap, filters, selected, onSelect }: Props)
           {dec.clusters && (
             <g className="cluster-labels" aria-hidden="true">
               {dec.clusters.map((c) => {
-                // Sit above the cluster's real extent rather than a fixed
-                // offset — a 25-lab cluster is far taller than a 1-lab one.
-                const members = nodes.filter((n) => n.lab.domain === c.id);
-                const top = members.length
-                  ? Math.min(...members.map((n) => n.y - n.r))
-                  : c.y - 30;
                 return (
-                  <g key={c.id} transform={`translate(${c.x},${top - 26})`}>
+                  <g key={c.id} transform={`translate(${c.x},${c.labelY})`}>
                     <text className="cluster-title" textAnchor="middle">
                       {c.label}
                     </text>
@@ -333,6 +335,7 @@ export function LabCanvas({ labs, basemap, filters, selected, onSelect }: Props)
                   <circle
                     r={n.r}
                     fill={unknown ? UNKNOWN_FILL : fillFor(n.lab.valuation.usdM)}
+                    strokeWidth={Math.min(2, n.r * 0.12)}
                     className="bubble-disc"
                   />
                   {/* A $335M lab is ~10px across, which is a miserable target.
@@ -340,27 +343,29 @@ export function LabCanvas({ labs, basemap, filters, selected, onSelect }: Props)
                       drawn. Sized in screen pixels, so it holds at any zoom. */}
                   {hitRadius > n.r && <circle r={hitRadius} className="bubble-hit" />}
                   {label && (
-                    <text
-                      className="bubble-label"
-                      textAnchor="middle"
-                      style={{
-                        fontSize: label.fontSize,
-                        fill: unknown ? UNKNOWN_INK : `var(--on-seq-${step})`,
-                      }}
-                    >
-                      {label.lines.map((line, i) => (
-                        <tspan
-                          key={line + i}
-                          x={0}
-                          y={
-                            (i - (label.lines.length - 1) / 2) * label.lineHeight +
-                            label.fontSize * 0.34
-                          }
-                        >
-                          {line}
-                        </tspan>
-                      ))}
-                    </text>
+                    <g transform={`scale(${label.fontSize / NOMINAL_FONT})`}>
+                      <text
+                        className="bubble-label"
+                        textAnchor="middle"
+                        style={{
+                          fontSize: NOMINAL_FONT,
+                          fill: unknown ? UNKNOWN_INK : `var(--on-seq-${step})`,
+                        }}
+                      >
+                        {label.lines.map((line, i) => (
+                          <tspan
+                            key={line + i}
+                            x={0}
+                            y={
+                              (i - (label.lines.length - 1) / 2) * NOMINAL_FONT * LINE_SPACING +
+                              NOMINAL_FONT * 0.34
+                            }
+                          >
+                            {line}
+                          </tspan>
+                        ))}
+                      </text>
+                    </g>
                   )}
                 </g>
               );
