@@ -404,7 +404,7 @@ export const LABS: Lab[] = [
       { person: 'alexander-amini', prior: ['mit'] },
     ],
     knownFor: 'MIT CSAIL spinout; liquid neural networks for on-device inference.',
-    location: CITIES.boston,
+    location: CITIES.cambridgeMa,
   },
   {
     slug: 'h-company',
@@ -517,7 +517,7 @@ export const LABS: Lab[] = [
       { person: 'noubar-afeyan', prior: ['mit', 'startup'] },
     ],
     knownFor: 'Flagship Pioneering-backed scientific superintelligence platform for autonomous, AI-driven scientific discovery.',
-    location: CITIES.boston,
+    location: CITIES.cambridgeMa,
   },
   {
     slug: 'chai-discovery',
