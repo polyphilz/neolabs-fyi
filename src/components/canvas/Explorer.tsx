@@ -15,6 +15,7 @@ import {
 } from '../../lib/filters';
 import { matchesLabSearch } from '../../lib/search';
 import { SearchField } from '../SearchField';
+import { SiteNav } from '../SiteNav';
 import { Wordmark } from '../Wordmark';
 import { DetailPanel } from './DetailPanel';
 import { FilterIsland } from './FilterIsland';
@@ -141,10 +142,7 @@ export function Explorer({ labs, basemap }: Props) {
           onChange={update}
           onReset={reset}
         />
-        <nav className="island island-nav">
-          <a href="/table">Table</a>
-          <a href="/about">About</a>
-        </nav>
+        <SiteNav />
       </div>
 
       <DetailPanel lab={selectedLab} onClose={() => setSelected(null)} />

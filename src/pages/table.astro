@@ -63,6 +63,7 @@ const jsonLd = {
           {
             rows.map((r) => (
               <tr
+                data-lab-result
                 data-name={r.lab.name}
                 data-val={r.lab.valuation.usdM}
                 data-year={r.lab.year}
@@ -102,6 +103,53 @@ const jsonLd = {
         </tbody>
       </table>
     </div>
+
+    <section class="lab-card-list" aria-label="Neolabs">
+      {
+        rows.map((r) => (
+          <a
+            class="lab-card"
+            href={`/labs/${r.lab.slug}`}
+            data-lab-result
+            data-slug={r.lab.slug}
+          >
+            <header class="lab-card-head">
+              <span class="lab-card-name">
+                <i
+                  class="swatch"
+                  style={`background:${
+                    r.lab.valuation.qualifier === 'undisclosed' || r.lab.structure
+                      ? 'var(--unknown-fill)'
+                      : `var(--seq-${r.step})`
+                  }`}
+                  aria-hidden="true"
+                />
+                {r.lab.name}
+              </span>
+              <span class="lab-card-valuation">
+                {valuationLabel(r.lab.valuation)}
+                {r.lab.valuation.rumored && <span class="muted" title="Rumored"> *</span>}
+              </span>
+            </header>
+            <dl class="lab-card-facts">
+              <div>
+                <dt>Founded</dt>
+                <dd>{r.lab.year}</dd>
+              </div>
+              <div>
+                <dt>Research area</dt>
+                <dd>{spaceLabel(r.lab)}</dd>
+              </div>
+              <div>
+                <dt>Based in</dt>
+                <dd>{r.lab.location.city}, {r.lab.location.country}</dd>
+              </div>
+            </dl>
+            <p>{r.lab.knownFor}</p>
+          </a>
+        ))
+      }
+    </section>
 
     <p class="table-empty" id="labs-empty" hidden>No labs match that search.</p>
   </div>

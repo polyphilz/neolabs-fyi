@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { SiteNav } from '../components/SiteNav';
 import { Wordmark } from '../components/Wordmark';
 
 interface Props {
@@ -28,10 +29,6 @@ const views = [
   { href: '/?view=lineage', label: 'Lineage' },
   { href: '/?view=geography', label: 'Geography' },
   { href: '/?view=valuation', label: 'Valuation' },
-];
-const nav = [
-  { href: '/table', label: 'Table' },
-  { href: '/about', label: 'About' },
 ];
 ---
 
@@ -102,15 +99,7 @@ const nav = [
         }
       </nav>
       <slot name="header-tools" />
-      <nav class="island island-nav" aria-label="Site navigation">
-        {
-          nav.map((item) => (
-            <a href={item.href} aria-current={currentPath === item.href ? 'page' : undefined}>
-              {item.label}
-            </a>
-          ))
-        }
-      </nav>
+      <SiteNav currentPath={currentPath} />
     </header>
     )}
 
