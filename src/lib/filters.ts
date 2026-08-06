@@ -29,7 +29,7 @@ export function bounds(labs: Lab[]) {
 
 export function defaultFilters(labs: Lab[]): Filters {
   const b = bounds(labs);
-  return { view: 'valuation', ...b, domains: [], lineage: [], tags: [] };
+  return { view: 'area', ...b, domains: [], lineage: [], tags: [] };
 }
 
 export function applyFilters(labs: Lab[], f: Filters): Lab[] {
@@ -63,7 +63,7 @@ export function isDefault(f: Filters, labs: Lab[]): boolean {
 export function toParams(f: Filters, labs: Lab[], selected: string | null): URLSearchParams {
   const b = bounds(labs);
   const p = new URLSearchParams();
-  if (f.view !== 'valuation') p.set('view', f.view);
+  if (f.view !== 'area') p.set('view', f.view);
   if (f.minUsdM !== b.minUsdM) p.set('vmin', String(f.minUsdM));
   if (f.maxUsdM !== b.maxUsdM) p.set('vmax', String(f.maxUsdM));
   if (f.minYear !== b.minYear) p.set('ymin', String(f.minYear));

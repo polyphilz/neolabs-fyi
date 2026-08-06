@@ -1,17 +1,19 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
-import type { Lab, LineageGroup } from '../../data/types';
+import type { DomainId, Lab, LineageGroup } from '../../data/types';
 import type { Basemap } from '../../lib/basemap';
 import { UNKNOWN_FILL, UNKNOWN_INK, fillFor, valuationStep } from '../../lib/color';
 import type { Filters } from '../../lib/filters';
 import { VIEW_H, VIEW_W, computeLayout } from '../../lib/layout';
 import { canvasName, spaceLabel, valuationLabel } from '../../lib/format';
 import { LINE_SPACING, fitLabel, refreshLabelMetrics } from '../../lib/labelFit';
+import { AREA_COLORS, BloomCore, ResearchBloom } from './ResearchBloom';
 import { useSimulation, type SimNode } from './useSimulation';
 import { useViewport } from './useViewport';
 
 interface Props {
   labs: Lab[];
+  allLabs: Lab[];
   basemap: Basemap;
   filters: Filters;
   selected: string | null;
@@ -52,6 +54,7 @@ const NOMINAL_FONT = 12;
 
 export function LabCanvas({
   labs,
+  allLabs,
   basemap,
   filters,
   selected,
@@ -62,6 +65,8 @@ export function LabCanvas({
   const svgRef = useRef<SVGSVGElement>(null);
   const [hovered, setHovered] = useState<string | null>(null);
   const [hoveredLineage, setHoveredLineage] = useState<LineageGroup | null>(null);
+  const [hoveredArea, setHoveredArea] = useState<DomainId | null>(null);
+  const [pinnedArea, setPinnedArea] = useState<DomainId | null>(null);
   const dragRef = useRef<{
     node: SimNode;
     startX: number;
@@ -71,14 +76,30 @@ export function LabCanvas({
     dragging: boolean;
   } | null>(null);
   /** Same press-vs-drag question for the canvas background. */
-  const panRef = useRef<{ startX: number; startY: number; pointerType: string; moved: boolean } | null>(
-    null
-  );
+  const panRef = useRef<{
+    startX: number;
+    startY: number;
+    pointerType: string;
+    moved: boolean;
+    areaId: DomainId | null;
+  } | null>(null);
 
   const layout = useMemo(
-    () => computeLayout(filters.view, labs, basemap),
-    [filters.view, labs, basemap]
+    () => computeLayout(filters.view, labs, basemap, allLabs),
+    [filters.view, labs, basemap, allLabs]
   );
+
+  useEffect(() => {
+    if (filters.view !== 'area') setPinnedArea(null);
+  }, [filters.view]);
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setPinnedArea(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   const { nodes, reheat, cool } = useSimulation(labs, layout);
   const vp = useViewport(svgRef, VIEW_W, VIEW_H);
@@ -186,15 +207,23 @@ export function LabCanvas({
 
   const onBackgroundDown = useCallback(
     (e: React.PointerEvent) => {
+      const rawAreaId =
+        e.target instanceof Element
+          ? e.target.closest<SVGGElement>('[data-area-id]')?.dataset.areaId
+          : undefined;
       panRef.current = {
         startX: e.clientX,
         startY: e.clientY,
         pointerType: e.pointerType,
         moved: false,
+        areaId:
+          filters.view === 'area' && rawAreaId && rawAreaId in AREA_COLORS
+            ? (rawAreaId as DomainId)
+            : null,
       };
       vp.startPan(e);
     },
-    [vp]
+    [vp, filters.view]
   );
 
   const onBackgroundMove = useCallback(
@@ -216,7 +245,14 @@ export function LabCanvas({
       vp.endPan(e);
       // Only a genuine tap on empty canvas dismisses the panel. Panning used to
       // count as a click on the background and closed whatever you were reading.
-      if (pan && !pan.moved) onSelect(null);
+      if (pan && !pan.moved) {
+        onSelect(null);
+        if (pan.areaId) {
+          setPinnedArea((current) => (current === pan.areaId ? null : pan.areaId));
+        } else {
+          setPinnedArea(null);
+        }
+      }
     },
     [vp, onSelect]
   );
@@ -228,6 +264,8 @@ export function LabCanvas({
   const active = hovered ?? selected;
   const activeLineage = hoveredLineage ?? selectedLineage;
   const activeNode = active ? positions.get(active) : null;
+  const activeArea =
+    filters.view === 'area' ? (hoveredArea ?? activeNode?.lab.domain ?? pinnedArea) : null;
 
   return (
     <div className="canvas-shell">
@@ -262,21 +300,14 @@ export function LabCanvas({
             </g>
           )}
 
-          {dec.clusters && (
-            <g className="cluster-labels" aria-hidden="true">
-              {dec.clusters.map((c) => {
-                return (
-                  <g key={c.id} transform={`translate(${c.x},${c.labelY})`}>
-                    <text className="cluster-title" textAnchor="middle">
-                      {c.label}
-                    </text>
-                    <text className="cluster-count" textAnchor="middle" y={14}>
-                      {c.count} {c.count === 1 ? 'lab' : 'labs'}
-                    </text>
-                  </g>
-                );
-              })}
-            </g>
+          {dec.areaAtlas && (
+            <ResearchBloom
+              atlas={dec.areaAtlas}
+              activeArea={activeArea}
+              pinnedArea={pinnedArea}
+              onHover={setHoveredArea}
+              onToggle={(domain) => setPinnedArea((current) => (current === domain ? null : domain))}
+            />
           )}
 
           {dec.edges && (
@@ -340,6 +371,8 @@ export function LabCanvas({
             {drawOrder.map((n) => {
               const isActive = active === n.slug;
               const isSelected = selected === n.slug;
+              const areaMuted = Boolean(activeArea && n.lab.domain !== activeArea);
+              const areaHighlighted = activeArea === n.lab.domain;
               const unknown = n.lab.valuation.qualifier === 'undisclosed' || Boolean(n.lab.structure);
               const step = valuationStep(n.lab.valuation.usdM);
               const fitted = fitLabel(canvasName(n.lab), n.r);
@@ -349,7 +382,8 @@ export function LabCanvas({
                 <g
                   key={n.slug}
                   transform={`translate(${n.x},${n.y})`}
-                  className={`bubble${isSelected ? ' is-selected' : ''}${isActive ? ' is-active' : ''}`}
+                  className={`bubble${isSelected ? ' is-selected' : ''}${isActive ? ' is-active' : ''}${areaMuted ? ' is-area-muted' : ''}${areaHighlighted ? ' is-area-highlighted' : ''}`}
+                  style={{ '--area-color': AREA_COLORS[n.lab.domain] } as React.CSSProperties}
                   onPointerDown={(e) => onNodePointerDown(e, n)}
                   onPointerMove={onNodePointerMove}
                   onPointerUp={(e) => onNodePointerUp(e, n)}
@@ -406,6 +440,17 @@ export function LabCanvas({
               );
             })}
           </g>
+
+          {dec.areaAtlas && (
+            <BloomCore
+              atlas={dec.areaAtlas}
+              activeSector={
+                activeArea
+                  ? dec.areaAtlas.sectors.find((sector) => sector.id === activeArea) ?? null
+                  : null
+              }
+            />
+          )}
 
           {/* Counts stay legible above overlapping bubbles, but never capture
               pointer events from a bubble underneath. */}

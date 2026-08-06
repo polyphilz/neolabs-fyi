@@ -1,5 +1,3 @@
-import { scalePoint } from 'd3-scale';
-
 import { DOMAINS, DOMAIN_ORDER, LINEAGE_GROUPS, LINEAGE_ORDER, ORGS } from '../data/taxonomy';
 import type { DomainId, Lab, LineageGroup } from '../data/types';
 import type { Basemap } from './basemap';
@@ -11,10 +9,14 @@ export const VIEW_H = 680;
 export type ViewId = 'valuation' | 'lineage' | 'geography' | 'area';
 
 export const VIEWS: { id: ViewId; label: string; hint: string }[] = [
-  { id: 'valuation', label: 'Valuation', hint: 'Bubble area is proportional to valuation.' },
+  {
+    id: 'area',
+    label: 'Research',
+    hint: 'Primary fields around the bloom; newer labs sit farther from the centre.',
+  },
   { id: 'lineage', label: 'Lineage', hint: 'Which lab each founding team came out of.' },
   { id: 'geography', label: 'Geography', hint: 'Where the labs actually are.' },
-  { id: 'area', label: 'Research area', hint: 'Clustered by what they work on.' },
+  { id: 'valuation', label: 'Valuation', hint: 'Bubble area is proportional to valuation.' },
 ];
 
 /**
@@ -38,21 +40,38 @@ export interface Vec {
   y: number;
 }
 
-/** Non-node furniture a layout needs to draw: cluster headings, hubs, basemap. */
+/** Non-node furniture a layout needs to draw: the area atlas, hubs, or basemap. */
 export interface Decorations {
-  clusters?: {
-    id: string;
-    label: string;
-    count: number;
-    x: number;
-    y: number;
-    /** Fixed heading position. Derived from the grid, never from where the
-        bubbles happen to settle, so a neighbour can't push it around. */
-    labelY: number;
-  }[];
+  areaAtlas?: AreaAtlas;
   hubs?: { id: LineageGroup; label: string; x: number; y: number; count: number }[];
   edges?: { from: string; toHub: LineageGroup }[];
   basemap?: { land: string; graticule: string; transform: string };
+}
+
+export interface AreaSector {
+  id: DomainId;
+  label: string;
+  count: number;
+  total: number;
+  startAngle: number;
+  endAngle: number;
+  midAngle: number;
+}
+
+export interface AreaAtlas {
+  cx: number;
+  cy: number;
+  /** The bloom is deliberately elliptical so it uses the landscape canvas. */
+  xScale: number;
+  innerRadius: number;
+  outerRadius: number;
+  nodeInnerRadius: number;
+  nodeOuterRadius: number;
+  labelRadius: number;
+  minYear: number;
+  maxYear: number;
+  rings: { year: number; radius: number; major: boolean }[];
+  sectors: AreaSector[];
 }
 
 /** Axis-aligned box a node may not leave. */
@@ -66,10 +85,8 @@ export interface Box {
 export interface LayoutResult {
   targets: Map<string, Vec>;
   /**
-   * Per-node containment. Where a layout groups nodes into cells, each node is
-   * confined to its own cell so clusters cannot overlap each other or each
-   * other's headings — at any canvas size, since the boxes come from the same
-   * grid that positions the clusters.
+   * Optional per-node containment. Layouts with strict cells can keep a mark
+   * inside its own region rather than only inside the canvas.
    */
   nodeBounds?: Map<string, Box>;
   decorations: Decorations;
@@ -81,6 +98,19 @@ export interface LayoutResult {
    * and the position encoding stops meaning anything.
    */
   radiusScale: number;
+  /** Pull toward the data position. Area view is firmer so year remains legible. */
+  targetStrength?: number;
+  /** Maximum collision displacement from a data position, in canvas units. */
+  maxTargetDisplacement?: number;
+  /** Optional elliptical annulus that must contain each circle in full. */
+  radialBounds?: {
+    cx: number;
+    cy: number;
+    xScale: number;
+    innerRadius: number;
+    outerRadius: number;
+    padding: number;
+  };
   /** Whether to keep nodes inside the frame. Off for nothing, currently. */
   bounded: boolean;
 }
@@ -230,76 +260,146 @@ function geographyLayout(labs: Lab[], basemap: Basemap): LayoutResult {
 }
 
 // ---------------------------------------------------------------------------
-// Research area — labelled clusters in a fixed grid
+// Research area — a chronological bloom
 // ---------------------------------------------------------------------------
 
-function areaLayout(labs: Lab[]): LayoutResult {
-  const present = DOMAIN_ORDER.filter((d) => labs.some((l) => l.domain === d));
-  // Cap at four columns so clusters keep usable width; add rows instead.
-  const cols = Math.min(4, present.length);
-  const rows = Math.ceil(present.length / cols);
+function areaLayout(labs: Lab[], referenceLabs: Lab[]): LayoutResult {
+  const cx = VIEW_W / 2;
+  const cy = VIEW_H * 0.53;
+  const xScale = 1.45;
+  const innerRadius = 72;
+  const outerRadius = 270;
+  const nodeInnerRadius = 103;
+  const nodeOuterRadius = 205;
+  const labelRadius = 290;
+  const gap = 0.032;
+  const minimumSpan = 0.13;
 
-  const colScale = scalePoint<number>()
-    .domain(Array.from({ length: cols }, (_, i) => i))
-    .range([VIEW_W * 0.11, VIEW_W * 0.89]);
-  const rowScale = scalePoint<number>()
-    .domain(Array.from({ length: rows }, (_, i) => i))
-    // Leaves headroom at the top for the floating HUD, which would otherwise
-    // sit on the first row's cluster headings.
-    .range([rows === 1 ? VIEW_H / 2 : VIEW_H * 0.31, rows === 1 ? VIEW_H / 2 : VIEW_H * 0.86]);
+  // Sector capacity follows the full dataset, not the filtered subset. This
+  // keeps the atlas stable while the timeline or chips remove labs and makes
+  // an empty field visible as absence rather than silently deleting it.
+  const totals = new Map<DomainId, number>();
+  const visibleCounts = new Map<DomainId, number>();
+  for (const lab of referenceLabs) totals.set(lab.domain, (totals.get(lab.domain) ?? 0) + 1);
+  for (const lab of labs) visibleCounts.set(lab.domain, (visibleCounts.get(lab.domain) ?? 0) + 1);
 
-  // Cell size from the grid spacing, so everything below scales with the frame.
-  const cellW = cols > 1 ? ((VIEW_W * 0.78) / (cols - 1)) * 0.94 : VIEW_W * 0.8;
-  const cellH = rows > 1 ? ((VIEW_H * 0.55) / (rows - 1)) * 0.94 : VIEW_H * 0.7;
-  /** Space above each cluster reserved for its two-line heading. */
-  const HEADING = 42;
+  // A sub-linear capacity scale leaves rare, emerging areas enough room to be
+  // legible without letting the largest field consume the entire bloom.
+  const weights = DOMAIN_ORDER.map((domain) => Math.pow(Math.max(1, totals.get(domain) ?? 0), 0.62));
+  const weightTotal = weights.reduce((sum, weight) => sum + weight, 0);
+  const available = Math.PI * 2 - gap * DOMAIN_ORDER.length;
+  const flexible = available - minimumSpan * DOMAIN_ORDER.length;
+  const spans = weights.map((weight) => minimumSpan + (flexible * weight) / weightTotal);
 
-  const centre = new Map<DomainId, Vec>();
-  present.forEach((d, i) => {
-    centre.set(d, {
-      x: colScale(i % cols) ?? VIEW_W / 2,
-      y: rowScale(Math.floor(i / cols)) ?? VIEW_H / 2,
-    });
+  // General-purpose models are the north petal. Keeping the starting angle
+  // tied to its midpoint means filters never rotate the atlas.
+  let cursor = -Math.PI / 2 - spans[0] / 2;
+  const sectors: AreaSector[] = DOMAIN_ORDER.map((domain, index) => {
+    const startAngle = cursor;
+    const endAngle = startAngle + spans[index];
+    cursor = endAngle + gap;
+    return {
+      id: domain,
+      label: DOMAINS[domain].label,
+      count: visibleCounts.get(domain) ?? 0,
+      total: totals.get(domain) ?? 0,
+      startAngle,
+      endAngle,
+      midAngle: (startAngle + endAngle) / 2,
+    };
   });
 
-  const targets = new Map<string, Vec>();
-  const nodeBounds = new Map<string, Box>();
-  const counts = new Map<DomainId, number>();
+  const years = referenceLabs.map((lab) => lab.year);
+  const minYear = years.length ? Math.min(...years) : new Date().getFullYear();
+  const maxYear = years.length ? Math.max(...years) : minYear;
+  const radiusForYear = (year: number) => {
+    if (minYear === maxYear) return (nodeInnerRadius + nodeOuterRadius) / 2;
+    const t = Math.max(0, Math.min(1, (year - minYear) / (maxYear - minYear)));
+    // Recent years hold most neolabs. Expanding that end of the scale gives
+    // those dense cohorts room while preserving a monotonic time axis.
+    return nodeInnerRadius + Math.pow(t, 1.65) * (nodeOuterRadius - nodeInnerRadius);
+  };
 
-  for (const lab of labs) {
-    const c = centre.get(lab.domain);
-    if (!c) continue;
-    // Nodes sit below the reserved heading strip, centred in what remains.
-    const y0 = c.y - cellH / 2 + HEADING;
-    const y1 = c.y + cellH / 2;
-    targets.set(lab.slug, { x: c.x, y: (y0 + y1) / 2 });
-    nodeBounds.set(lab.slug, { x0: c.x - cellW / 2, y0, x1: c.x + cellW / 2, y1 });
-    counts.set(lab.domain, (counts.get(lab.domain) ?? 0) + 1);
+  const targets = new Map<string, Vec>();
+  for (const sector of sectors) {
+    const referenceMembers = referenceLabs
+      .filter((lab) => lab.domain === sector.id)
+      .sort((a, b) => b.valuation.usdM - a.valuation.usdM || a.slug.localeCompare(b.slug));
+    const angularPadding = Math.min(0.08, (sector.endAngle - sector.startAngle) * 0.14);
+    const usableStart = sector.startAngle + angularPadding;
+    const usableEnd = sector.endAngle - angularPadding;
+    // Give every lab a stable lane across the petal, using the full dataset so
+    // filters remove marks without making their neighbours jump sideways. The
+    // largest marks get the central lanes, where there is the most room.
+    const slots = progressiveLanes(referenceMembers.length);
+    const laneBySlug = new Map(referenceMembers.map((lab, index) => [lab.slug, slots[index]]));
+
+    for (const lab of labs.filter((candidate) => candidate.domain === sector.id)) {
+      const lane = laneBySlug.get(lab.slug) ?? 0.5;
+      const angle = usableStart + lane * (usableEnd - usableStart);
+      const radius = radiusForYear(lab.year);
+      targets.set(lab.slug, {
+        x: cx + Math.cos(angle) * radius * xScale,
+        y: cy + Math.sin(angle) * radius,
+      });
+    }
   }
+
+  const majorYears = new Set([minYear, maxYear, minYear + 4, maxYear - 3, maxYear - 1]);
+  const rings = Array.from({ length: maxYear - minYear + 1 }, (_, index) => {
+    const year = minYear + index;
+    return { year, radius: radiusForYear(year), major: majorYears.has(year) };
+  });
 
   return {
     targets,
-    nodeBounds,
     decorations: {
-      clusters: present.map((d) => {
-        const c = centre.get(d)!;
-        return {
-          id: d,
-          label: DOMAINS[d].label,
-          count: counts.get(d) ?? 0,
-          x: c.x,
-          y: c.y,
-          labelY: c.y - cellH / 2 + 14,
-        };
-      }),
+      areaAtlas: {
+        cx,
+        cy,
+        xScale,
+        innerRadius,
+        outerRadius,
+        nodeInnerRadius,
+        nodeOuterRadius,
+        labelRadius,
+        minYear,
+        maxYear,
+        rings,
+        sectors,
+      },
     },
     collideStrength: 1,
-    radiusScale: 0.42,
+    radiusScale: 0.32,
+    targetStrength: 0.38,
+    maxTargetDisplacement: 18,
+    radialBounds: { cx, cy, xScale, innerRadius, outerRadius, padding: 3 },
     bounded: true,
   };
 }
 
-export function computeLayout(view: ViewId, labs: Lab[], basemap: Basemap): LayoutResult {
+/**
+ * Low-discrepancy lanes: each new mark fills the largest remaining angular
+ * gap. This matters because data order is valuation order — the few very large
+ * circles get separated first, and tiny marks subsequently fill between them.
+ */
+function progressiveLanes(count: number): number[] {
+  if (count === 2) return [0.35, 0.65];
+  const lanes: number[] = [];
+  for (let denominator = 2; lanes.length < count; denominator *= 2) {
+    for (let numerator = 1; numerator < denominator && lanes.length < count; numerator += 2) {
+      lanes.push(numerator / denominator);
+    }
+  }
+  return lanes;
+}
+
+export function computeLayout(
+  view: ViewId,
+  labs: Lab[],
+  basemap: Basemap,
+  referenceLabs: Lab[] = labs
+): LayoutResult {
   switch (view) {
     case 'valuation':
       return valuationLayout(labs);
@@ -308,6 +408,6 @@ export function computeLayout(view: ViewId, labs: Lab[], basemap: Basemap): Layo
     case 'geography':
       return geographyLayout(labs, basemap);
     case 'area':
-      return areaLayout(labs);
+      return areaLayout(labs, referenceLabs);
   }
 }

@@ -47,6 +47,59 @@ function forceBounds(nodes: SimNode[], boxes?: Map<string, Box>) {
 }
 
 /**
+ * Collision may negotiate a small offset, but it must not erase a data axis.
+ * This runs after collision and keeps each mark close enough to its target that
+ * a year ring or map coordinate still means what it says.
+ */
+function forceTargetTether(nodes: SimNode[], maxDisplacement: number) {
+  return () => {
+    for (const node of nodes) {
+      const dx = node.x - node.tx;
+      const dy = node.y - node.ty;
+      const distance = Math.hypot(dx, dy);
+      if (distance <= maxDisplacement || distance === 0) continue;
+      node.x = node.tx + (dx / distance) * maxDisplacement;
+      node.y = node.ty + (dy / distance) * maxDisplacement;
+      node.vx = (node.vx ?? 0) * 0.35;
+      node.vy = (node.vy ?? 0) * 0.35;
+    }
+  };
+}
+
+/** Keep the complete circle, rather than only its centre, inside an ellipse. */
+function forceRadialBounds(
+  nodes: SimNode[],
+  bounds: NonNullable<LayoutResult['radialBounds']>
+) {
+  return () => {
+    for (const node of nodes) {
+      let ux = (node.x - bounds.cx) / bounds.xScale;
+      let uy = node.y - bounds.cy;
+      let distance = Math.hypot(ux, uy);
+      const targetUx = (node.tx - bounds.cx) / bounds.xScale;
+      const targetUy = node.ty - bounds.cy;
+      const targetDistance = Math.hypot(targetUx, targetUy) || 1;
+      if (distance === 0) distance = targetDistance;
+
+      // Using the circle radius in normalized ellipse space is conservative on
+      // the wide axis and exact on the short one, so no visible edge leaks.
+      const minimum = bounds.innerRadius + node.r + bounds.padding;
+      const maximum = bounds.outerRadius - node.r - bounds.padding;
+      const clamped = Math.max(minimum, Math.min(maximum, distance));
+      if (clamped === distance) continue;
+
+      // Clamp along the lab's target spoke. Preserving its transient collision
+      // angle here could keep it outside the core by throwing it into a
+      // neighboring research petal.
+      node.x = bounds.cx + (targetUx / targetDistance) * clamped * bounds.xScale;
+      node.y = bounds.cy + (targetUy / targetDistance) * clamped;
+      node.vx = (node.vx ?? 0) * 0.35;
+      node.vy = (node.vy ?? 0) * 0.35;
+    }
+  };
+}
+
+/**
  * One long-lived force simulation shared by every view.
  *
  * Switching views doesn't tear down and rebuild — it just moves each node's
@@ -100,13 +153,24 @@ export function useSimulation(labs: Lab[], layout: LayoutResult) {
     activeRef.current = active;
 
     sim.nodes(active);
-    sim.force('x', forceX<SimNode>((d) => d.tx).strength(0.16));
-    sim.force('y', forceY<SimNode>((d) => d.ty).strength(0.16));
+    const targetStrength = layout.targetStrength ?? 0.16;
+    sim.force('x', forceX<SimNode>((d) => d.tx).strength(targetStrength));
+    sim.force('y', forceY<SimNode>((d) => d.ty).strength(targetStrength));
     sim.force(
       'collide',
       forceCollide<SimNode>((d) => d.r + 2)
         .strength(layout.collideStrength)
         .iterations(2)
+    );
+    sim.force(
+      'target-tether',
+      layout.maxTargetDisplacement
+        ? forceTargetTether(active, layout.maxTargetDisplacement)
+        : null
+    );
+    sim.force(
+      'radial-bounds',
+      layout.radialBounds ? forceRadialBounds(active, layout.radialBounds) : null
     );
     // Registered last so it runs after the other forces have moved everything.
     sim.force('bounds', layout.bounded ? forceBounds(active, layout.nodeBounds) : null);

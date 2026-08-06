@@ -737,6 +737,9 @@ body.is-bare {
 .bubble {
   cursor: pointer;
   outline: none;
+  transition:
+    opacity 180ms ease,
+    filter 180ms ease;
 }
 
 .bubble-disc {
@@ -761,6 +764,15 @@ body.is-bare {
   stroke-width: 3;
 }
 
+.bubble.is-area-muted {
+  opacity: 0.14;
+  filter: saturate(0.35);
+}
+
+.bubble.is-area-highlighted:not(.is-active):not(.is-selected) .bubble-disc {
+  stroke: color-mix(in srgb, var(--area-color) 78%, var(--ink));
+}
+
 /* Label inside a large bubble. Fill comes from the per-step ink token, set
    inline, because it depends on which ramp step the bubble landed on. */
 .bubble-label {
@@ -770,16 +782,195 @@ body.is-bare {
 
 /* Decorations ------------------------------------------------------------- */
 
-.cluster-title {
-  fill: var(--ink);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+.research-bloom-halo {
+  fill: none;
+  stroke: var(--grid);
+  stroke-width: 0.75;
+  stroke-dasharray: 1 7;
+  opacity: 0.72;
+  vector-effect: non-scaling-stroke;
 }
 
-.cluster-count {
+.area-sector {
+  cursor: pointer;
+  outline: none;
+  transition:
+    opacity 180ms ease,
+    filter 180ms ease;
+}
+
+.area-sector-fill {
+  fill: color-mix(in srgb, var(--area-color) 7%, var(--surface));
+  stroke: color-mix(in srgb, var(--area-color) 24%, var(--grid));
+  stroke-width: 0.7;
+  vector-effect: non-scaling-stroke;
+  transition:
+    fill 180ms ease,
+    stroke 180ms ease;
+}
+
+.area-sector-rim,
+.area-sector-spine,
+.area-label-leader {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+  transition:
+    stroke 180ms ease,
+    opacity 180ms ease;
+}
+
+.area-sector-rim {
+  stroke: color-mix(in srgb, var(--area-color) 70%, var(--rule));
+  stroke-width: 1.45;
+}
+
+.area-sector-spine {
+  stroke: color-mix(in srgb, var(--area-color) 36%, var(--grid));
+  stroke-width: 0.7;
+  stroke-dasharray: 1 6;
+}
+
+.area-label-leader {
+  stroke: color-mix(in srgb, var(--area-color) 62%, var(--rule));
+  stroke-width: 0.8;
+}
+
+.area-sector.is-active .area-sector-fill {
+  fill: color-mix(in srgb, var(--area-color) 18%, var(--surface));
+  stroke: color-mix(in srgb, var(--area-color) 68%, var(--ink));
+}
+
+.area-sector.is-active .area-sector-rim {
+  stroke: color-mix(in srgb, var(--area-color) 82%, var(--ink));
+  stroke-width: 2.4;
+}
+
+.area-sector.is-active .area-sector-spine {
+  stroke: color-mix(in srgb, var(--area-color) 74%, var(--rule));
+  stroke-width: 1.1;
+}
+
+.area-sector.is-muted {
+  opacity: 0.24;
+  filter: saturate(0.45);
+}
+
+.area-sector.is-empty:not(.is-active) {
+  opacity: 0.48;
+}
+
+.area-sector:focus-visible .area-sector-fill {
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.area-label {
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.area-label-title {
+  fill: var(--ink);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.area-label-count {
+  fill: var(--ink-2);
+  font-size: 6.7px;
+  font-variant-numeric: tabular-nums;
+}
+
+.area-year-rings,
+.research-bloom-core {
+  pointer-events: none;
+}
+
+.area-year-ring ellipse {
+  fill: none;
+  stroke: var(--grid);
+  stroke-width: 0.55;
+  opacity: 0.46;
+  vector-effect: non-scaling-stroke;
+}
+
+.area-year-ring.is-major ellipse {
+  stroke: var(--rule);
+  stroke-width: 0.75;
+  opacity: 0.55;
+}
+
+.area-year-label line {
+  stroke: var(--rule);
+  stroke-width: 0.8;
+  vector-effect: non-scaling-stroke;
+}
+
+.area-year-label text {
   fill: var(--muted);
-  font-size: 11px;
+  font-size: 5.7px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 2.5px;
+}
+
+.research-bloom-core ellipse {
+  fill: color-mix(in srgb, var(--surface) 94%, var(--area-color));
+  stroke: color-mix(in srgb, var(--area-color) 45%, var(--rule));
+  stroke-width: 1.1;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 4px 12px color-mix(in srgb, var(--ink) 10%, transparent));
+  transition:
+    fill 180ms ease,
+    stroke 180ms ease;
+}
+
+.research-bloom-core.is-active ellipse {
+  fill: color-mix(in srgb, var(--area-color) 13%, var(--surface));
+  stroke: color-mix(in srgb, var(--area-color) 72%, var(--rule));
+}
+
+.bloom-core-kicker,
+.bloom-core-title,
+.bloom-core-count,
+.bloom-core-key {
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 2px;
+}
+
+.bloom-core-kicker {
+  fill: var(--muted);
+  font-size: 5.5px;
+  font-weight: 650;
+  letter-spacing: 0.13em;
+}
+
+.bloom-core-title {
+  fill: var(--ink);
+  font-size: 10.5px;
+  font-weight: 760;
+  letter-spacing: 0.025em;
+}
+
+.bloom-core-count {
+  fill: color-mix(in srgb, var(--area-color) 70%, var(--ink));
+  font-size: 6.8px;
+  font-weight: 720;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+}
+
+.bloom-core-key {
+  fill: var(--muted);
+  font-size: 5.2px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
 }
 
 .edge {

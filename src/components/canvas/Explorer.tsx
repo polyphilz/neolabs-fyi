@@ -105,6 +105,7 @@ export function Explorer({ labs, basemap }: Props) {
     <div className="explorer">
       <LabCanvas
         labs={visible}
+        allLabs={labs}
         basemap={basemap}
         filters={filters}
         selected={selected}
