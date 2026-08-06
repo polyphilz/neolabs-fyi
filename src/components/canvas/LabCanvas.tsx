@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
-import type { Lab } from '../../data/types';
+import type { Lab, LineageGroup } from '../../data/types';
 import type { Basemap } from '../../lib/basemap';
 import { UNKNOWN_FILL, UNKNOWN_INK, fillFor, valuationStep } from '../../lib/color';
 import type { Filters } from '../../lib/filters';
@@ -15,7 +15,9 @@ interface Props {
   basemap: Basemap;
   filters: Filters;
   selected: string | null;
+  selectedLineage: LineageGroup | null;
   onSelect: (slug: string | null) => void;
+  onLineageSelect: (group: LineageGroup | null) => void;
 }
 
 /**
@@ -48,9 +50,18 @@ const MIN_HIT_SCREEN = 12;
  */
 const NOMINAL_FONT = 12;
 
-export function LabCanvas({ labs, basemap, filters, selected, onSelect }: Props) {
+export function LabCanvas({
+  labs,
+  basemap,
+  filters,
+  selected,
+  selectedLineage,
+  onSelect,
+  onLineageSelect,
+}: Props) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [hovered, setHovered] = useState<string | null>(null);
+  const [hoveredLineage, setHoveredLineage] = useState<LineageGroup | null>(null);
   const dragRef = useRef<{
     node: SimNode;
     startX: number;
@@ -215,6 +226,7 @@ export function LabCanvas({ labs, basemap, filters, selected, onSelect }: Props)
 
   const dec = layout.decorations;
   const active = hovered ?? selected;
+  const activeLineage = hoveredLineage ?? selectedLineage;
   const activeNode = active ? positions.get(active) : null;
 
   return (
@@ -273,7 +285,7 @@ export function LabCanvas({ labs, basemap, filters, selected, onSelect }: Props)
                 const from = positions.get(e.from);
                 const hub = dec.hubs?.find((h) => h.id === e.toHub);
                 if (!from || !hub) return null;
-                const isActive = active === e.from;
+                const isActive = active === e.from || activeLineage === e.toHub;
                 return (
                   <line
                     key={`${e.from}-${e.toHub}`}
@@ -289,15 +301,41 @@ export function LabCanvas({ labs, basemap, filters, selected, onSelect }: Props)
           )}
 
           {dec.hubs && (
-            <g className="lineage-hubs" aria-hidden="true">
-              {dec.hubs.map((h) => (
-                <g key={h.id} transform={`translate(${h.x},${h.y})`}>
+            <g className="lineage-hubs">
+              {dec.hubs.map((h) => {
+                const isActive = activeLineage === h.id;
+                const isSelected = selectedLineage === h.id;
+                return (
+                <g
+                  key={h.id}
+                  transform={`translate(${h.x},${h.y})`}
+                  className={`lineage-hub${isActive ? ' is-active' : ''}${isSelected ? ' is-selected' : ''}`}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`${h.label} lineage, ${h.count} ${h.count === 1 ? 'lab' : 'labs'}`}
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onPointerUp={(e) => {
+                    e.stopPropagation();
+                    onLineageSelect(isSelected ? null : h.id);
+                  }}
+                  onPointerEnter={() => setHoveredLineage(h.id)}
+                  onPointerLeave={() => setHoveredLineage((group) => (group === h.id ? null : group))}
+                  onFocus={() => setHoveredLineage(h.id)}
+                  onBlur={() => setHoveredLineage((group) => (group === h.id ? null : group))}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      onLineageSelect(isSelected ? null : h.id);
+                    }
+                  }}
+                >
                   <circle r={30} className="hub-disc" />
                   <text className="hub-count" textAnchor="middle" dy={5}>
                     {h.count}
                   </text>
                 </g>
-              ))}
+                );
+              })}
             </g>
           )}
 

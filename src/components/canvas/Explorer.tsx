@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { LAB_BY_SLUG } from '../../data/labs';
 import { TAG_ORDER } from '../../data/taxonomy';
-import type { Lab } from '../../data/types';
+import type { Lab, LineageGroup } from '../../data/types';
 import type { Basemap } from '../../lib/basemap';
 import {
   applyFilters,
@@ -17,6 +17,7 @@ import { Wordmark } from '../Wordmark';
 import { DetailPanel } from './DetailPanel';
 import { FilterIsland } from './FilterIsland';
 import { LabCanvas } from './LabCanvas';
+import { LineageDetailPanel } from './LineageDetailPanel';
 import { TimelineIsland } from './TimelineIsland';
 import { ViewIsland } from './ViewIsland';
 
@@ -34,6 +35,7 @@ export function Explorer({ labs, basemap }: Props) {
   const bounds = useMemo(() => computeBounds(labs), [labs]);
   const [filters, setFilters] = useState<Filters>(() => defaultFilters(labs));
   const [selected, setSelected] = useState<string | null>(null);
+  const [selectedLineage, setSelectedLineage] = useState<LineageGroup | null>(null);
 
   const [hydrated, setHydrated] = useState(false);
 
@@ -61,11 +63,18 @@ export function Explorer({ labs, basemap }: Props) {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setSelected(null);
+      if (e.key === 'Escape') {
+        setSelected(null);
+        setSelectedLineage(null);
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, []);
+
+  useEffect(() => {
+    if (filters.view !== 'lineage') setSelectedLineage(null);
+  }, [filters.view]);
 
   const visible = useMemo(() => applyFilters(labs, filters), [labs, filters]);
   const tagsInUse = useMemo(
@@ -83,6 +92,14 @@ export function Explorer({ labs, basemap }: Props) {
   );
 
   const selectedLab = selected ? LAB_BY_SLUG.get(selected) ?? null : null;
+  const selectLab = useCallback((slug: string | null) => {
+    setSelected(slug);
+    setSelectedLineage(null);
+  }, []);
+  const selectLineage = useCallback((group: LineageGroup | null) => {
+    setSelected(null);
+    setSelectedLineage(group);
+  }, []);
 
   return (
     <div className="explorer">
@@ -91,7 +108,9 @@ export function Explorer({ labs, basemap }: Props) {
         basemap={basemap}
         filters={filters}
         selected={selected}
-        onSelect={setSelected}
+        selectedLineage={selectedLineage}
+        onSelect={selectLab}
+        onLineageSelect={selectLineage}
       />
 
       <div className="hud hud-top">
@@ -118,6 +137,12 @@ export function Explorer({ labs, basemap }: Props) {
       </div>
 
       <DetailPanel lab={selectedLab} onClose={() => setSelected(null)} />
+      <LineageDetailPanel
+        group={selectedLineage}
+        labs={visible}
+        onSelectLab={selectLab}
+        onClose={() => setSelectedLineage(null)}
+      />
     </div>
   );
 }
