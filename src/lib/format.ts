@@ -1,3 +1,5 @@
+import { PEOPLE } from '../data/people';
+import { DOMAINS, TAGS } from '../data/taxonomy';
 import type { Lab, Valuation } from '../data/types';
 
 /** "$100B", "$1.45B", "$335M" — no trailing zeros, no unit noise. */
@@ -32,7 +34,11 @@ export function valuationLabel(v: Valuation): string {
 }
 
 /** Short human note on how firm the number is, for tooltips and detail panes. */
-export function valuationCaveat(v: Valuation): string | null {
+export function valuationCaveat(lab: Lab): string | null {
+  const v = lab.valuation;
+  if (lab.status === 'public') {
+    return v.asOf ? `Market cap as of ${v.asOf} — moves daily` : 'Market cap — moves daily';
+  }
   if (v.qualifier === 'undisclosed') return 'Round announced; valuation not disclosed';
   if (v.rumored) return 'Rumored or unconfirmed';
   if (v.qualifier === 'gt') return 'Known only as a lower bound';
@@ -42,12 +48,15 @@ export function valuationCaveat(v: Valuation): string | null {
   return null;
 }
 
+/** The lab's research area, as one line: domain plus any tags. */
 export function spaceLabel(lab: Lab): string {
-  return lab.spaceDetail ? `${lab.space} — ${lab.spaceDetail}` : lab.space;
+  const domain = DOMAINS[lab.domain].label;
+  const tags = (lab.tags ?? []).map((t) => TAGS[t]).join(', ');
+  return tags ? `${domain} — ${tags}` : domain;
 }
 
 export function founderNames(lab: Lab): string {
-  return lab.founders.map((f) => f.name).join(', ');
+  return lab.founders.map((f) => PEOPLE[f.person].name).join(', ');
 }
 
 /**
@@ -106,4 +115,3 @@ const CANVAS_NAMES: Record<string, string> = {
 export function canvasName(lab: Lab): string {
   return CANVAS_NAMES[lab.slug] ?? lab.name;
 }
-

@@ -305,7 +305,7 @@ export function LabCanvas({ labs, basemap, filters, selected, onSelect }: Props)
             {drawOrder.map((n) => {
               const isActive = active === n.slug;
               const isSelected = selected === n.slug;
-              const unknown = n.lab.valuation.qualifier === 'undisclosed';
+              const unknown = n.lab.valuation.qualifier === 'undisclosed' || Boolean(n.lab.structure);
               const step = valuationStep(n.lab.valuation.usdM);
               const fitted = fitLabel(canvasName(n.lab), n.r);
               // Drawn only once the fitted type would actually be readable.
@@ -322,7 +322,7 @@ export function LabCanvas({ labs, basemap, filters, selected, onSelect }: Props)
                   onPointerLeave={() => setHovered((h) => (h === n.slug ? null : h))}
                   tabIndex={0}
                   role="button"
-                  aria-label={`${n.lab.name}, ${valuationLabel(n.lab.valuation)}, ${n.lab.space}, founded ${n.lab.year}`}
+                  aria-label={`${n.lab.name}, ${valuationLabel(n.lab.valuation)}, ${spaceLabel(n.lab)}, founded ${n.lab.year}`}
                   onFocus={() => setHovered(n.slug)}
                   onBlur={() => setHovered((h) => (h === n.slug ? null : h))}
                   onKeyDown={(e) => {

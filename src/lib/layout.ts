@@ -89,9 +89,16 @@ export interface LayoutResult {
 export function lineageGroupsOf(lab: Lab): LineageGroup[] {
   const groups = new Set<LineageGroup>();
   for (const f of lab.founders) {
+    if (f.isBacker) continue;
     for (const org of f.prior ?? []) groups.add(ORGS[org].group);
   }
   return groups.size ? [...groups] : ['startup'];
+}
+
+/** No longer operating as itself. Derived, never stored, so it cannot drift
+ * out of sync with `exit`. */
+export function isDefunct(lab: Lab): boolean {
+  return lab.exit?.absorbed === true;
 }
 
 // ---------------------------------------------------------------------------

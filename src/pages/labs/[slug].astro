@@ -1,7 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { LABS } from '../../data/labs';
-import { DOMAINS, LINEAGE_GROUPS, ORGS } from '../../data/taxonomy';
+import { PEOPLE } from '../../data/people';
+import { LINEAGE_GROUPS, ORGS, STRUCTURE_LABEL } from '../../data/taxonomy';
 import type { Lab } from '../../data/types';
 import {
   founderNames,
@@ -23,7 +24,7 @@ const { lab } = Astro.props;
 
 const priors = [...new Set(lab.founders.flatMap((f) => f.prior ?? []))];
 const groups = lineageGroupsOf(lab);
-const caveat = valuationCaveat(lab.valuation);
+const caveat = valuationCaveat(lab);
 
 // The long-tail query is "<lab> valuation" / "who founded <lab>", so the
 // description answers exactly that in the first sentence.
@@ -45,7 +46,7 @@ const jsonLd = {
   name: lab.name,
   description: lab.knownFor,
   foundingDate: String(lab.year),
-  founder: lab.founders.map((f) => ({ '@type': 'Person', name: f.name })),
+  founder: lab.founders.map((f) => ({ '@type': 'Person', name: PEOPLE[f.person].name })),
   location: {
     '@type': 'Place',
     address: {
@@ -67,6 +68,7 @@ const jsonLd = {
   <article class="lab-page">
     <a class="backlink" href="/">← All neolabs</a>
     <h1>{lab.name}</h1>
+    {lab.priorNames?.length && <p class="muted">Formerly {lab.priorNames.join(', ')}</p>}
 
     <p class="lab-hero">
       {valuationLabel(lab.valuation)}
@@ -88,18 +90,28 @@ const jsonLd = {
         <dd>{spaceLabel(lab)}</dd>
       </div>
       <div>
-        <dt>Category</dt>
-        <dd>{DOMAINS[lab.domain].label}</dd>
-      </div>
-      <div>
         <dt>Headquarters</dt>
         <dd>{lab.location.city}, {lab.location.country}</dd>
       </div>
       {
-        lab.status === 'acquihired' && (
+        lab.exit && (
           <div>
             <dt>Status</dt>
-            <dd>Acquihired</dd>
+            <dd>
+              {lab.exit.type === 'shutdown'
+                ? 'Shut down'
+                : lab.exit.absorbed
+                  ? `Acquired by ${lab.exit.to}`
+                  : `Partly acquihired by ${lab.exit.to}`}
+            </dd>
+          </div>
+        )
+      }
+      {
+        lab.structure && (
+          <div>
+            <dt>Structure</dt>
+            <dd>{STRUCTURE_LABEL[lab.structure]}</dd>
           </div>
         )
       }
@@ -118,7 +130,9 @@ const jsonLd = {
       {
         lab.founders.map((f) => (
           <li>
-            <strong>{f.name}</strong>
+            <strong>{PEOPLE[f.person].name}</strong>
+            {f.departed && <span class="muted"> (departed)</span>}
+            {f.isBacker && <span class="muted"> (backer)</span>}
             {f.prior?.length ? <span class="muted"> — previously {f.prior.map((o) => ORGS[o].label).join(', ')}</span> : null}
           </li>
         ))

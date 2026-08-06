@@ -1,4 +1,4 @@
-import type { DomainId, LineageGroup, OrgId, TagId } from './types';
+import type { DomainId, LineageGroup, OrgId, Structure, TagId } from './types';
 
 /**
  * Domains — the coarse buckets shown in the legend and used to cluster the
@@ -18,9 +18,11 @@ export const DOMAINS: Record<DomainId, { label: string; blurb: string }> = {
     label: 'Recursive self-improvement',
     blurb: 'Systems that automate AI research, or improve from their own experience.',
   },
-  robotics: {
-    label: 'Robotics',
-    blurb: 'Robot foundation models and embodied intelligence.',
+  physical: {
+    label: 'Physical AI & robotics',
+    blurb:
+      'Robot foundation models, embodied intelligence, and AI for real-world ' +
+      'automation — manufacturing, supply chain, and physical engineering.',
   },
   world: {
     label: 'World models',
@@ -36,7 +38,7 @@ export const DOMAINS: Record<DomainId, { label: string; blurb: string }> = {
   },
   compute: {
     label: 'Compute & chips',
-    blurb: 'Training hardware, chip design, and distributed compute.',
+    blurb: 'Training hardware, chip design, distributed compute, and the orchestration layers above them.',
   },
   applied: {
     label: 'Applied & agents',
@@ -57,7 +59,7 @@ export const DOMAIN_ORDER: DomainId[] = [
   'general',
   'coding',
   'rsi',
-  'robotics',
+  'physical',
   'world',
   'science',
   'inference',
@@ -126,17 +128,45 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   salesforce: { label: 'Salesforce', group: 'bigtech' },
   genentech: { label: 'Genentech', group: 'bigtech' },
   mobileye: { label: 'Mobileye', group: 'bigtech' },
+  intel: { label: 'Intel', group: 'bigtech' },
+  qualcomm: { label: 'Qualcomm', group: 'bigtech' },
+  uber: { label: 'Uber', group: 'bigtech' },
+  ea: { label: 'Electronic Arts', group: 'bigtech' },
+  dropbox: { label: 'Dropbox', group: 'bigtech' },
+  stripe: { label: 'Stripe', group: 'bigtech' },
+  epicgames: { label: 'Epic Games', group: 'bigtech' },
+  baidu: { label: 'Baidu', group: 'bigtech' },
+
+  unit8200: { label: 'Unit 8200', group: 'government' },
+  uidai: { label: 'UIDAI / Aadhaar', group: 'government' },
 
   sensetime: { label: 'SenseTime', group: 'startup' },
   sogou: { label: 'Sogou', group: 'startup' },
   highflyer: { label: 'High-Flyer', group: 'startup' },
   keen: { label: 'Keen Technologies', group: 'startup' },
   huawei: { label: 'Huawei', group: 'bigtech' },
-  mistral: { label: 'Mistral', group: 'startup' },
-  cohere: { label: 'Cohere', group: 'startup' },
+  mistral: { label: 'Mistral', group: 'mistral' },
+  cohere: { label: 'Cohere', group: 'cohere' },
   databricks: { label: 'Databricks / MosaicML', group: 'startup' },
   huggingface: { label: 'Hugging Face', group: 'startup' },
   startup: { label: 'Other startups', group: 'startup' },
+  ai21: { label: 'AI21 Labs', group: 'startup' },
+  adept: { label: 'Adept', group: 'startup' },
+  skild: { label: 'Skild AI', group: 'startup' },
+  megvii: { label: 'Megvii', group: 'startup' },
+  neuralink: { label: 'Neuralink', group: 'startup' },
+  anduril: { label: 'Anduril', group: 'startup' },
+  roboflow: { label: 'Roboflow', group: 'startup' },
+  quora: { label: 'Quora', group: 'startup' },
+  absci: { label: 'Absci', group: 'startup' },
+  canonical: { label: 'Canonical', group: 'startup' },
+  iqm: { label: 'IQM', group: 'startup' },
+  valeo: { label: 'Valeo.ai', group: 'startup' },
+  eleuther: { label: 'EleutherAI', group: 'startup' },
+  foresite: { label: 'Foresite Labs', group: 'startup' },
+  greylock: { label: 'Greylock', group: 'startup' },
+  forestneuro: { label: 'Forest Neurotech', group: 'startup' },
+  carnegierobotics: { label: 'Carnegie Robotics', group: 'startup' },
 
   stanford: { label: 'Stanford', group: 'academia' },
   mit: { label: 'MIT', group: 'academia' },
@@ -153,6 +183,16 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   toronto: { label: 'U. Toronto', group: 'academia' },
   tsinghua: { label: 'Tsinghua', group: 'academia' },
   peking: { label: 'Peking University', group: 'academia' },
+  nyu: { label: 'NYU', group: 'academia' },
+  ucl: { label: 'UCL', group: 'academia' },
+  alberta: { label: 'U. Alberta', group: 'academia' },
+  harvard: { label: 'Harvard', group: 'academia' },
+  ucla: { label: 'UCLA', group: 'academia' },
+  cornell: { label: 'Cornell', group: 'academia' },
+  michigan: { label: 'U. Michigan', group: 'academia' },
+  mcgill: { label: 'McGill', group: 'academia' },
+  georgiatech: { label: 'Georgia Tech', group: 'academia' },
+  ista: { label: 'ISTA (Austria)', group: 'academia' },
 };
 
 /** Lineage hubs, in the order they're laid out around the graph. */
@@ -163,7 +203,10 @@ export const LINEAGE_GROUPS: Record<LineageGroup, { label: string; short: string
   meta: { label: 'Meta / FAIR', short: 'Meta' },
   anthropic: { label: 'Anthropic', short: 'Anthropic' },
   xai: { label: 'xAI', short: 'xAI' },
+  mistral: { label: 'Mistral', short: 'Mistral' },
+  cohere: { label: 'Cohere', short: 'Cohere' },
   bigtech: { label: 'Other big tech', short: 'Big tech' },
+  government: { label: 'Government / military', short: 'Gov' },
   academia: { label: 'Academia', short: 'Academia' },
   startup: { label: 'Other startups', short: 'Startups' },
 };
@@ -175,7 +218,10 @@ export const LINEAGE_ORDER: LineageGroup[] = [
   'meta',
   'anthropic',
   'xai',
+  'mistral',
+  'cohere',
   'bigtech',
+  'government',
   'academia',
   'startup',
 ];
@@ -183,7 +229,7 @@ export const LINEAGE_ORDER: LineageGroup[] = [
 /**
  * Colour tokens.
  *
- * Deliberate choice: hue does NOT encode research area. Eight domains in a
+ * Deliberate choice: hue does NOT encode research area. Eleven domains in a
  * free-mixing bubble field is an all-pairs colour problem, and no 5+ subset of
  * a validated categorical palette clears the normal-vision separation floor —
  * i.e. sighted users genuinely cannot tell some pairs apart. So:
@@ -238,3 +284,9 @@ export const CATEGORICAL = {
   light: ['#2a78d6', '#eb6834', '#1baf7a', '#4a3aa7'],
   dark: ['#3987e5', '#d95926', '#199e70', '#9085e9'],
 } as const;
+
+export const STRUCTURE_LABEL: Record<Structure, string> = {
+  subsidiary: 'Corporate subsidiary',
+  nonprofit: 'Non-profit',
+  planned: 'Announced, not yet operating',
+};

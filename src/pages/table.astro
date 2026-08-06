@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { LABS_BY_VALUATION, LABS } from '../data/labs';
-import { DOMAINS, LINEAGE_GROUPS, ORGS } from '../data/taxonomy';
+import { LINEAGE_GROUPS, ORGS } from '../data/taxonomy';
 import { TableControls } from '../components/table/TableControls';
 import { valuationStep } from '../lib/color';
 import { founderNames, spaceLabel, valuationLabel } from '../lib/format';
@@ -73,7 +73,7 @@ const jsonLd = {
                 <span
                   class="swatch"
                   style={`background:${
-                    r.lab.valuation.qualifier === 'undisclosed'
+                    r.lab.valuation.qualifier === 'undisclosed' || r.lab.structure
                       ? 'var(--unknown-fill)'
                       : `var(--seq-${r.step})`
                   }`}
@@ -88,7 +88,6 @@ const jsonLd = {
               <td class="num">{r.lab.year}</td>
               <td>
                 {spaceLabel(r.lab)}
-                <div class="muted" style="font-size:.75rem">{DOMAINS[r.lab.domain].label}</div>
               </td>
               <td>{r.priors || <span class="muted">—</span>}</td>
               <td>{founderNames(r.lab)}</td>

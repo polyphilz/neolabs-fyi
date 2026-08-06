@@ -7,6 +7,8 @@
  * single number, because the qualifier is often the most interesting part.
  */
 
+import type { PersonId } from './people';
+
 /** How precisely a valuation is known. */
 export type Qualifier =
   | 'exact' // reported figure
@@ -34,6 +36,12 @@ export interface Valuation {
   rumored?: boolean;
   /** Valuation moved up recently (the ↑ marker). */
   rising?: boolean;
+  /**
+   * ISO date the figure was true. Only meaningful for `status: 'public'` labs,
+   * whose "valuation" is a market cap that moves every trading day. A private
+   * round's figure has no expiry; a market cap does.
+   */
+  asOf?: string;
 }
 
 /**
@@ -55,6 +63,43 @@ export type OrgId =
   | 'softbank'
   | 'amd'
   | 'mobileye'
+  | 'absci'
+  | 'adept'
+  | 'ai21'
+  | 'alberta'
+  | 'anduril'
+  | 'baidu'
+  | 'canonical'
+  | 'carnegierobotics'
+  | 'cornell'
+  | 'dropbox'
+  | 'ea'
+  | 'eleuther'
+  | 'epicgames'
+  | 'foresite'
+  | 'forestneuro'
+  | 'georgiatech'
+  | 'greylock'
+  | 'harvard'
+  | 'intel'
+  | 'iqm'
+  | 'ista'
+  | 'mcgill'
+  | 'megvii'
+  | 'michigan'
+  | 'neuralink'
+  | 'nyu'
+  | 'qualcomm'
+  | 'quora'
+  | 'roboflow'
+  | 'skild'
+  | 'stripe'
+  | 'ucl'
+  | 'ucla'
+  | 'uber'
+  | 'uidai'
+  | 'unit8200'
+  | 'valeo'
   | 'genentech'
   | 'mistral'
   | 'cohere'
@@ -92,7 +137,10 @@ export type LineageGroup =
   | 'meta'
   | 'anthropic'
   | 'xai'
+  | 'mistral'
+  | 'cohere'
   | 'bigtech'
+  | 'government'
   | 'academia'
   | 'startup';
 
@@ -104,7 +152,7 @@ export type DomainId =
   | 'general'
   | 'coding'
   | 'rsi'
-  | 'robotics'
+  | 'physical'
   | 'world'
   | 'science'
   | 'inference'
@@ -133,11 +181,45 @@ export type TagId =
   | 'drug-discovery'
   | 'materials';
 
-export interface Founder {
-  name: string;
-  /** Where they came from. Empty for founders whose background isn't public. */
+/**
+ * A person's role at ONE lab. `prior` is per-lab on purpose: it means "what
+ * they had done before *this* lab", which changes each time someone founds
+ * something new.
+ */
+export interface LabFounder {
+  person: PersonId;
+  /** Notable prior affiliations, as of founding this lab. */
   prior?: OrgId[];
+  /** No longer at this lab. Still a founder — founding is historical fact. */
+  departed?: true;
+  /**
+   * Provided capital, or is the corporate parent, rather than founding
+   * research. Excluded from lineage edges — a funder's employer is not a
+   * research lineage.
+   */
+  isBacker?: true;
 }
+
+/** An acquisition, team absorption, or shutdown. */
+export interface Exit {
+  type: 'acquired' | 'acquihire' | 'shutdown';
+  /**
+   * The lab no longer operates as itself. `false` for a partial acquihire, or
+   * an acquisition run on as a subsidiary. Drives the derived `isDefunct`.
+   */
+  absorbed: boolean;
+  /** Who absorbed it. A lab slug when they are on the map ('reka'), else a
+   * plain name. Omitted for a shutdown. */
+  to?: string;
+  year: number;
+}
+
+/**
+ * Labs that were never independent. Their "valuation" is a structurally
+ * different claim from a private round, so they are held off the magnitude
+ * ramp the same way `undisclosed` is.
+ */
+export type Structure = 'subsidiary' | 'nonprofit' | 'planned';
 
 export interface Location {
   city: string;
@@ -151,19 +233,21 @@ export interface Location {
 export interface Lab {
   slug: string;
   name: string;
+  /** Former names, most recent first. Rendered on the lab page for SEO. */
+  priorNames?: string[];
   valuation: Valuation;
-  /** Year founded. */
-  year: number;
+  year: number; // Year of public emergence.
   domain: DomainId;
-  /** Primary space, e.g. "Frontier lab". */
-  space: string;
-  /** Optional qualifier, e.g. "Open source". */
-  spaceDetail?: string;
-  founders: Founder[];
   /** Cross-cutting attributes; see TagId. */
   tags?: TagId[];
+  founders: LabFounder[];
   knownFor: string;
   location: Location;
-  /** `public` = now listed, so its "valuation" is a market cap that moves daily. */
-  status?: 'active' | 'acquihired' | 'public';
+  /** How the lab is owned. Absent = private. `public` = now listed, so its
+   * "valuation" is a market cap that moves daily. */
+  status?: 'private' | 'public';
+  /** Never-independent labs — see Structure. */
+  structure?: Structure;
+  /** An acquisition, absorption, or shutdown. */
+  exit?: Exit;
 }

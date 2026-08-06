@@ -1,4 +1,5 @@
-import { DOMAINS, ORGS } from '../../data/taxonomy';
+import { PEOPLE } from '../../data/people';
+import { ORGS, STRUCTURE_LABEL } from '../../data/taxonomy';
 import type { Lab } from '../../data/types';
 import { spaceLabel, valuationCaveat, valuationLabel } from '../../lib/format';
 
@@ -13,7 +14,7 @@ interface Props {
  */
 export function DetailPanel({ lab, onClose }: Props) {
   if (!lab) return null;
-  const caveat = valuationCaveat(lab.valuation);
+  const caveat = valuationCaveat(lab);
 
   return (
     <aside className="drawer" aria-label={`${lab.name} details`}>
@@ -23,8 +24,17 @@ export function DetailPanel({ lab, onClose }: Props) {
 
       <header className="drawer-head">
         <h2>{lab.name}</h2>
-        {lab.status === 'acquihired' && <span className="badge badge-quiet">Acquihired</span>}
+        {lab.exit && (
+          <span className="badge badge-quiet">
+            {lab.exit.type === 'shutdown'
+              ? 'Shut down'
+              : lab.exit.absorbed
+                ? `Acquired by ${lab.exit.to}`
+                : `Partly acquihired by ${lab.exit.to}`}
+          </span>
+        )}
         {lab.status === 'public' && <span className="badge badge-quiet">Listed</span>}
+        {lab.structure && <span className="badge badge-quiet">{STRUCTURE_LABEL[lab.structure]}</span>}
       </header>
 
       <p className="drawer-valuation">
@@ -36,10 +46,7 @@ export function DetailPanel({ lab, onClose }: Props) {
       <dl className="drawer-facts">
         <div>
           <dt>Research area</dt>
-          <dd>
-            {spaceLabel(lab)}
-            <span className="muted"> · {DOMAINS[lab.domain].label}</span>
-          </dd>
+          <dd>{spaceLabel(lab)}</dd>
         </div>
         <div>
           <dt>Founded</dt>
@@ -56,8 +63,12 @@ export function DetailPanel({ lab, onClose }: Props) {
       <h3 className="drawer-subhead">Founders</h3>
       <ul className="founders">
         {lab.founders.map((f) => (
-          <li key={f.name}>
-            <span className="founder-name">{f.name}</span>
+          <li key={f.person}>
+            <span className="founder-name">
+              {PEOPLE[f.person].name}
+              {f.departed && <span className="muted"> (departed)</span>}
+              {f.isBacker && <span className="muted"> (backer)</span>}
+            </span>
             {f.prior?.length ? (
               <span className="founder-prior">
                 {f.prior.map((o) => ORGS[o].label).join(' · ')}
