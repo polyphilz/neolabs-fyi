@@ -330,9 +330,6 @@ export function LabCanvas({
                   }}
                 >
                   <circle r={30} className="hub-disc" />
-                  <text className="hub-count" textAnchor="middle" dy={5}>
-                    {h.count}
-                  </text>
                 </g>
                 );
               })}
@@ -409,6 +406,18 @@ export function LabCanvas({
               );
             })}
           </g>
+
+          {/* Counts stay legible above overlapping bubbles, but never capture
+              pointer events from a bubble underneath. */}
+          {dec.hubs && (
+            <g className="lineage-hub-counts" aria-hidden="true">
+              {dec.hubs.map((h) => (
+                <text key={h.id} className="hub-count" textAnchor="middle" x={h.x} y={h.y} dy={5}>
+                  {h.count}
+                </text>
+              ))}
+            </g>
+          )}
 
           {/* Hub names ride above the bubbles — a hub the labs cover up can't
               do its job of naming what the cluster is. */}

@@ -832,6 +832,10 @@ body.is-bare {
   font-variant-numeric: tabular-nums;
 }
 
+.lineage-hub-counts {
+  pointer-events: none;
+}
+
 .basemap-land {
   fill: var(--grid);
   stroke: none;
