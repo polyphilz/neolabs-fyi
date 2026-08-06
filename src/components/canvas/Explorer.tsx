@@ -77,7 +77,10 @@ export function Explorer({ labs, basemap }: Props) {
     setFilters((f) => ({ ...f, ...next }));
   }, []);
 
-  const reset = useCallback(() => setFilters(defaultFilters(labs)), [labs]);
+  const reset = useCallback(
+    () => setFilters((current) => ({ ...defaultFilters(labs), view: current.view })),
+    [labs]
+  );
 
   const selectedLab = selected ? LAB_BY_SLUG.get(selected) ?? null : null;
 
