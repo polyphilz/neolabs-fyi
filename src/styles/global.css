@@ -218,6 +218,29 @@ a {
   margin: 0 0 1rem;
 }
 
+.about-exclusions {
+  margin: 0 0 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--raised);
+}
+
+.about-exclusions summary {
+  padding: 0.8rem 1rem;
+  color: var(--ink);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.about-exclusions[open] summary {
+  border-bottom: 1px solid var(--border);
+}
+
+.prose .about-exclusions ul {
+  margin: 0;
+  padding: 1rem 1rem 1rem 2.5rem;
+}
+
 .prose ul,
 .prose ol,
 .lab-page ul,

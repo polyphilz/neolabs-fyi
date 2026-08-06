@@ -14,18 +14,6 @@ import type { Lab } from './types';
  */
 export const LABS: Lab[] = [
   {
-    slug: 'roze',
-    name: 'Roze',
-    valuation: { usdM: 100_000, qualifier: 'approx', rumored: true },
-    year: 2026,
-    domain: 'physical',
-    structure: 'planned',
-    founders: [{ person: 'masayoshi-son', prior: ['softbank'], isBacker: true }],
-    knownFor:
-      'Planned SoftBank spinout combining robotics (ABB Robotics) and AI to automate data-centre construction, targeting a ~$100B US IPO.',
-    location: CITIES.usa,
-  },
-  {
     slug: 'discovery-loop',
     name: 'Discovery Loop',
     // Announced 5 Aug 2026 co-led by Radical Ventures and Khosla, with
@@ -311,6 +299,22 @@ export const LABS: Lab[] = [
       'The Pi assistant, then a 2024 Microsoft pseudo-acquihire of its co-founders and top talent; rebuilt since under CEO Sean White as an enterprise AI company.',
     location: CITIES.paloAlto,
     exit: { type: 'acquihire', absorbed: false, to: 'Microsoft', year: 2024 },
+  },
+  {
+    slug: 'luma-ai',
+    name: 'Luma AI',
+    valuation: { usdM: 4_000, qualifier: 'approx' },
+    year: 2021,
+    domain: 'world',
+    tags: ['video'],
+    founders: [
+      { person: 'amit-jain', prior: ['apple', 'circlemedical'] },
+      { person: 'alex-yu', prior: ['berkeley', 'google', 'adobe'], departed: true },
+      { person: 'alberto-taiuti', prior: ['apple', 'codeplay'], departed: true },
+    ],
+    knownFor:
+      'Dream Machine and the Ray video-model family; evolved from neural rendering and smartphone 3D capture into generative video.',
+    location: CITIES.paloAlto,
   },
   {
     slug: 'hark',
@@ -717,19 +721,6 @@ export const LABS: Lab[] = [
     location: CITIES.paris,
   },
   {
-    slug: 'prime-intellect',
-    name: 'Prime Intellect',
-    valuation: { usdM: 1_000, qualifier: 'exact' },
-    year: 2024,
-    domain: 'compute',
-    founders: [
-      { person: 'vincent-weisser', prior: ['startup'] },
-      { person: 'johannes-hagemann', prior: ['startup'] },
-    ],
-    knownFor: 'Training frontier-scale models across globally distributed, uncoordinated compute.',
-    location: CITIES.sf,
-  },
-  {
     slug: 'arcee-ai',
     name: 'Arcee AI',
     valuation: { usdM: 1_000, qualifier: 'gt', rumored: true },
@@ -994,80 +985,9 @@ export const LABS: Lab[] = [
 
   // -------------------------------------------------------------------------
   // China. The source list treated these as "a separate category" and left
-  // them out; they're included here because leaving them out makes the map a
-  // map of American AI rather than of the field. Two of them have since listed
-  // in Hong Kong, so their figure is a market cap that moves daily — flagged
-  // with status: 'public' rather than silently mixed in with private rounds.
+  // them out; qualifying labs are included here because leaving them out makes
+  // the map a map of American AI rather than of the field.
   // -------------------------------------------------------------------------
-  {
-    slug: 'z-ai',
-    name: 'Z.ai',
-    priorNames: ['Zhipu AI'],
-    // Listed on HKEX 8 Jan 2026 and has run far above its IPO price since.
-    valuation: { usdM: 65_000, qualifier: 'approx', asOf: '2026-08-06' },
-    year: 2019,
-    domain: 'general',
-    tags: ['open-weights', 'academic-spinout'],
-    founders: [
-      { person: 'liu-debing', prior: ['beijingjiaotong', 'cas', 'technicolor', 'tsinghua'] },
-      { person: 'tang-jie', prior: ['tsinghua'] },
-      { person: 'li-juanzi', prior: ['shanxi', 'tsinghua'] },
-      { person: 'xu-bin', prior: ['tsinghua'] },
-      { person: 'zhang-peng', prior: ['tsinghua'] },
-      { person: 'wang-shaolan', prior: ['ahut', 'o2micro', 'nebula-sunac', 'wankang', 'tsinghua'] },
-    ],
-    knownFor: 'Tsinghua spinout behind the GLM models; the first of the "Six Tigers" to list in Hong Kong.',
-    location: CITIES.beijing,
-    status: 'public',
-  },
-  {
-    slug: 'deepseek',
-    name: 'DeepSeek',
-    // $7.4B first external round in June 2026 at north of $50B; reportedly
-    // seeking fresh capital as high as $71B ahead of a STAR Market listing.
-    valuation: { usdM: 50_000, qualifier: 'gt' },
-    year: 2023,
-    domain: 'general',
-    tags: ['open-weights', 'efficient'],
-    founders: [{ person: 'liang-wenfeng', prior: ['highflyer'] }],
-    knownFor:
-      'R1 and V3 — open-weight frontier models trained for a fraction of Western budgets, out of a quant fund.',
-    location: CITIES.hangzhou,
-  },
-  {
-    slug: 'moonshot-ai',
-    name: 'Moonshot AI',
-    // $3.5B round closed July 2026 at $35B, well over its $1-2B target.
-    valuation: { usdM: 35_000, qualifier: 'exact' },
-    year: 2023,
-    domain: 'general',
-    founders: [
-      { person: 'yang-zhilin', prior: ['recurrentai', 'google', 'meta', 'cmu'] },
-      { person: 'zhang-yutao', prior: ['recurrentai', 'tsinghua'] },
-      { person: 'zhou-xinyu', prior: ['megvii', 'tencent', 'hulu'] },
-      { person: 'wu-yuxin', prior: ['google', 'meta', 'cruise'] },
-      { person: 'zhang-yutong', prior: ['gsr', 'funplus', 'samsung', 'booz'] },
-    ],
-    knownFor: 'Kimi — long-context models and China\'s breakout consumer assistant; Transformer-XL co-author.',
-    location: CITIES.beijing,
-  },
-  {
-    slug: 'minimax',
-    name: 'MiniMax',
-    // Doubled on its HKEX debut in Jan 2026, then gave much of it back.
-    valuation: { usdM: 13_120, qualifier: 'approx', asOf: '2026-08-06' },
-    year: 2021,
-    domain: 'general',
-    tags: ['multimodal', 'video'],
-    founders: [
-      { person: 'yan-junjie', prior: ['sensetime'] },
-      { person: 'zhou-yucong', prior: ['sensetime'] },
-      { person: 'yang-bin', prior: ['sensetime'] },
-    ],
-    knownFor: 'Hailuo video and Talkie; a boom-and-bust HKEX debut that ran 7× above its IPO price before giving most of it back.',
-    location: CITIES.shanghai,
-    status: 'public',
-  },
   {
     slug: 'stepfun',
     name: 'StepFun',
@@ -1106,20 +1026,6 @@ export const LABS: Lab[] = [
     founders: [{ person: 'wang-xiaochuan', prior: ['sogou'] }],
     knownFor: "Sogou's founder; shifted strategic focus from the general-purpose LLM race toward AI-for-healthcare, while continuing to develop its base model series.",
     location: CITIES.beijing,
-  },
-  {
-    slug: 'agibot',
-    name: 'AgiBot (Zhiyuan Robotics)',
-    valuation: { usdM: 2_080, qualifier: 'approx' },
-    year: 2023,
-    domain: 'physical',
-    tags: ['humanoid'],
-    founders: [
-      { person: 'deng-taihua', prior: ['huawei'] },
-      { person: 'peng-zhihui', prior: ['huawei'] },
-    ],
-    knownFor: 'Humanoid robots and the AgiBot World dataset; co-founded by ex-Huawei executives, including "Genius Youth" engineer Peng Zhihui.',
-    location: CITIES.shanghai,
   },
   {
     slug: '01-ai',

@@ -13,7 +13,6 @@ const city = (
 ): Location => ({ city: name, country, cc, lat, lon });
 
 export const CITIES = {
-  usa: city('United States', 'United States', 'US', 39.8283, -98.5795),
   sf: city('San Francisco', 'United States', 'US', 37.7749, -122.4194),
   paloAlto: city('Palo Alto', 'United States', 'US', 37.4419, -122.143),
   mountainView: city('Mountain View', 'United States', 'US', 37.3861, -122.0839),
@@ -33,7 +32,6 @@ export const CITIES = {
   telAviv: city('Tel Aviv', 'Israel', 'IL', 32.0853, 34.7818),
   beijing: city('Beijing', 'China', 'CN', 39.9042, 116.4074),
   shanghai: city('Shanghai', 'China', 'CN', 31.2304, 121.4737),
-  hangzhou: city('Hangzhou', 'China', 'CN', 30.2741, 120.1551),
   tokyo: city('Tokyo', 'Japan', 'JP', 35.6762, 139.6503),
   toronto: city('Toronto', 'Canada', 'CA', 43.6532, -79.3832),
   bengaluru: city('Bengaluru', 'India', 'IN', 12.9716, 77.5946),
