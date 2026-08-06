@@ -1,7 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { LABS, TOTAL_VALUATION_USDM } from '../data/labs';
-import { money } from '../lib/format';
 
 const description =
   'What counts as a neolab, how this map encodes valuation, lineage, geography, and research area, and what the data does and does not claim.';
@@ -9,58 +7,46 @@ const description =
 
 <Layout title="Neolabs.fyi | About" description={description} path="/about">
   <article class="prose">
-    <h2>What's a neolab?</h2>
+    <h1>What's a neolab?</h1>
     <p>
-      An AI research lab founded by elite researchers from major AI labs, professors, or
-      post-economic entrepreneurs. They're typically pre-product-market-fit and sub-revenue-scale,
-      yet raise at unicorn-plus valuations to chase long-term breakthroughs.
-    </p>
-    <p>
-      That definition deliberately excludes the incumbents (OpenAI, Anthropic, Google DeepMind,
-      xAI), non-profits, and companies that are really at revenue scale — Mistral, Cohere, Runway,
-      Luma, Black Forest Labs — along with pure hardware companies. Chinese labs <em>are</em>{' '}
-      included: leaving them out would make this a map of American AI rather than of the field.
-      Two of them have since listed in Hong Kong and are marked as such, since a market cap that
-      moves daily is not the same kind of number as a private round.
+      An AI research, infrastructure, or product lab or company, typically founded by researchers
+      hailing from incumbent labs, professors, or post-economic founders. They're usually
+      pre-product-market-fit and sub-revenue-scale, yet are capable of raising at unicorn-plus
+      valuations due to strong investor appetite.
     </p>
 
-    <h2>What you're looking at</h2>
+    <h2>Why are certain labs missing?</h2>
     <p>
-      {LABS.length} labs, roughly {money(TOTAL_VALUATION_USDM)} in combined paper valuation, in four
-      views of the same canvas:
+      The neolab definition excludes labs already at revenue scale: OpenAI, Anthropic, Google
+      DeepMind, xAI, Mistral, Cohere, Runway, Luma, Black Forest Labs, and more.
     </p>
+
+    <h2>What am I looking at?</h2>
     <ul>
       <li>
-        <strong>Valuation</strong> — a single pack, with bubble <em>area</em> proportional to
-        valuation, so a $100B lab really is ~300× the area of a $335M one. A log scale would have
-        flattened exactly the disparity worth seeing. Founding year lives in the timeline filter
-        rather than on an axis, because only a handful of these labs predate 2022.
+        <strong>Research area</strong> — neolabs clustered by their primary research focus.
       </li>
       <li>
-        <strong>Lineage</strong> — each lab wired to the organisations its founders came out of.
-        This is the actual story of the list: researchers leaving OpenAI, DeepMind, Meta, and
-        Google and raising billions.
+        <strong>Lineage</strong> — neolabs wired to the organizations their founders came from.
       </li>
-      <li><strong>Geography</strong> — where the labs actually are.</li>
-      <li><strong>Research area</strong> — clustered by what they work on.</li>
+      <li><strong>Geography</strong> — where neolabs are primarily headquartered.</li>
+      <li>
+        <strong>Valuation</strong> — a single cluster of all neolabs, with nodes scaled to their
+        valuations.
+      </li>
     </ul>
 
-    <h2>On colour</h2>
-    <p>
-      Colour encodes valuation, not research area. There are more than a dozen research areas here,
-      and no categorical palette can keep that many hues reliably distinguishable — including for
-      the roughly 1 in 12 men with colour vision deficiency. Research area is carried by position,
-      labels, and the tooltip instead; colour does the one job it's unambiguously good at, which is
-      magnitude.
-    </p>
-
     <h2>Caveats</h2>
-    <p>
-      Valuations in this market are messy, and the site keeps that messiness rather than hiding it.
-      A figure shown as <code>&gt;$1B</code> is a lower bound, <code>~$4B</code> is approximate, and
-      anything marked rumored is exactly that. Headquarters and founder backgrounds are compiled
-      from public reporting; where a lab is genuinely split across two cities, the primary office is
-      used.
-    </p>
+    <ul>
+      <li>Valuations are messy, and many are likely inaccurate or need better fact-checking.</li>
+      <li>
+        Headquarters, founder lists, and founder backgrounds may be inaccurate or missing
+        information.
+      </li>
+      <li>
+        Many neolabs are actively exploring multiple research areas and don't fit cleanly into a
+        single category.
+      </li>
+    </ul>
   </article>
 </Layout>

@@ -19,11 +19,17 @@ interface Props {
 const { title, description, path, jsonLd, bare = false } = Astro.props;
 const site = Astro.site ?? new URL('https://neolabs.fyi');
 const canonical = new URL(path, site).href;
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 // Must be absolute — crawlers don't resolve relative URLs, and they don't run
 // JS, so this has to be a real static file.
 const ogImage = new URL('/og/cover.png', site).href;
+const views = [
+  { href: '/', label: 'Research' },
+  { href: '/?view=lineage', label: 'Lineage' },
+  { href: '/?view=geography', label: 'Geography' },
+  { href: '/?view=valuation', label: 'Valuation' },
+];
 const nav = [
-  { href: '/', label: 'Map' },
   { href: '/table', label: 'Table' },
   { href: '/about', label: 'About' },
 ];
@@ -88,10 +94,18 @@ const nav = [
     {!bare && (
     <header class="site-header">
       <Wordmark />
-      <nav class="site-nav">
+      <nav class="island island-views" aria-label="Map views">
+        {
+          views.map((item) => (
+            <a class="viewtab" href={item.href}>{item.label}</a>
+          ))
+        }
+      </nav>
+      <slot name="header-tools" />
+      <nav class="island island-nav" aria-label="Site navigation">
         {
           nav.map((item) => (
-            <a href={item.href} aria-current={Astro.url.pathname === item.href ? 'page' : undefined}>
+            <a href={item.href} aria-current={currentPath === item.href ? 'page' : undefined}>
               {item.label}
             </a>
           ))

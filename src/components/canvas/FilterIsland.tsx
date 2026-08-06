@@ -114,6 +114,18 @@ export function FilterIsland({
             }
           />
 
+          <RangeSlider
+            label="Founded"
+            steps={bounds.maxYear - bounds.minYear}
+            min={filters.minYear - bounds.minYear}
+            max={filters.maxYear - bounds.minYear}
+            lowLabel={String(filters.minYear)}
+            highLabel={String(filters.maxYear)}
+            onChange={(lo, hi) =>
+              onChange({ minYear: bounds.minYear + lo, maxYear: bounds.minYear + hi })
+            }
+          />
+
           <div className="panel-legend">
             <span className="range-label">Size &amp; colour = valuation</span>
             <div className="legend-ramp" aria-hidden="true">

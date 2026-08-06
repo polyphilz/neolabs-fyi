@@ -13,12 +13,13 @@ import {
   toParams,
   type Filters,
 } from '../../lib/filters';
+import { matchesLabSearch } from '../../lib/search';
+import { SearchField } from '../SearchField';
 import { Wordmark } from '../Wordmark';
 import { DetailPanel } from './DetailPanel';
 import { FilterIsland } from './FilterIsland';
 import { LabCanvas } from './LabCanvas';
 import { LineageDetailPanel } from './LineageDetailPanel';
-import { TimelineIsland } from './TimelineIsland';
 import { ViewIsland } from './ViewIsland';
 
 interface Props {
@@ -41,6 +42,7 @@ const VIEW_TITLES: Record<Filters['view'], string> = {
 export function Explorer({ labs, basemap }: Props) {
   const bounds = useMemo(() => computeBounds(labs), [labs]);
   const [filters, setFilters] = useState<Filters>(() => defaultFilters(labs));
+  const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<string | null>(null);
   const [selectedLineage, setSelectedLineage] = useState<LineageGroup | null>(null);
 
@@ -84,7 +86,10 @@ export function Explorer({ labs, basemap }: Props) {
     if (filters.view !== 'lineage') setSelectedLineage(null);
   }, [filters.view]);
 
-  const visible = useMemo(() => applyFilters(labs, filters), [labs, filters]);
+  const visible = useMemo(
+    () => applyFilters(labs, filters).filter((lab) => matchesLabSearch(lab, query)),
+    [labs, filters, query]
+  );
   const tagsInUse = useMemo(
     () => TAG_ORDER.filter((t) => labs.some((l) => l.tags?.includes(t))),
     [labs]
@@ -94,10 +99,10 @@ export function Explorer({ labs, basemap }: Props) {
     setFilters((f) => ({ ...f, ...next }));
   }, []);
 
-  const reset = useCallback(
-    () => setFilters((current) => ({ ...defaultFilters(labs), view: current.view })),
-    [labs]
-  );
+  const reset = useCallback(() => {
+    setFilters((current) => ({ ...defaultFilters(labs), view: current.view }));
+    setQuery('');
+  }, [labs]);
 
   const selectedLab = selected ? LAB_BY_SLUG.get(selected) ?? null : null;
   const selectLab = useCallback((slug: string | null) => {
@@ -125,13 +130,14 @@ export function Explorer({ labs, basemap }: Props) {
       <div className="hud hud-top">
         <Wordmark />
         <ViewIsland view={filters.view} onChange={(view) => update({ view })} />
+        <SearchField value={query} onChange={setQuery} />
         <FilterIsland
           filters={filters}
           tagsInUse={tagsInUse}
           bounds={bounds}
           shown={visible.length}
           total={labs.length}
-          dirty={!isDefault(filters, labs)}
+          dirty={!isDefault(filters, labs) || Boolean(query)}
           onChange={update}
           onReset={reset}
         />
@@ -139,10 +145,6 @@ export function Explorer({ labs, basemap }: Props) {
           <a href="/table">Table</a>
           <a href="/about">About</a>
         </nav>
-      </div>
-
-      <div className="hud hud-bottom-left">
-        <TimelineIsland filters={filters} bounds={bounds} onChange={update} />
       </div>
 
       <DetailPanel lab={selectedLab} onClose={() => setSelected(null)} />

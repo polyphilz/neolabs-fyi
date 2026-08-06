@@ -40,67 +40,67 @@ const jsonLd = {
   path="/table"
   jsonLd={jsonLd}
 >
-  <div class="table-wrap">
+  <Fragment slot="header-tools">
     <TableControls client:load labs={LABS} />
+  </Fragment>
 
+  <div class="table-wrap">
     <div class="table-scroll">
-    <table class="labs" id="labs-table">
-      <thead>
-        <tr>
-          <th scope="col"><button type="button" data-sort="name" data-type="text">Company</button></th>
-          <th scope="col"><button type="button" data-sort="val" data-type="num">Valuation</button></th>
-          <th scope="col"><button type="button" data-sort="year" data-type="num">Founded</button></th>
-          <th scope="col"><button type="button" data-sort="space" data-type="text">Research area</button></th>
-          <th scope="col"><button type="button" data-sort="lineage" data-type="text">Came out of</button></th>
-          <th scope="col">Founders</th>
-          <th scope="col"><button type="button" data-sort="place" data-type="text">Based in</button></th>
-          <th scope="col">Known for</th>
-        </tr>
-      </thead>
-      <tbody>
-        {
-          rows.map((r) => (
-            <tr
-              data-name={r.lab.name}
-              data-val={r.lab.valuation.usdM}
-              data-year={r.lab.year}
-              data-space={spaceLabel(r.lab)}
-              data-lineage={r.lineage}
-              data-place={`${r.lab.location.country} ${r.lab.location.city}`}
-              data-slug={r.lab.slug}
-            >
-              <td class="name">
-                <span
-                  class="swatch"
-                  style={`background:${
-                    r.lab.valuation.qualifier === 'undisclosed' || r.lab.structure
-                      ? 'var(--unknown-fill)'
-                      : `var(--seq-${r.step})`
-                  }`}
-                  aria-hidden="true"
-                />
-                <a href={`/labs/${r.lab.slug}`}>{r.lab.name}</a>
-              </td>
-              <td class="num">
-                {valuationLabel(r.lab.valuation)}
-                {r.lab.valuation.rumored && <span class="muted" title="Rumored"> *</span>}
-              </td>
-              <td class="num">{r.lab.year}</td>
-              <td>
-                {spaceLabel(r.lab)}
-              </td>
-              <td>{r.priors || <span class="muted">—</span>}</td>
-              <td>{founderNames(r.lab)}</td>
-              <td>
-                {r.lab.location.city}
-                <div class="muted" style="font-size:.75rem">{r.lab.location.country}</div>
-              </td>
-              <td>{r.lab.knownFor}</td>
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
+      <table class="labs" id="labs-table">
+        <thead>
+          <tr>
+            <th scope="col"><button type="button" data-sort="name" data-type="text">Company</button></th>
+            <th scope="col"><button type="button" data-sort="val" data-type="num">Valuation</button></th>
+            <th scope="col"><button type="button" data-sort="year" data-type="num">Founded</button></th>
+            <th scope="col"><button type="button" data-sort="space" data-type="text">Research area</button></th>
+            <th scope="col"><button type="button" data-sort="lineage" data-type="text">Came out of</button></th>
+            <th scope="col">Founders</th>
+            <th scope="col"><button type="button" data-sort="place" data-type="text">Based in</button></th>
+            <th scope="col">Known for</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            rows.map((r) => (
+              <tr
+                data-name={r.lab.name}
+                data-val={r.lab.valuation.usdM}
+                data-year={r.lab.year}
+                data-space={spaceLabel(r.lab)}
+                data-lineage={r.lineage}
+                data-place={`${r.lab.location.country} ${r.lab.location.city}`}
+                data-slug={r.lab.slug}
+              >
+                <td class="name">
+                  <span
+                    class="swatch"
+                    style={`background:${
+                      r.lab.valuation.qualifier === 'undisclosed' || r.lab.structure
+                        ? 'var(--unknown-fill)'
+                        : `var(--seq-${r.step})`
+                    }`}
+                    aria-hidden="true"
+                  />
+                  <a href={`/labs/${r.lab.slug}`}>{r.lab.name}</a>
+                </td>
+                <td class="num">
+                  {valuationLabel(r.lab.valuation)}
+                  {r.lab.valuation.rumored && <span class="muted" title="Rumored"> *</span>}
+                </td>
+                <td class="num">{r.lab.year}</td>
+                <td>{spaceLabel(r.lab)}</td>
+                <td>{r.priors || <span class="muted">—</span>}</td>
+                <td>{founderNames(r.lab)}</td>
+                <td>
+                  {r.lab.location.city}
+                  <div class="muted" style="font-size:.75rem">{r.lab.location.country}</div>
+                </td>
+                <td>{r.lab.knownFor}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
     </div>
 
     <p class="table-empty" id="labs-empty" hidden>No labs match that search.</p>

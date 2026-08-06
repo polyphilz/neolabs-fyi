@@ -9,9 +9,10 @@ import {
   isDefault,
   type Filters,
 } from '../../lib/filters';
-import { founderNames, money, spaceLabel } from '../../lib/format';
-import { lineageGroupsOf } from '../../lib/layout';
+import { money } from '../../lib/format';
+import { matchesLabSearch } from '../../lib/search';
 import { RangeSlider } from '../canvas/RangeSlider';
+import { SearchField } from '../SearchField';
 
 interface Props {
   labs: Lab[];
@@ -49,37 +50,10 @@ export function TableControls({ labs }: Props) {
     [labs]
   );
 
-  /** Everything a search should match, built once. */
-  const haystack = useMemo(() => {
-    const map = new Map<string, string>();
-    for (const lab of labs) {
-      map.set(
-        lab.slug,
-        [
-          lab.name,
-          spaceLabel(lab),
-          DOMAINS[lab.domain].label,
-          founderNames(lab),
-          lineageGroupsOf(lab).map((g) => LINEAGE_GROUPS[g].label).join(' '),
-          lab.location.city,
-          lab.location.country,
-          lab.knownFor,
-          String(lab.year),
-        ]
-          .join(' ')
-          .toLowerCase()
-      );
-    }
-    return map;
-  }, [labs]);
-
   const visible = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    const passed = applyFilters(labs, filters).filter(
-      (lab) => !q || (haystack.get(lab.slug) ?? '').includes(q)
-    );
+    const passed = applyFilters(labs, filters).filter((lab) => matchesLabSearch(lab, query));
     return new Set(passed.map((l) => l.slug));
-  }, [labs, filters, query, haystack]);
+  }, [labs, filters, query]);
 
   // The table is static HTML; show and hide its rows in place.
   useEffect(() => {
@@ -107,44 +81,41 @@ export function TableControls({ labs }: Props) {
 
   const update = (next: Partial<Filters>) => setFilters((f) => ({ ...f, ...next }));
   const dirty = !isDefault(filters, labs);
-  const activeCount = filters.domains.length + filters.lineage.length + filters.tags.length;
+  const chipCount = filters.domains.length + filters.lineage.length + filters.tags.length;
+  const activeCount = chipCount || (dirty || query ? 1 : 0);
 
   return (
     <div className="table-controls">
-      <div className="search">
-        <svg className="search-icon" viewBox="0 0 16 16" aria-hidden="true">
-          <circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M10.5 10.5 14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
-        <input
-          type="search"
-          value={query}
-          placeholder="Search labs, founders, cities…"
-          autoComplete="off"
-          aria-label="Search the table"
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => e.key === 'Escape' && setQuery('')}
-        />
-      </div>
+      <SearchField value={query} onChange={setQuery} ariaLabel="Search the table" />
 
       <div className="island-wrap" ref={rootRef}>
-        <button
-          type="button"
-          className={open ? 'filter-btn is-active' : 'filter-btn'}
-          aria-expanded={open}
-          onClick={() => setOpen((o) => !o)}
-        >
-          <svg viewBox="0 0 16 16" aria-hidden="true" className="filter-icon">
-            <path
-              d="M2 4h12M4.5 8h7M7 12h2"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-            />
-          </svg>
-          Filter
-          {activeCount > 0 && <span className="pip">{activeCount}</span>}
-        </button>
+        <div className="island island-filters">
+          <button
+            type="button"
+            className={open ? 'island-btn is-active' : 'island-btn'}
+            aria-expanded={open}
+            onClick={() => setOpen((o) => !o)}
+          >
+            Filters
+            {activeCount > 0 && <span className="pip">{activeCount}</span>}
+          </button>
+          <span className="island-count">
+            <strong>{visible.size}</strong>
+            <span className="island-count-total">/{labs.length}</span>
+          </span>
+          {(dirty || query) && (
+            <button
+              type="button"
+              className="island-btn island-btn-quiet"
+              onClick={() => {
+                setFilters(defaultFilters(labs));
+                setQuery('');
+              }}
+            >
+              Reset
+            </button>
+          )}
+        </div>
 
         {open && (
           <div className="panel panel-left" role="group" aria-label="Filters">
@@ -205,22 +176,9 @@ export function TableControls({ labs }: Props) {
         )}
       </div>
 
-      {(dirty || query) && (
-        <button
-          type="button"
-          className="reset"
-          onClick={() => {
-            setFilters(defaultFilters(labs));
-            setQuery('');
-          }}
-        >
-          Reset
-        </button>
-      )}
-
-      <p className="table-count" aria-live="polite">
+      <span className="sr-only" aria-live="polite">
         {visible.size === labs.length ? `${labs.length} labs` : `${visible.size} of ${labs.length} labs`}
-      </p>
+      </span>
     </div>
   );
 }

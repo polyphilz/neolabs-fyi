@@ -144,7 +144,7 @@
 
 body {
   margin: 0;
-  background: var(--plane);
+  background: var(--surface);
   color: var(--ink);
   font-family: var(--font);
   -webkit-font-smoothing: antialiased;
@@ -165,30 +165,12 @@ a {
   padding: 0.75rem;
   min-height: 65px;
   border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  flex-wrap: wrap;
 }
 
-.site-nav {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  font-size: 0.85rem;
-}
-
-.site-nav a {
-  color: var(--ink-2);
-  text-decoration: none;
-  /* Matches the wordmark's line-height so both centre on the same line. */
-  line-height: 1.5;
-}
-
-.site-nav a:hover {
-  color: var(--ink);
-}
-
-/* The current page reads as brighter and heavier rather than underlined. */
-.site-nav a[aria-current='page'] {
-  color: var(--ink);
-  font-weight: 600;
+.site-header > astro-island {
+  display: contents;
 }
 
 .prose {
@@ -209,6 +191,12 @@ a {
   color: var(--ink);
   letter-spacing: -0.02em;
   line-height: 1.25;
+}
+
+.prose h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
 }
 
 .prose h2,
@@ -350,14 +338,21 @@ body.is-bare {
   flex-wrap: wrap;
 }
 
-.hud-bottom-left {
-  bottom: 0.75rem;
-  left: 0.75rem;
-}
-
 .hud-bottom-right {
   bottom: 0.75rem;
   right: 0.75rem;
+}
+
+@media (min-width: 56rem) {
+  .hud-top,
+  .site-header {
+    flex-wrap: nowrap;
+  }
+
+  .site-header .table-controls {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
 }
 
 /* Islands ---------------------------------------------------------------- */
@@ -379,6 +374,14 @@ body.is-bare {
      mis-drag over an island shouldn't highlight its labels. */
   user-select: none;
   -webkit-user-select: none;
+}
+
+/* Every control in the primary header occupies the same visual row height. */
+.hud-top .island,
+.site-header .island,
+.hud-top .search input,
+.site-header .search input {
+  height: 2.5rem;
 }
 
 .island-wrap {
@@ -406,7 +409,6 @@ body.is-bare {
 }
 
 .island-nav {
-  margin-left: auto;
   padding: 0.28rem 0.35rem;
   font-size: 0.82rem;
 }
@@ -424,6 +426,11 @@ body.is-bare {
   background: var(--plane);
 }
 
+.island-nav a[aria-current='page'] {
+  color: var(--ink);
+  font-weight: 600;
+}
+
 .viewtab {
   appearance: none;
   border: 0;
@@ -435,6 +442,7 @@ body.is-bare {
   border-radius: 999px;
   cursor: pointer;
   white-space: nowrap;
+  text-decoration: none;
 }
 
 .viewtab:hover {
@@ -502,12 +510,6 @@ body.is-bare {
 
 .island-count-total {
   color: var(--muted);
-}
-
-.island-timeline {
-  border-radius: 14px;
-  padding: 0.5rem 0.85rem 0.35rem;
-  min-width: 15rem;
 }
 
 .island-zoom {
@@ -1295,15 +1297,15 @@ body.is-bare {
   z-index: 5;
   display: flex;
   align-items: center;
-  gap: 0.9rem;
+  gap: 0.5rem;
   flex-wrap: wrap;
-  margin-bottom: 1rem;
+  margin: 0;
 }
 
 .search {
   position: relative;
-  flex: 0 1 22rem;
-  min-width: 13rem;
+  flex: 0 1 10.5rem;
+  min-width: 9rem;
 }
 
 .search-icon {
@@ -1343,46 +1345,22 @@ body.is-bare {
   appearance: none;
 }
 
-.filter-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  appearance: none;
-  font: inherit;
-  font-size: 0.84rem;
-  color: var(--ink-2);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 0.42rem 0.85rem;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.filter-btn:hover,
-.filter-btn.is-active {
-  color: var(--ink);
-  border-color: var(--rule);
-}
-
-.filter-icon {
-  width: 15px;
-  height: 15px;
-  flex: none;
-}
-
 /* The table's panel hangs from the left edge of its button, not the right. */
 .panel-left {
   left: 0;
   right: auto;
 }
 
-.table-count {
-  margin: 0 0 0 auto;
-  font-size: 0.8rem;
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
   white-space: nowrap;
+  border: 0;
 }
 
 .table-empty {
@@ -1416,7 +1394,7 @@ table.labs thead th {
   position: sticky;
   top: 0;
   z-index: 1;
-  background: var(--plane);
+  background: var(--surface);
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.07em;
