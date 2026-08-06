@@ -105,7 +105,7 @@ export const PEOPLE = {
   'josh-albrecht': { name: 'Josh Albrecht' },
   'shai-shalev-shwartz': { name: 'Shai Shalev-Shwartz' },
   'yi-tay': { name: 'Yi Tay' },
-  'cyprien-de-masson-dautume': { name: 'Cyprien de Masson d’Autume' },
+  'cyprien-de-masson-dautume': { name: 'Cyprien de Masson d\'Autume' },
   'dani-yogatama': { name: 'Dani Yogatama' },
   'mikel-artetxe': { name: 'Mikel Artetxe' },
   'xavier-niel': { name: 'Xavier Niel' },
@@ -230,6 +230,10 @@ export const PEOPLE = {
   'zhu-yibo': { name: 'Zhu Yibo' },
   'jiao-binxing': { name: 'Jiao Binxing' },
   'yao-tengzhou': { name: 'Yao Tengzhou' },
+  'igor-babuschkin': { name: 'Igor Babuschkin' },
+  'dmytro-soboliev': { name: 'Dmytro "Dima" Soboliev' },
+  'ievgen-soboliev': { name: 'Ievgen Soboliev' },
+  'aaron-rogers': { name: 'Aaron Rogers' },
 } satisfies Record<string, { name: string }>;
 
 /**

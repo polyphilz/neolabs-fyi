@@ -200,6 +200,25 @@ export const LABS: Lab[] = [
     location: CITIES.sf,
   },
   {
+    slug: 'river-ai',
+    name: 'River AI',
+    // Reported fundraising discussions valued the company at up to $5B; the
+    // round and valuation were not confirmed by River.
+    valuation: { usdM: 5_000, qualifier: 'lt', rumored: true },
+    year: 2026,
+    domain: 'applied',
+    tags: ['agents', 'continual-learning', 'efficient'],
+    founders: [
+      { person: 'igor-babuschkin', prior: ['deepmind', 'openai', 'xai'] },
+      { person: 'dmytro-soboliev', prior: ['apple', 'openai', 'xai'] },
+      { person: 'ievgen-soboliev', prior: ['meta', 'apple', 'xai'] },
+      { person: 'aaron-rogers', prior: ['amd', 'qualcomm', 'tesla'] },
+    ],
+    knownFor:
+      'Personal AI agents that learn from and are controlled by their users, built on an end-to-end stack spanning training, models, products and on-device hardware.',
+    location: CITIES.paloAlto,
+  },
+  {
     slug: 'recursive-superintelligence',
     name: 'Recursive Superintelligence',
     valuation: { usdM: 4_650, qualifier: 'exact' },
