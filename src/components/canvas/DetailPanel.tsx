@@ -1,7 +1,7 @@
 import { PEOPLE } from '../../data/people';
 import { ORGS, STRUCTURE_LABEL } from '../../data/taxonomy';
 import type { Lab } from '../../data/types';
-import { spaceLabel, valuationCaveat, valuationLabel } from '../../lib/format';
+import { foundersByLastName, spaceLabel, valuationCaveat, valuationLabel } from '../../lib/format';
 
 interface Props {
   lab: Lab | null;
@@ -15,6 +15,7 @@ interface Props {
 export function DetailPanel({ lab, onClose }: Props) {
   if (!lab) return null;
   const caveat = valuationCaveat(lab);
+  const founders = foundersByLastName(lab);
 
   return (
     <aside className="drawer" aria-label={`${lab.name} details`}>
@@ -62,7 +63,7 @@ export function DetailPanel({ lab, onClose }: Props) {
 
       <h3 className="drawer-subhead">Founders</h3>
       <ul className="founders">
-        {lab.founders.map((f) => (
+        {founders.map((f) => (
           <li key={f.person}>
             <span className="founder-name">
               {PEOPLE[f.person].name}

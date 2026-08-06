@@ -159,6 +159,7 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   roboflow: { label: 'Roboflow', group: 'startup' },
   quora: { label: 'Quora', group: 'startup' },
   absci: { label: 'Absci', group: 'startup' },
+  aqemia: { label: 'Aqemia', group: 'startup' },
   canonical: { label: 'Canonical', group: 'startup' },
   iqm: { label: 'IQM', group: 'startup' },
   valeo: { label: 'Valeo.ai', group: 'startup' },
@@ -167,6 +168,7 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   greylock: { label: 'Greylock', group: 'startup' },
   forestneuro: { label: 'Forest Neurotech', group: 'startup' },
   carnegierobotics: { label: 'Carnegie Robotics', group: 'startup' },
+  vantai: { label: 'VantAI', group: 'startup' },
 
   stanford: { label: 'Stanford', group: 'academia' },
   mit: { label: 'MIT', group: 'academia' },

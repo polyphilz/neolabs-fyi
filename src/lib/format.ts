@@ -1,6 +1,6 @@
 import { PEOPLE } from '../data/people';
 import { DOMAINS, TAGS } from '../data/taxonomy';
-import type { Lab, Valuation } from '../data/types';
+import type { Lab, LabFounder, Valuation } from '../data/types';
 
 /** "$100B", "$1.45B", "$335M" — no trailing zeros, no unit noise. */
 export function money(usdM: number): string {
@@ -55,8 +55,21 @@ export function spaceLabel(lab: Lab): string {
   return tags ? `${domain} — ${tags}` : domain;
 }
 
+const founderNameCollator = new Intl.Collator('en', { sensitivity: 'base' });
+
+/** Founder records sorted for display by the final segment of each name. */
+export function foundersByLastName(lab: Lab): LabFounder[] {
+  return [...lab.founders].sort((a, b) => {
+    const aName = PEOPLE[a.person].name;
+    const bName = PEOPLE[b.person].name;
+    const aLast = aName.trim().split(/\s+/).at(-1) ?? aName;
+    const bLast = bName.trim().split(/\s+/).at(-1) ?? bName;
+    return founderNameCollator.compare(aLast, bLast) || founderNameCollator.compare(aName, bName);
+  });
+}
+
 export function founderNames(lab: Lab): string {
-  return lab.founders.map((f) => PEOPLE[f.person].name).join(', ');
+  return foundersByLastName(lab).map((f) => PEOPLE[f.person].name).join(', ');
 }
 
 /**

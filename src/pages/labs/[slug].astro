@@ -6,6 +6,7 @@ import { LINEAGE_GROUPS, ORGS, STRUCTURE_LABEL } from '../../data/taxonomy';
 import type { Lab } from '../../data/types';
 import {
   founderNames,
+  foundersByLastName,
   spaceLabel,
   valuationCaveat,
   valuationLabel,
@@ -22,7 +23,8 @@ interface Props {
 
 const { lab } = Astro.props;
 
-const priors = [...new Set(lab.founders.flatMap((f) => f.prior ?? []))];
+const founders = foundersByLastName(lab);
+const priors = [...new Set(founders.flatMap((f) => f.prior ?? []))];
 const groups = lineageGroupsOf(lab);
 const caveat = valuationCaveat(lab);
 
@@ -46,7 +48,7 @@ const jsonLd = {
   name: lab.name,
   description: lab.knownFor,
   foundingDate: String(lab.year),
-  founder: lab.founders.map((f) => ({ '@type': 'Person', name: PEOPLE[f.person].name })),
+  founder: founders.map((f) => ({ '@type': 'Person', name: PEOPLE[f.person].name })),
   location: {
     '@type': 'Place',
     address: {
@@ -128,7 +130,7 @@ const jsonLd = {
     <h2>Founders</h2>
     <ul>
       {
-        lab.founders.map((f) => (
+        founders.map((f) => (
           <li>
             <strong>{PEOPLE[f.person].name}</strong>
             {f.departed && <span class="muted"> (departed)</span>}
