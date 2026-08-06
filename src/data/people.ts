@@ -63,6 +63,7 @@ export const PEOPLE = {
   'pim-de-witte': { name: 'Pim de Witte' },
   'adam-jelley': { name: 'Adam Jelley' },
   'eloi-alonso': { name: 'Eloi Alonso' },
+  'vincent-micheli': { name: 'Vincent Micheli' },
   'daniela-rus': { name: 'Daniela Rus' },
   'ramin-hasani': { name: 'Ramin Hasani' },
   'charles-kantor': { name: 'Charles Kantor' },

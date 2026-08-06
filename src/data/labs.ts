@@ -382,9 +382,10 @@ export const LABS: Lab[] = [
     year: 2025,
     domain: 'world',
     founders: [
-      { person: 'pim-de-witte', prior: ['startup'] },
-      { person: 'adam-jelley', prior: ['edinburgh'] },
-      { person: 'eloi-alonso', prior: ['edinburgh'] },
+      { person: 'pim-de-witte', prior: ['medal'] },
+      { person: 'eloi-alonso', prior: ['geneva', 'ubisoft', 'microsoft'] },
+      { person: 'adam-jelley', prior: ['cambridge', 'dataiku', 'edinburgh', 'microsoft'] },
+      { person: 'vincent-micheli', prior: ['epfl', 'geneva', 'microsoft', 'wayve'] },
     ],
     knownFor: "Spun out of Medal with one of the largest gameplay-video datasets in existence.",
     location: CITIES.newYork,
