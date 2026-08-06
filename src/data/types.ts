@@ -34,8 +34,6 @@ export interface Valuation {
   highUsdM?: number;
   /** Figure is rumored / unconfirmed. */
   rumored?: boolean;
-  /** Valuation moved up recently (the ↑ marker). */
-  rising?: boolean;
   /**
    * ISO date the figure was true. Only meaningful for `status: 'public'` labs,
    * whose "valuation" is a market cap that moves every trading day. A private
@@ -147,6 +145,14 @@ export type OrgId =
   | 'aarno'
   | 'wankang'
   | 'xtr'
+  | 'cruise'
+  | 'funplus'
+  | 'gsr'
+  | 'recurrentai'
+  | 'samsung'
+  | 'booz'
+  | 'tencent'
+  | 'hulu'
   | 'zapier'
   | 'genentech'
   | 'mistral'

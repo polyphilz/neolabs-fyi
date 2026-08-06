@@ -114,7 +114,7 @@ const CANVAS_NAMES: Record<string, string> = {
   'brain-computer': 'Merge',
   'merge-labs': 'Merge Labs',
   'discovery-loop': 'Discovery Loop',
-  'zhipu-ai': 'Zhipu AI',
+  'z-ai': 'Z.ai',
   'moonshot-ai': 'Moonshot',
   'baichuan-ai': 'Baichuan',
   'moonlake-ai': 'Moonlake',

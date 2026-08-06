@@ -6,7 +6,6 @@ import type { Lab } from './types';
  *
  * Valuations are in millions USD and carry their qualifier, because in this
  * market "$1B" and ">$1B" and "~$1B (rumored)" are three different claims.
- * `rising: true` marks labs whose valuation moved up in the most recent round.
  *
  * Headquarters and founder prior-affiliations are not in the source table —
  * they're compiled from public reporting on each lab. Where a lab is genuinely
@@ -69,7 +68,7 @@ export const LABS: Lab[] = [
     slug: 'project-prometheus',
     name: 'Prometheus',
     priorNames: ['Project Prometheus'],
-    valuation: { usdM: 41_000, qualifier: 'exact', rising: true },
+    valuation: { usdM: 41_000, qualifier: 'exact' },
     year: 2025,
     domain: 'physical',
     founders: [
@@ -96,7 +95,7 @@ export const LABS: Lab[] = [
   {
     slug: 'reflection-ai',
     name: 'Reflection AI',
-    valuation: { usdM: 25_000, qualifier: 'exact', rising: true },
+    valuation: { usdM: 25_000, qualifier: 'exact' },
     year: 2024,
     domain: 'general',
     tags: ['open-weights'],
@@ -110,7 +109,7 @@ export const LABS: Lab[] = [
   {
     slug: 'skild-ai',
     name: 'Skild AI',
-    valuation: { usdM: 14_000, qualifier: 'gt', rising: true },
+    valuation: { usdM: 14_000, qualifier: 'gt' },
     year: 2023,
     domain: 'physical',
     tags: ['humanoid', 'academic-spinout'],
@@ -138,7 +137,7 @@ export const LABS: Lab[] = [
   {
     slug: 'physical-intelligence',
     name: 'Physical Intelligence',
-    valuation: { usdM: 11_000, qualifier: 'gt', rising: true, rumored: true },
+    valuation: { usdM: 11_000, qualifier: 'gt', rumored: true },
     year: 2024,
     domain: 'physical',
     tags: ['humanoid'],
@@ -157,7 +156,7 @@ export const LABS: Lab[] = [
   {
     slug: 'periodic-labs',
     name: 'Periodic Labs',
-    valuation: { usdM: 7_000, qualifier: 'approx', rising: true, rumored: true },
+    valuation: { usdM: 7_000, qualifier: 'approx', rumored: true },
     year: 2025,
     domain: 'science',
     tags: ['materials'],
@@ -196,7 +195,7 @@ export const LABS: Lab[] = [
   {
     slug: 'world-labs',
     name: 'World Labs',
-    valuation: { usdM: 5_000, qualifier: 'approx', rising: true, rumored: true },
+    valuation: { usdM: 5_000, qualifier: 'approx', rumored: true },
     year: 2024,
     domain: 'world',
     founders: [
@@ -215,7 +214,7 @@ export const LABS: Lab[] = [
   {
     slug: 'recursive-superintelligence',
     name: 'Recursive Superintelligence',
-    valuation: { usdM: 4_650, qualifier: 'exact', rising: true },
+    valuation: { usdM: 4_650, qualifier: 'exact' },
     year: 2025,
     domain: 'rsi',
     founders: [
@@ -283,7 +282,7 @@ export const LABS: Lab[] = [
   {
     slug: 'core-automation',
     name: 'Core Automation',
-    valuation: { usdM: 4_000, qualifier: 'approx', rumored: true, rising: true },
+    valuation: { usdM: 4_000, qualifier: 'approx', rumored: true },
     year: 2026,
     domain: 'rsi',
     tags: ['continual-learning'],
@@ -367,7 +366,7 @@ export const LABS: Lab[] = [
   {
     slug: 'decart',
     name: 'Decart',
-    valuation: { usdM: 4_000, qualifier: 'approx', rising: true },
+    valuation: { usdM: 4_000, qualifier: 'approx' },
     year: 2023,
     domain: 'world',
     tags: ['video'],
@@ -381,7 +380,7 @@ export const LABS: Lab[] = [
   {
     slug: 'sakana-ai',
     name: 'Sakana AI',
-    valuation: { usdM: 2_650, qualifier: 'exact', rising: true },
+    valuation: { usdM: 2_650, qualifier: 'exact' },
     year: 2023,
     domain: 'general',
     tags: ['efficient'],
@@ -396,7 +395,7 @@ export const LABS: Lab[] = [
   {
     slug: 'general-intuition',
     name: 'General Intuition',
-    valuation: { usdM: 2_300, qualifier: 'exact', rising: true },
+    valuation: { usdM: 2_300, qualifier: 'exact' },
     year: 2025,
     domain: 'world',
     founders: [
@@ -411,7 +410,7 @@ export const LABS: Lab[] = [
   {
     slug: 'liquid-ai',
     name: 'Liquid AI',
-    valuation: { usdM: 2_000, qualifier: 'gt', rising: true },
+    valuation: { usdM: 2_000, qualifier: 'gt' },
     year: 2023,
     domain: 'general',
     tags: ['efficient', 'academic-spinout'],
@@ -457,7 +456,7 @@ export const LABS: Lab[] = [
   {
     slug: 'axiom-math',
     name: 'Axiom Math',
-    valuation: { usdM: 1_600, qualifier: 'gt', rising: true },
+    valuation: { usdM: 1_600, qualifier: 'gt' },
     year: 2025,
     domain: 'science',
     tags: ['math'],
@@ -472,7 +471,7 @@ export const LABS: Lab[] = [
   {
     slug: 'flapping-airplanes',
     name: 'Flapping Airplanes',
-    valuation: { usdM: 1_500, qualifier: 'exact', rising: true },
+    valuation: { usdM: 1_500, qualifier: 'exact' },
     year: 2025,
     domain: 'general',
     founders: [
@@ -500,7 +499,7 @@ export const LABS: Lab[] = [
   {
     slug: 'harmonic',
     name: 'Harmonic',
-    valuation: { usdM: 1_450, qualifier: 'exact', rising: true },
+    valuation: { usdM: 1_450, qualifier: 'exact' },
     year: 2023,
     domain: 'science',
     tags: ['math'],
@@ -529,7 +528,7 @@ export const LABS: Lab[] = [
   {
     slug: 'lila-sciences',
     name: 'Lila Sciences',
-    valuation: { usdM: 1_300, qualifier: 'gt', rising: true },
+    valuation: { usdM: 1_300, qualifier: 'gt' },
     year: 2023,
     domain: 'science',
     founders: [
@@ -542,7 +541,7 @@ export const LABS: Lab[] = [
   {
     slug: 'chai-discovery',
     name: 'Chai Discovery',
-    valuation: { usdM: 3_800, qualifier: 'exact', rising: true },
+    valuation: { usdM: 3_800, qualifier: 'exact' },
     year: 2024,
     domain: 'science',
     tags: ['drug-discovery'],
@@ -558,7 +557,7 @@ export const LABS: Lab[] = [
   {
     slug: 'goodfire',
     name: 'Goodfire',
-    valuation: { usdM: 1_250, qualifier: 'exact', rising: true },
+    valuation: { usdM: 1_250, qualifier: 'exact' },
     year: 2024,
     domain: 'safety',
     founders: [
@@ -620,7 +619,7 @@ export const LABS: Lab[] = [
   {
     slug: 'simile',
     name: 'Simile',
-    valuation: { usdM: 2_000, qualifier: 'exact', rising: true },
+    valuation: { usdM: 2_000, qualifier: 'exact' },
     year: 2025,
     domain: 'world',
     founders: [
@@ -682,7 +681,7 @@ export const LABS: Lab[] = [
   {
     slug: 'reka',
     name: 'Reka',
-    valuation: { usdM: 1_000, qualifier: 'exact', rising: true },
+    valuation: { usdM: 1_000, qualifier: 'exact' },
     year: 2022,
     domain: 'general',
     tags: ['multimodal'],
@@ -720,7 +719,7 @@ export const LABS: Lab[] = [
   {
     slug: 'prime-intellect',
     name: 'Prime Intellect',
-    valuation: { usdM: 1_000, qualifier: 'exact', rising: true },
+    valuation: { usdM: 1_000, qualifier: 'exact' },
     year: 2024,
     domain: 'compute',
     founders: [
@@ -763,7 +762,7 @@ export const LABS: Lab[] = [
   {
     slug: 'zyphra',
     name: 'Zyphra',
-    valuation: { usdM: 5_000, qualifier: 'gt', rumored: true, rising: true },
+    valuation: { usdM: 5_000, qualifier: 'gt', rumored: true },
     year: 2021,
     domain: 'general',
     tags: ['open-weights', 'efficient'],
@@ -923,7 +922,7 @@ export const LABS: Lab[] = [
   {
     slug: 'genesis-ai',
     name: 'Genesis AI',
-    valuation: { usdM: 3_000, qualifier: 'approx', rumored: true, rising: true },
+    valuation: { usdM: 3_000, qualifier: 'approx', rumored: true },
     year: 2025,
     domain: 'physical',
     tags: ['humanoid'],
@@ -937,7 +936,7 @@ export const LABS: Lab[] = [
   {
     slug: 'cusp-ai',
     name: 'CuspAI',
-    valuation: { usdM: 2_600, qualifier: 'approx', rising: true },
+    valuation: { usdM: 2_600, qualifier: 'approx' },
     year: 2024,
     domain: 'science',
     tags: ['materials'],
@@ -1001,11 +1000,11 @@ export const LABS: Lab[] = [
   // with status: 'public' rather than silently mixed in with private rounds.
   // -------------------------------------------------------------------------
   {
-    slug: 'zhipu-ai',
-    name: 'Z.AI (Zhipu)',
+    slug: 'z-ai',
+    name: 'Z.ai',
     priorNames: ['Zhipu AI'],
     // Listed on HKEX 8 Jan 2026 and has run far above its IPO price since.
-    valuation: { usdM: 100_000, qualifier: 'approx', rising: true, asOf: '2026-08-06' },
+    valuation: { usdM: 65_000, qualifier: 'approx', asOf: '2026-08-06' },
     year: 2019,
     domain: 'general',
     tags: ['open-weights', 'academic-spinout'],
@@ -1026,7 +1025,7 @@ export const LABS: Lab[] = [
     name: 'DeepSeek',
     // $7.4B first external round in June 2026 at north of $50B; reportedly
     // seeking fresh capital as high as $71B ahead of a STAR Market listing.
-    valuation: { usdM: 50_000, qualifier: 'gt', rising: true },
+    valuation: { usdM: 50_000, qualifier: 'gt' },
     year: 2023,
     domain: 'general',
     tags: ['open-weights', 'efficient'],
@@ -1039,13 +1038,15 @@ export const LABS: Lab[] = [
     slug: 'moonshot-ai',
     name: 'Moonshot AI',
     // $3.5B round closed July 2026 at $35B, well over its $1-2B target.
-    valuation: { usdM: 35_000, qualifier: 'exact', rising: true },
+    valuation: { usdM: 35_000, qualifier: 'exact' },
     year: 2023,
     domain: 'general',
     founders: [
-      { person: 'yang-zhilin', prior: ['cmu', 'google', 'tsinghua'] },
-      { person: 'zhou-xinyu', prior: ['startup'] },
-      { person: 'wu-yuxin', prior: ['startup'] },
+      { person: 'yang-zhilin', prior: ['recurrentai', 'google', 'meta', 'cmu'] },
+      { person: 'zhang-yutao', prior: ['recurrentai', 'tsinghua'] },
+      { person: 'zhou-xinyu', prior: ['megvii', 'tencent', 'hulu'] },
+      { person: 'wu-yuxin', prior: ['google', 'meta', 'cruise'] },
+      { person: 'zhang-yutong', prior: ['gsr', 'funplus', 'samsung', 'booz'] },
     ],
     knownFor: 'Kimi — long-context models and China\'s breakout consumer assistant; Transformer-XL co-author.',
     location: CITIES.beijing,
@@ -1070,7 +1071,7 @@ export const LABS: Lab[] = [
   {
     slug: 'stepfun',
     name: 'StepFun',
-    valuation: { usdM: 10_000, qualifier: 'approx', rising: true },
+    valuation: { usdM: 10_000, qualifier: 'approx' },
     year: 2023,
     domain: 'general',
     tags: ['multimodal', 'open-weights'],
@@ -1085,7 +1086,7 @@ export const LABS: Lab[] = [
   {
     slug: 'galbot',
     name: 'Galbot',
-    valuation: { usdM: 3_000, qualifier: 'gt', rising: true },
+    valuation: { usdM: 3_000, qualifier: 'gt' },
     year: 2023,
     domain: 'physical',
     tags: ['humanoid'],
@@ -1109,7 +1110,7 @@ export const LABS: Lab[] = [
   {
     slug: 'agibot',
     name: 'AgiBot (Zhiyuan Robotics)',
-    valuation: { usdM: 2_080, qualifier: 'approx', rising: true },
+    valuation: { usdM: 2_080, qualifier: 'approx' },
     year: 2023,
     domain: 'physical',
     tags: ['humanoid'],
@@ -1139,7 +1140,7 @@ export const LABS: Lab[] = [
     name: 'Sarvam AI',
     // $234M first close of a $300M Series B at $1.5B post (June 2026), with an
     // Nvidia-led extension in August.
-    valuation: { usdM: 1_500, qualifier: 'exact', rising: true },
+    valuation: { usdM: 1_500, qualifier: 'exact' },
     year: 2023,
     domain: 'general',
     tags: ['sovereign', 'voice'],

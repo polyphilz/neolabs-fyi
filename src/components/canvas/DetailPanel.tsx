@@ -40,7 +40,6 @@ export function DetailPanel({ lab, onClose }: Props) {
 
       <p className="drawer-valuation">
         {valuationLabel(lab.valuation)}
-        {lab.valuation.rising && <span className="rising" title="Valuation rose in the last round">↑</span>}
       </p>
       {caveat && <p className="drawer-caveat">{caveat}</p>}
 

@@ -1161,13 +1161,6 @@ body.is-bare {
   letter-spacing: -0.03em;
 }
 
-.rising {
-  color: var(--accent);
-  font-size: 1.1rem;
-  margin-left: 0.25rem;
-  vertical-align: super;
-}
-
 .drawer-caveat {
   margin: 0.1rem 0 0;
   color: var(--muted);
