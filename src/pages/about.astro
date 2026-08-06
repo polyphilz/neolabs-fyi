@@ -7,7 +7,7 @@ const description =
   'What counts as a neolab, how this map encodes valuation, lineage, geography, and research area, and what the data does and does not claim.';
 ---
 
-<Layout title="About neolabs.fyi" description={description} path="/about">
+<Layout title="About neolabs.fyi" description={description} path="/about" hideFooter>
   <article class="prose">
     <h2>What's a neolab?</h2>
     <p>
@@ -18,7 +18,10 @@ const description =
     <p>
       That definition deliberately excludes the incumbents (OpenAI, Anthropic, Google DeepMind,
       xAI), non-profits, and companies that are really at revenue scale — Mistral, Cohere, Runway,
-      Luma, Black Forest Labs. Chinese labs and pure hardware companies are their own categories.
+      Luma, Black Forest Labs — along with pure hardware companies. Chinese labs <em>are</em>{' '}
+      included: leaving them out would make this a map of American AI rather than of the field.
+      Two of them have since listed in Hong Kong and are marked as such, since a market cap that
+      moves daily is not the same kind of number as a private round.
     </p>
 
     <h2>What you're looking at</h2>
@@ -28,9 +31,10 @@ const description =
     </p>
     <ul>
       <li>
-        <strong>Valuation</strong> — bubbles placed along a founding-year axis. Bubble
-        <em>area</em> is proportional to valuation, so a $100B lab really is ~300× the area of a
-        $335M one. A log scale would have flattened exactly the disparity worth seeing.
+        <strong>Valuation</strong> — a single pack, with bubble <em>area</em> proportional to
+        valuation, so a $100B lab really is ~300× the area of a $335M one. A log scale would have
+        flattened exactly the disparity worth seeing. Founding year lives in the timeline filter
+        rather than on an axis, because only a handful of these labs predate 2022.
       </li>
       <li>
         <strong>Lineage</strong> — each lab wired to the organisations its founders came out of.

@@ -45,7 +45,7 @@
   --unknown-fill: #c3c2b7;
   --unknown-ink: #0b0b0b;
 
-  --font: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font: 'Google Sans Flex', system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {

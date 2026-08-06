@@ -16,6 +16,9 @@
  * zoom into a small bubble.
  */
 
+/** Memoised layouts, keyed by name + radius. Cleared when the font changes. */
+const cache = new Map<string, FittedLabel | null>();
+
 export interface FittedLabel {
   lines: string[];
   /** Canvas units. Multiply by the on-screen scale to get pixels. */
@@ -24,12 +27,15 @@ export interface FittedLabel {
 }
 
 /**
- * Advance width per character, in ems, for the UI sans at 600 weight. Measured
- * text would be exact, but it can't be measured before layout — so this errs
- * generous. Underestimating pushes glyphs past the circle's edge, which looks
- * broken; overestimating just drops the type a fraction of a point.
+ * Fallback advance width per character, in ems, used only before the browser
+ * can measure — during SSR and the first client render, where measuring would
+ * desync the two. Errs generous: underestimating pushes glyphs past the
+ * circle's edge, which looks broken.
  */
-const CHAR_EM = 0.58;
+const FALLBACK_CHAR_EM = 0.58;
+
+/** Weight the bubble labels are drawn at; metrics must match. */
+const LABEL_WEIGHT = 600;
 /**
  * Fraction of the radius the type may occupy. Text that reaches the curve
  * technically fits but reads as overflowing, so this leaves a visible ring of
@@ -42,7 +48,56 @@ const LINE_SPACING = 1.12;
 const MAX_FONT = 15;
 const MAX_LINES = 3;
 
-const widthEm = (line: string) => line.length * CHAR_EM;
+// --- text metrics -----------------------------------------------------------
+// Real measurement rather than a per-character constant, because the constant
+// has to be re-tuned for every typeface. Measuring means swapping fonts is a
+// one-line change that can't silently break label fitting.
+
+let measured = false;
+let ctx: CanvasRenderingContext2D | null = null;
+let fontSpec = '';
+const emCache = new Map<string, number>();
+
+function context(): CanvasRenderingContext2D | null {
+  if (ctx || typeof document === 'undefined') return ctx;
+  ctx = document.createElement('canvas').getContext('2d');
+  return ctx;
+}
+
+/** Width of `line` in ems at the label weight. */
+function widthEm(line: string): number {
+  if (!measured) return line.length * FALLBACK_CHAR_EM;
+
+  const hit = emCache.get(line);
+  if (hit !== undefined) return hit;
+
+  const c = context();
+  if (!c) return line.length * FALLBACK_CHAR_EM;
+
+  if (!fontSpec) {
+    const family =
+      getComputedStyle(document.documentElement).getPropertyValue('--font').trim() ||
+      'system-ui, sans-serif';
+    // Measured at 100px for precision, then normalised to ems.
+    fontSpec = `${LABEL_WEIGHT} 100px ${family}`;
+  }
+  c.font = fontSpec;
+  const em = c.measureText(line).width / 100;
+  emCache.set(line, em);
+  return em;
+}
+
+/**
+ * Switch on real measurement, and drop anything measured against a previous
+ * font. Call after mount, and again once webfonts finish loading — until a
+ * font is actually loaded the browser measures the fallback face.
+ */
+export function refreshLabelMetrics(): void {
+  measured = true;
+  fontSpec = '';
+  emCache.clear();
+  cache.clear();
+}
 
 /** Does this set of lines fit inside radius `r` at this font size? */
 function fits(lines: string[], font: number, r: number): boolean {
@@ -104,8 +159,6 @@ function balance(words: string[], count: number): string[] | null {
   walk(0, count, []);
   return best;
 }
-
-const cache = new Map<string, FittedLabel | null>();
 
 /**
  * Best label layout for `name` inside a circle of canvas radius `r`.

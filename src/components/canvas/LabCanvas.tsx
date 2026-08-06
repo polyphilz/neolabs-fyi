@@ -6,7 +6,7 @@ import { UNKNOWN_FILL, UNKNOWN_INK, fillFor, valuationStep } from '../../lib/col
 import type { Filters } from '../../lib/filters';
 import { VIEW_H, VIEW_W, computeLayout } from '../../lib/layout';
 import { canvasName, spaceLabel, valuationLabel } from '../../lib/format';
-import { fitLabel } from '../../lib/labelFit';
+import { fitLabel, refreshLabelMetrics } from '../../lib/labelFit';
 import { useSimulation, type SimNode } from './useSimulation';
 import { useViewport } from './useViewport';
 
@@ -84,6 +84,19 @@ export function LabCanvas({ labs, basemap, filters, selected, onSelect }: Props)
 
   /** Canvas units -> screen pixels, including zoom. */
   const screenScale = transform.k * fitScale;
+
+  // Label fitting measures real text, but only after mount — measuring during
+  // SSR would desync server and client HTML. Re-measure once webfonts land,
+  // since until then the browser is measuring the fallback face.
+  const [, remeasure] = useState(0);
+  useEffect(() => {
+    const apply = () => {
+      refreshLabelMetrics();
+      remeasure((n) => n + 1);
+    };
+    apply();
+    document.fonts?.ready.then(apply).catch(() => {});
+  }, []);
 
   /**
    * Paint order: largest first, so small bubbles land on top and their hit

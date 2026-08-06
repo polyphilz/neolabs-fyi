@@ -13,9 +13,11 @@ interface Props {
    * The map page draws its own floating nav over the canvas.
    */
   bare?: boolean;
+  /** Suppress the definition footer where the page already states it. */
+  hideFooter?: boolean;
 }
 
-const { title, description, path, jsonLd, bare = false } = Astro.props;
+const { title, description, path, jsonLd, bare = false, hideFooter = false } = Astro.props;
 const site = Astro.site ?? new URL('https://neolabs.fyi');
 const canonical = new URL(path, site).href;
 const nav = [
@@ -40,6 +42,13 @@ const nav = [
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100..900&display=swap"
+    />
 
     <link rel="sitemap" href="/sitemap-index.xml" />
     {
@@ -75,7 +84,7 @@ const nav = [
       <slot />
     </main>
 
-    {!bare && (
+    {!bare && !hideFooter && (
     <footer class="site-footer">
       <p>
         A neolab is an AI research lab founded by elite researchers, professors, or
