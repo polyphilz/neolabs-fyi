@@ -1,0 +1,164 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { LABS } from '../../data/labs';
+import { DOMAINS, LINEAGE_GROUPS, ORGS } from '../../data/taxonomy';
+import type { Lab } from '../../data/types';
+import {
+  founderNames,
+  spaceLabel,
+  valuationCaveat,
+  valuationLabel,
+} from '../../lib/format';
+import { lineageGroupsOf } from '../../lib/layout';
+
+export function getStaticPaths() {
+  return LABS.map((lab) => ({ params: { slug: lab.slug }, props: { lab } }));
+}
+
+interface Props {
+  lab: Lab;
+}
+
+const { lab } = Astro.props;
+
+const priors = [...new Set(lab.founders.flatMap((f) => f.prior ?? []))];
+const groups = lineageGroupsOf(lab);
+const caveat = valuationCaveat(lab.valuation);
+
+// The long-tail query is "<lab> valuation" / "who founded <lab>", so the
+// description answers exactly that in the first sentence.
+const description = `${lab.name} is valued at ${valuationLabel(lab.valuation)}. Founded in ${
+  lab.year
+} by ${founderNames(lab)}, based in ${lab.location.city}. ${lab.knownFor}`;
+
+const related = LABS.filter(
+  (other) =>
+    other.slug !== lab.slug &&
+    (other.domain === lab.domain || lineageGroupsOf(other).some((g) => groups.includes(g)))
+)
+  .sort((a, b) => b.valuation.usdM - a.valuation.usdM)
+  .slice(0, 6);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: lab.name,
+  description: lab.knownFor,
+  foundingDate: String(lab.year),
+  founder: lab.founders.map((f) => ({ '@type': 'Person', name: f.name })),
+  location: {
+    '@type': 'Place',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: lab.location.city,
+      addressCountry: lab.location.cc,
+    },
+  },
+  url: `https://neolabs.fyi/labs/${lab.slug}`,
+};
+---
+
+<Layout
+  title={`${lab.name} — valuation, founders, and research focus`}
+  description={description}
+  path={`/labs/${lab.slug}`}
+  jsonLd={jsonLd}
+>
+  <article class="lab-page">
+    <a class="backlink" href="/">← All neolabs</a>
+    <h1>{lab.name}</h1>
+
+    <p class="lab-hero">
+      {valuationLabel(lab.valuation)}
+      {lab.valuation.rising && <span class="rising" title="Rose in the most recent round">↑</span>}
+    </p>
+    <p class="muted" style="margin:0;font-size:.82rem">
+      {caveat ?? 'Reported valuation'}
+    </p>
+
+    <p class="lab-lede">{lab.knownFor}</p>
+
+    <dl class="lab-facts">
+      <div>
+        <dt>Founded</dt>
+        <dd>{lab.year}</dd>
+      </div>
+      <div>
+        <dt>Research area</dt>
+        <dd>{spaceLabel(lab)}</dd>
+      </div>
+      <div>
+        <dt>Category</dt>
+        <dd>{DOMAINS[lab.domain].label}</dd>
+      </div>
+      <div>
+        <dt>Headquarters</dt>
+        <dd>{lab.location.city}, {lab.location.country}</dd>
+      </div>
+      {
+        lab.status === 'acquihired' && (
+          <div>
+            <dt>Status</dt>
+            <dd>Acquihired</dd>
+          </div>
+        )
+      }
+      {
+        lab.status === 'public' && (
+          <div>
+            <dt>Status</dt>
+            <dd>Publicly listed — figure is a market cap</dd>
+          </div>
+        )
+      }
+    </dl>
+
+    <h2>Founders</h2>
+    <ul>
+      {
+        lab.founders.map((f) => (
+          <li>
+            <strong>{f.name}</strong>
+            {f.prior?.length ? <span class="muted"> — previously {f.prior.map((o) => ORGS[o].label).join(', ')}</span> : null}
+          </li>
+        ))
+      }
+    </ul>
+
+    {
+      priors.length > 0 && (
+        <>
+          <h2>Lineage</h2>
+          <p>
+            {lab.name}'s founding team came out of{' '}
+            {groups.map((g) => LINEAGE_GROUPS[g].label).join(', ')}. In the{' '}
+            <a href={`/?view=lineage&from=${groups.join(',')}`}>lineage view</a> you can see every
+            lab with the same background.
+          </p>
+        </>
+      )
+    }
+
+    {
+      related.length > 0 && (
+        <>
+          <h2>Related labs</h2>
+          <ul>
+            {related.map((other) => (
+              <li>
+                <a href={`/labs/${other.slug}`}>{other.name}</a>{' '}
+                <span class="muted">
+                  — {valuationLabel(other.valuation)}, {spaceLabel(other)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )
+    }
+
+    <p style="margin-top:2rem">
+      <a class="backlink" href={`/?lab=${lab.slug}`}>See {lab.name} on the map →</a>
+    </p>
+  </article>
+</Layout>

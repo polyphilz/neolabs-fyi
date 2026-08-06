@@ -1,0 +1,62 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { LABS, TOTAL_VALUATION_USDM } from '../data/labs';
+import { money } from '../lib/format';
+
+const description =
+  'What counts as a neolab, how this map encodes valuation, lineage, geography, and research area, and what the data does and does not claim.';
+---
+
+<Layout title="About neolabs.fyi" description={description} path="/about">
+  <article class="prose">
+    <h2>What's a neolab?</h2>
+    <p>
+      An AI research lab founded by elite researchers from major AI labs, professors, or
+      post-economic entrepreneurs. They're typically pre-product-market-fit and sub-revenue-scale,
+      yet raise at unicorn-plus valuations to chase long-term breakthroughs.
+    </p>
+    <p>
+      That definition deliberately excludes the incumbents (OpenAI, Anthropic, Google DeepMind,
+      xAI), non-profits, and companies that are really at revenue scale — Mistral, Cohere, Runway,
+      Luma, Black Forest Labs. Chinese labs and pure hardware companies are their own categories.
+    </p>
+
+    <h2>What you're looking at</h2>
+    <p>
+      {LABS.length} labs, roughly {money(TOTAL_VALUATION_USDM)} in combined paper valuation, in four
+      views of the same canvas:
+    </p>
+    <ul>
+      <li>
+        <strong>Valuation</strong> — bubbles placed along a founding-year axis. Bubble
+        <em>area</em> is proportional to valuation, so a $100B lab really is ~300× the area of a
+        $335M one. A log scale would have flattened exactly the disparity worth seeing.
+      </li>
+      <li>
+        <strong>Lineage</strong> — each lab wired to the organisations its founders came out of.
+        This is the actual story of the list: researchers leaving OpenAI, DeepMind, Meta, and
+        Google and raising billions.
+      </li>
+      <li><strong>Geography</strong> — where the labs actually are.</li>
+      <li><strong>Research area</strong> — clustered by what they work on.</li>
+    </ul>
+
+    <h2>On colour</h2>
+    <p>
+      Colour encodes valuation, not research area. There are more than a dozen research areas here,
+      and no categorical palette can keep that many hues reliably distinguishable — including for
+      the roughly 1 in 12 men with colour vision deficiency. Research area is carried by position,
+      labels, and the tooltip instead; colour does the one job it's unambiguously good at, which is
+      magnitude.
+    </p>
+
+    <h2>Caveats</h2>
+    <p>
+      Valuations in this market are messy, and the site keeps that messiness rather than hiding it.
+      A figure shown as <code>&gt;$1B</code> is a lower bound, <code>~$4B</code> is approximate, and
+      anything marked rumored is exactly that. Headquarters and founder backgrounds are compiled
+      from public reporting; where a lab is genuinely split across two cities, the primary office is
+      used.
+    </p>
+  </article>
+</Layout>

@@ -1,0 +1,140 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { LABS_BY_VALUATION, LABS, TOTAL_VALUATION_USDM } from '../data/labs';
+import { DOMAINS, ORGS } from '../data/taxonomy';
+import { valuationStep } from '../lib/color';
+import { founderNames, money, spaceLabel, valuationLabel } from '../lib/format';
+import { lineageGroupsOf } from '../lib/layout';
+import { LINEAGE_GROUPS } from '../data/taxonomy';
+
+const description = `All ${LABS.length} AI neolabs in a sortable table: valuation, founding year, research area, founders and their prior labs, and headquarters.`;
+
+const rows = LABS_BY_VALUATION.map((lab) => ({
+  lab,
+  step: valuationStep(lab.valuation.usdM),
+  lineage: lineageGroupsOf(lab)
+    .map((g) => LINEAGE_GROUPS[g].short)
+    .join(', '),
+  priors: [...new Set(lab.founders.flatMap((f) => f.prior ?? []).map((o) => ORGS[o].label))].join(
+    ', '
+  ),
+}));
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'AI Neolabs by valuation',
+  numberOfItems: LABS.length,
+  itemListElement: LABS_BY_VALUATION.map((lab, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    url: `https://neolabs.fyi/labs/${lab.slug}`,
+    name: lab.name,
+  })),
+};
+---
+
+<Layout title="All AI neolabs — sortable table" description={description} path="/table" jsonLd={jsonLd}>
+  <div class="prose" style="padding-bottom:0">
+    <h2>Every neolab</h2>
+    <p>
+      {LABS.length} labs, ~{money(TOTAL_VALUATION_USDM)} combined. Click a column heading to sort.
+    </p>
+  </div>
+
+  <div class="table-wrap">
+    <table class="labs" id="labs-table">
+      <thead>
+        <tr>
+          <th scope="col"><button type="button" data-sort="name" data-type="text">Company</button></th>
+          <th scope="col"><button type="button" data-sort="val" data-type="num">Valuation</button></th>
+          <th scope="col"><button type="button" data-sort="year" data-type="num">Founded</button></th>
+          <th scope="col"><button type="button" data-sort="space" data-type="text">Research area</button></th>
+          <th scope="col"><button type="button" data-sort="lineage" data-type="text">Came out of</button></th>
+          <th scope="col">Founders</th>
+          <th scope="col"><button type="button" data-sort="place" data-type="text">Based in</button></th>
+          <th scope="col">Known for</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          rows.map(({ lab, step, lineage, priors }) => (
+            <tr
+              data-name={lab.name}
+              data-val={lab.valuation.usdM}
+              data-year={lab.year}
+              data-space={spaceLabel(lab)}
+              data-lineage={lineage}
+              data-place={`${lab.location.country} ${lab.location.city}`}
+            >
+              <td class="name">
+                <span
+                  class="swatch"
+                  style={`background:${
+                    lab.valuation.qualifier === 'undisclosed'
+                      ? 'var(--unknown-fill)'
+                      : `var(--seq-${step})`
+                  }`}
+                  aria-hidden="true"
+                />
+                <a href={`/labs/${lab.slug}`}>{lab.name}</a>
+                {lab.isNew && <span class="badge" style="margin-left:.4rem">New</span>}
+              </td>
+              <td class="num">
+                {valuationLabel(lab.valuation)}
+                {lab.valuation.rumored && <span class="muted" title="Rumored"> *</span>}
+              </td>
+              <td class="num">{lab.year}</td>
+              <td>
+                {spaceLabel(lab)}
+                <div class="muted" style="font-size:.75rem">{DOMAINS[lab.domain].label}</div>
+              </td>
+              <td>{priors || <span class="muted">—</span>}</td>
+              <td>{founderNames(lab)}</td>
+              <td>
+                {lab.location.city}
+                <div class="muted" style="font-size:.75rem">{lab.location.country}</div>
+              </td>
+              <td>{lab.knownFor}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+    <p class="muted" style="font-size:.75rem;margin-top:1rem">
+      * Rumored or unconfirmed valuation.
+    </p>
+  </div>
+</Layout>
+
+<script>
+  // Progressive enhancement: the table is fully rendered and readable without
+  // this; the script only reorders existing rows.
+  const table = document.getElementById('labs-table') as HTMLTableElement | null;
+  if (table) {
+    const tbody = table.tBodies[0];
+    let currentKey = 'val';
+    let descending = true;
+
+    table.querySelectorAll<HTMLButtonElement>('button[data-sort]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const key = button.dataset.sort!;
+        const numeric = button.dataset.type === 'num';
+        descending = key === currentKey ? !descending : true;
+        currentKey = key;
+
+        const rows = Array.from(tbody.rows);
+        rows.sort((a, b) => {
+          const av = a.dataset[key] ?? '';
+          const bv = b.dataset[key] ?? '';
+          const cmp = numeric ? Number(av) - Number(bv) : av.localeCompare(bv);
+          return descending ? -cmp : cmp;
+        });
+        rows.forEach((row) => tbody.appendChild(row));
+
+        table.querySelectorAll('th').forEach((th) => th.removeAttribute('aria-sort'));
+        button.closest('th')?.setAttribute('aria-sort', descending ? 'descending' : 'ascending');
+      });
+    });
+  }
+</script>

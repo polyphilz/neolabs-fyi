@@ -1,0 +1,88 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Absolute path, e.g. "/labs/ssi". Used for canonical + og:url. */
+  path: string;
+  /** Optional JSON-LD object graph. */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  /**
+   * Drop the header and footer and let the page own the whole viewport.
+   * The map page draws its own floating nav over the canvas.
+   */
+  bare?: boolean;
+}
+
+const { title, description, path, jsonLd, bare = false } = Astro.props;
+const site = Astro.site ?? new URL('https://neolabs.fyi');
+const canonical = new URL(path, site).href;
+const nav = [
+  { href: '/', label: 'Map' },
+  { href: '/table', label: 'Table' },
+  { href: '/about', label: 'About' },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="neolabs.fyi" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    {
+      jsonLd && (
+        <script
+          type="application/ld+json"
+          is:inline
+          set:html={JSON.stringify(jsonLd)}
+        />
+      )
+    }
+  </head>
+  <body class={bare ? 'is-bare' : undefined}>
+    {!bare && (
+    <header class="site-header">
+      <h1 class="site-title"><a href="/">neolabs<span style="color:var(--accent)">.fyi</span></a></h1>
+      <p class="site-tagline">
+        Every AI neolab, drawn to scale.
+      </p>
+      <nav class="site-nav">
+        {
+          nav.map((item) => (
+            <a href={item.href} aria-current={Astro.url.pathname === item.href ? 'page' : undefined}>
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+    </header>
+    )}
+
+    <main>
+      <slot />
+    </main>
+
+    {!bare && (
+    <footer class="site-footer">
+      <p>
+        A neolab is an AI research lab founded by elite researchers, professors, or
+        post-economic entrepreneurs — pre-product-market-fit and sub-revenue-scale, but
+        raised at unicorn-plus valuations to chase long-term breakthroughs.
+      </p>
+    </footer>
+    )}
+  </body>
+</html>

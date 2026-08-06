@@ -1,0 +1,44 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Explorer } from '../components/canvas/Explorer';
+import { LABS, TOTAL_VALUATION_USDM } from '../data/labs';
+import { buildBasemap } from '../lib/basemap';
+import { money } from '../lib/format';
+
+// Projected map + path data are computed at build time, so d3-geo and the
+// world topojson never reach the browser.
+const basemap = buildBasemap();
+
+const description = `An interactive map of ${LABS.length} AI neolabs worth ~${money(
+  TOTAL_VALUATION_USDM
+)} combined — sized by valuation and grouped by lineage, geography, and research area.`;
+
+// The homepage is a full-bleed canvas, so the crawlable inventory of all 63
+// labs lives on /table (linked from the floating nav and in the sitemap)
+// rather than as hidden markup here.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Dataset',
+  name: 'AI Neolabs',
+  description,
+  url: 'https://neolabs.fyi/',
+  distribution: { '@type': 'DataDownload', contentUrl: 'https://neolabs.fyi/table' },
+  variableMeasured: [
+    'valuation',
+    'founding year',
+    'research area',
+    'founder lineage',
+    'headquarters',
+  ],
+};
+---
+
+<Layout
+  title="Neolabs — every AI research lab, drawn to scale"
+  description={description}
+  path="/"
+  jsonLd={jsonLd}
+  bare
+>
+  <Explorer client:load labs={LABS} basemap={basemap} />
+</Layout>
