@@ -1,12 +1,23 @@
+## Package manager
+
+Use pnpm exclusively for dependency management and package scripts. Do not use
+`npm`, `npx`, or create npm lockfiles. The canonical lockfile is
+`pnpm-lock.yaml`.
+
+- Install dependencies with `pnpm install`.
+- Run scripts with `pnpm <script>` (for example, `pnpm build`).
+- Run package binaries with `pnpm exec <binary>` or an existing package script.
+
 ## Development
 
 When starting the dev server, use background mode:
 
 ```
-astro dev --background
+pnpm astro dev --background
 ```
 
-Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
+Manage the background server with `pnpm astro dev stop`, `pnpm astro dev status`, and
+`pnpm astro dev logs`.
 
 ## Documentation
 
