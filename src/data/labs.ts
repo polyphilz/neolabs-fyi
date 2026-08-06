@@ -982,12 +982,6 @@ export const LABS: Lab[] = [
     knownFor: 'Ex-Meta Codec Avatars leadership, now on probabilistic forecasting.',
     location: CITIES.pittsburgh,
   },
-
-  // -------------------------------------------------------------------------
-  // China. The source list treated these as "a separate category" and left
-  // them out; qualifying labs are included here because leaving them out makes
-  // the map a map of American AI rather than of the field.
-  // -------------------------------------------------------------------------
   {
     slug: 'stepfun',
     name: 'StepFun',
