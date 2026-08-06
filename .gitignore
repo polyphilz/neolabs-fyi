@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # working plans / research notes
 .plans/
+
+# local design source files
+assets/

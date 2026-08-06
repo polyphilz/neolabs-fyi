@@ -1404,8 +1404,6 @@ body.is-bare {
 }
 
 table.labs {
-  display: block;
-  overflow-x: auto;
   white-space: normal;
   border-collapse: collapse;
   width: 100%;

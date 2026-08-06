@@ -26,6 +26,13 @@ interface Props {
   basemap: Basemap;
 }
 
+const VIEW_TITLES: Record<Filters['view'], string> = {
+  area: 'Neolabs.fyi | Neolab research areas',
+  lineage: 'Neolabs.fyi | Neolab founder lineages',
+  geography: 'Neolabs.fyi | Neolab headquarters geography',
+  valuation: 'Neolabs.fyi | Neolab valuations',
+};
+
 /**
  * Full-bleed canvas with floating control islands over it. The islands are
  * pointer-transparent containers holding pointer-opaque children, so the canvas
@@ -59,6 +66,7 @@ export function Explorer({ labs, basemap }: Props) {
     const params = toParams(filters, labs, selected);
     const query = params.toString();
     window.history.replaceState(null, '', `${window.location.pathname}${query ? `?${query}` : ''}`);
+    document.title = VIEW_TITLES[filters.view];
   }, [hydrated, filters, labs, selected]);
 
   useEffect(() => {

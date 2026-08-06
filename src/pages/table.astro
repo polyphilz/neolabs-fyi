@@ -35,7 +35,7 @@ const jsonLd = {
 ---
 
 <Layout
-  title="All AI neolabs — sortable table"
+  title="Neolabs.fyi | Neolab research areas, size and other info"
   description={description}
   path="/table"
   jsonLd={jsonLd}
@@ -43,6 +43,7 @@ const jsonLd = {
   <div class="table-wrap">
     <TableControls client:load labs={LABS} />
 
+    <div class="table-scroll">
     <table class="labs" id="labs-table">
       <thead>
         <tr>
@@ -100,6 +101,7 @@ const jsonLd = {
         }
       </tbody>
     </table>
+    </div>
 
     <p class="table-empty" id="labs-empty" hidden>No labs match that search.</p>
   </div>
