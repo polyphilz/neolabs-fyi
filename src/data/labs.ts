@@ -206,9 +206,12 @@ export const LABS: Lab[] = [
     founders: [
       { person: 'richard-socher', prior: ['salesforce', 'stanford', 'startup'] },
       { person: 'tim-rocktaschel', prior: ['deepmind', 'ucl'] },
+      { person: 'alexey-dosovitskiy', prior: ['google'] },
       { person: 'josh-tobin', prior: ['openai', 'startup'] },
+      { person: 'caiming-xiong', prior: ['salesforce', 'startup'] },
+      { person: 'yuandong-tian', prior: ['meta'] },
+      { person: 'tim-shi', prior: ['openai', 'startup'] },
       { person: 'jeff-clune', prior: ['deepmind', 'openai', 'alberta'] },
-      { person: 'tim-shi', prior: ['startup'] },
     ],
     knownFor: 'Self-improving AI; raised $500M+ within four months of founding.',
     location: CITIES.sf,
