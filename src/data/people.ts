@@ -188,7 +188,7 @@ export const PEOPLE = {
   'christoph-lassner': { name: 'Christoph Lassner' },
   'ben-mildenhall': { name: 'Ben Mildenhall' },
   'tim-shi': { name: 'Tim Shi' },
-  'meelan-lee': { name: 'Meelan Lee' },
+  'meelan-lee': { name: 'MeeLan Lee' },
   'sara-achour': { name: 'Sara Achour' },
   'michael-carbin': { name: 'Michael Carbin' },
   'andi-peng': { name: 'Andi Peng' },
