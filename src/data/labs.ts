@@ -24,7 +24,7 @@ export const LABS: Lab[] = [
     founders: [{ person: 'masayoshi-son', prior: ['softbank'], isBacker: true }],
     knownFor:
       'Planned SoftBank spinout combining robotics (ABB Robotics) and AI to automate data-centre construction, targeting a ~$100B US IPO.',
-    location: CITIES.tokyo,
+    location: CITIES.usa,
   },
   {
     slug: 'discovery-loop',
@@ -113,7 +113,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 14_000, qualifier: 'gt', rising: true },
     year: 2023,
     domain: 'physical',
-    tags: ['humanoid'],
+    tags: ['humanoid', 'academic-spinout'],
     founders: [
       { person: 'deepak-pathak', prior: ['cmu', 'berkeley'] },
       { person: 'abhinav-gupta', prior: ['cmu', 'meta'] },
@@ -396,7 +396,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 2_000, qualifier: 'gt', rising: true },
     year: 2023,
     domain: 'general',
-    tags: ['efficient'],
+    tags: ['efficient', 'academic-spinout'],
     founders: [
       { person: 'daniela-rus', prior: ['mit'] },
       { person: 'ramin-hasani', prior: ['mit'] },
@@ -442,6 +442,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 1_600, qualifier: 'gt', rising: true },
     year: 2025,
     domain: 'science',
+    tags: ['math'],
     founders: [
       { person: 'carina-hong', prior: ['mit', 'stanford'] },
       { person: 'shubho-sengupta', prior: ['meta', 'google'] },
@@ -484,6 +485,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 1_450, qualifier: 'exact', rising: true },
     year: 2023,
     domain: 'science',
+    tags: ['math'],
     founders: [
       { person: 'vlad-tenev', prior: ['startup', 'stanford'] },
       { person: 'tudor-achim', prior: ['cmu', 'stanford', 'startup', 'quora'] },
@@ -851,6 +853,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 300, qualifier: 'exact' },
     year: 2025,
     domain: 'general',
+    tags: ['vision'],
     founders: [
       { person: 'andrew-dai', prior: ['deepmind', 'google'] },
       { person: 'yinfei-yang', prior: ['apple', 'google'] },
@@ -987,7 +990,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 100_000, qualifier: 'approx', rising: true, asOf: '2026-08-06' },
     year: 2019,
     domain: 'general',
-    tags: ['open-weights'],
+    tags: ['open-weights', 'academic-spinout'],
     founders: [
       { person: 'liu-debing', prior: ['beijingjiaotong', 'cas', 'technicolor', 'tsinghua'] },
       { person: 'tang-jie', prior: ['tsinghua'] },

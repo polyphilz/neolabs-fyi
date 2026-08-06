@@ -2,7 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import { LABS } from '../../data/labs';
 import { PEOPLE } from '../../data/people';
-import { LINEAGE_GROUPS, ORGS, STRUCTURE_LABEL } from '../../data/taxonomy';
+import { ORGS, STRUCTURE_LABEL } from '../../data/taxonomy';
 import type { Lab } from '../../data/types';
 import {
   founderNames,
@@ -11,7 +11,6 @@ import {
   valuationCaveat,
   valuationLabel,
 } from '../../lib/format';
-import { lineageGroupsOf } from '../../lib/layout';
 
 export function getStaticPaths() {
   return LABS.map((lab) => ({ params: { slug: lab.slug }, props: { lab } }));
@@ -24,8 +23,6 @@ interface Props {
 const { lab } = Astro.props;
 
 const founders = foundersByLastName(lab);
-const priors = [...new Set(founders.flatMap((f) => f.prior ?? []))];
-const groups = lineageGroupsOf(lab);
 const caveat = valuationCaveat(lab);
 
 // The long-tail query is "<lab> valuation" / "who founded <lab>", so the
@@ -33,14 +30,6 @@ const caveat = valuationCaveat(lab);
 const description = `${lab.name} is valued at ${valuationLabel(lab.valuation)}. Founded in ${
   lab.year
 } by ${founderNames(lab)}, based in ${lab.location.city}. ${lab.knownFor}`;
-
-const related = LABS.filter(
-  (other) =>
-    other.slug !== lab.slug &&
-    (other.domain === lab.domain || lineageGroupsOf(other).some((g) => groups.includes(g)))
-)
-  .sort((a, b) => b.valuation.usdM - a.valuation.usdM)
-  .slice(0, 6);
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -140,38 +129,6 @@ const jsonLd = {
         ))
       }
     </ul>
-
-    {
-      priors.length > 0 && (
-        <>
-          <h2>Lineage</h2>
-          <p>
-            {lab.name}'s founding team came out of{' '}
-            {groups.map((g) => LINEAGE_GROUPS[g].label).join(', ')}. In the{' '}
-            <a href={`/?view=lineage&from=${groups.join(',')}`}>lineage view</a> you can see every
-            lab with the same background.
-          </p>
-        </>
-      )
-    }
-
-    {
-      related.length > 0 && (
-        <>
-          <h2>Related labs</h2>
-          <ul>
-            {related.map((other) => (
-              <li>
-                <a href={`/labs/${other.slug}`}>{other.name}</a>{' '}
-                <span class="muted">
-                  — {valuationLabel(other.valuation)}, {spaceLabel(other)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </>
-      )
-    }
 
     <p style="margin-top:2rem">
       <a class="backlink" href={`/?lab=${lab.slug}`}>See {lab.name} on the map →</a>

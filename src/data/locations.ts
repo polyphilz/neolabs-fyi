@@ -13,6 +13,7 @@ const city = (
 ): Location => ({ city: name, country, cc, lat, lon });
 
 export const CITIES = {
+  usa: city('United States', 'United States', 'US', 39.8283, -98.5795),
   sf: city('San Francisco', 'United States', 'US', 37.7749, -122.4194),
   paloAlto: city('Palo Alto', 'United States', 'US', 37.4419, -122.143),
   mountainView: city('Mountain View', 'United States', 'US', 37.3861, -122.0839),
