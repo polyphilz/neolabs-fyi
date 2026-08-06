@@ -24,7 +24,6 @@ export const LABS: Lab[] = [
     founders: [{ name: 'Masayoshi Son', prior: ['softbank'] }],
     knownFor: 'Planned SoftBank robotics-AI company.',
     location: CITIES.tokyo,
-    isNew: true,
   },
   {
     slug: 'discovery-loop',
@@ -48,7 +47,6 @@ export const LABS: Lab[] = [
     knownFor:
       "Google's Chief Scientist, a Senior Fellow, and both Gemini co-leads leaving at once to automate the scientific method. A public benefit corporation.",
     location: CITIES.paloAlto,
-    isNew: true,
   },
   {
     slug: 'thinking-machines-lab',
@@ -178,7 +176,6 @@ export const LABS: Lab[] = [
     founders: [{ name: 'David Silver', prior: ['deepmind'] }],
     knownFor: "AlphaGo and AlphaZero's RL lead; Europe's largest seed round.",
     location: CITIES.london,
-    isNew: true,
   },
   {
     slug: 'world-labs',
@@ -258,7 +255,6 @@ export const LABS: Lab[] = [
     founders: [{ name: 'Jerry Tworek', prior: ['openai'] }],
     knownFor: "ex-OpenAI VP building “the world's most automated AI lab”.",
     location: CITIES.sf,
-    isNew: true,
   },
   {
     slug: 'inflection-ai',
@@ -729,7 +725,6 @@ export const LABS: Lab[] = [
     ],
     knownFor: "Anthropic's scientific-reasoning team, departed en bloc.",
     location: CITIES.sf,
-    isNew: true,
   },
   {
     slug: 'nous-research',
@@ -773,7 +768,6 @@ export const LABS: Lab[] = [
     ],
     knownFor: 'Commercialising vLLM, the default open-source inference engine.',
     location: CITIES.berkeley,
-    isNew: true,
   },
   {
     slug: 'isara',
@@ -831,7 +825,6 @@ export const LABS: Lab[] = [
     ],
     knownFor: 'FDM-1, a video-first computer-use model.',
     location: CITIES.sf,
-    isNew: true,
   },
   {
     slug: 'adaption-labs',
@@ -904,7 +897,6 @@ export const LABS: Lab[] = [
     ],
     knownFor: 'Commercialising SGLang; out of the LMSYS and xAI orbit.',
     location: CITIES.berkeley,
-    isNew: true,
   },
   {
     slug: 'qutwo',
@@ -916,7 +908,6 @@ export const LABS: Lab[] = [
     founders: [{ name: 'Peter Sarlin', prior: ['amd'] }],
     knownFor: 'Former AMD Silo AI CEO; a Finnish bet on sovereign European AI.',
     location: CITIES.helsinki,
-    isNew: true,
   },
   {
     slug: 'sooth-labs',
@@ -933,7 +924,6 @@ export const LABS: Lab[] = [
     ],
     knownFor: 'Ex-Meta Codec Avatars leadership, now on probabilistic forecasting.',
     location: CITIES.pittsburgh,
-    isNew: true,
   },
 
   // -------------------------------------------------------------------------
@@ -959,7 +949,6 @@ export const LABS: Lab[] = [
     knownFor: 'Tsinghua spinout behind the GLM models; the first of the "Six Tigers" to list in Hong Kong.',
     location: CITIES.beijing,
     status: 'public',
-    isNew: true,
   },
   {
     slug: 'deepseek',
@@ -975,7 +964,6 @@ export const LABS: Lab[] = [
     knownFor:
       'R1 and V3 — open-weight frontier models trained for a fraction of Western budgets, out of a quant fund.',
     location: CITIES.hangzhou,
-    isNew: true,
   },
   {
     slug: 'moonshot-ai',
@@ -992,7 +980,6 @@ export const LABS: Lab[] = [
     ],
     knownFor: 'Kimi — long-context models and China\'s breakout consumer assistant; Transformer-XL co-author.',
     location: CITIES.beijing,
-    isNew: true,
   },
   {
     slug: 'minimax',
@@ -1007,7 +994,6 @@ export const LABS: Lab[] = [
     knownFor: 'Hailuo video and Talkie; the first of the Chinese model labs to reach self-sustaining operations.',
     location: CITIES.shanghai,
     status: 'public',
-    isNew: true,
   },
   {
     slug: 'stepfun',
@@ -1020,7 +1006,6 @@ export const LABS: Lab[] = [
     founders: [{ name: 'Jiang Daxin', prior: ['microsoft'] }],
     knownFor: 'The Step model series; unwound its VIE structure to file in Hong Kong.',
     location: CITIES.shanghai,
-    isNew: true,
   },
   {
     slug: 'galbot',
@@ -1032,7 +1017,6 @@ export const LABS: Lab[] = [
     founders: [{ name: 'Wang He', prior: ['peking', 'stanford'] }],
     knownFor: 'Embodied foundation models and autonomous retail stores; over $800M raised.',
     location: CITIES.beijing,
-    isNew: true,
   },
   {
     slug: 'baichuan-ai',
@@ -1045,7 +1029,6 @@ export const LABS: Lab[] = [
     founders: [{ name: 'Wang Xiaochuan', prior: ['sogou'] }],
     knownFor: 'Sogou\'s founder; abandoned the general-purpose model race to pivot entirely into AI healthcare.',
     location: CITIES.beijing,
-    isNew: true,
   },
   {
     slug: 'agibot',
@@ -1057,7 +1040,6 @@ export const LABS: Lab[] = [
     founders: [{ name: 'Peng Zhihui', prior: ['huawei'] }],
     knownFor: 'Humanoid robots and the AgiBot World dataset, from Huawei\'s best-known "Genius Youth" engineer.',
     location: CITIES.shanghai,
-    isNew: true,
   },
   {
     slug: '01-ai',
@@ -1072,7 +1054,6 @@ export const LABS: Lab[] = [
     founders: [{ name: 'Kai-Fu Lee', prior: ['google', 'microsoft', 'startup'] }],
     knownFor: 'The Yi model family; has since pulled back from frontier pretraining toward applications.',
     location: CITIES.beijing,
-    isNew: true,
   },
 
   {
@@ -1091,7 +1072,6 @@ export const LABS: Lab[] = [
     ],
     knownFor: "India's first AI unicorn; foundation models and speech built for Indian languages.",
     location: CITIES.bengaluru,
-    isNew: true,
   },
   {
     slug: 'oak-lab',
@@ -1109,7 +1089,6 @@ export const LABS: Lab[] = [
     knownFor:
       "The Turing laureate who wrote the book on reinforcement learning, arguing today's methods are a dead end and betting on agents that learn from their own experience.",
     location: CITIES.toronto,
-    isNew: true,
   },
   {
     slug: 'moonlake-ai',
@@ -1128,7 +1107,6 @@ export const LABS: Lab[] = [
     knownFor:
       'Vibe-coding interactive worlds and games from text; $28M seed, with Ian Goodfellow advising.',
     location: CITIES.sf,
-    isNew: true,
   },
 ];
 

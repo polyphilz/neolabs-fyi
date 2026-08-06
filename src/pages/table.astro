@@ -1,11 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { LABS_BY_VALUATION, LABS, TOTAL_VALUATION_USDM } from '../data/labs';
-import { DOMAINS, ORGS } from '../data/taxonomy';
+import { LABS_BY_VALUATION, LABS } from '../data/labs';
+import { DOMAINS, LINEAGE_GROUPS, ORGS } from '../data/taxonomy';
+import { TableControls } from '../components/table/TableControls';
 import { valuationStep } from '../lib/color';
-import { founderNames, money, spaceLabel, valuationLabel } from '../lib/format';
+import { founderNames, spaceLabel, valuationLabel } from '../lib/format';
 import { lineageGroupsOf } from '../lib/layout';
-import { LINEAGE_GROUPS } from '../data/taxonomy';
 
 const description = `All ${LABS.length} AI neolabs in a sortable table: valuation, founding year, research area, founders and their prior labs, and headquarters.`;
 
@@ -34,15 +34,16 @@ const jsonLd = {
 };
 ---
 
-<Layout title="All AI neolabs — sortable table" description={description} path="/table" jsonLd={jsonLd}>
-  <div class="prose" style="padding-bottom:0">
-    <h2>Every neolab</h2>
-    <p>
-      {LABS.length} labs, ~{money(TOTAL_VALUATION_USDM)} combined. Click a column heading to sort.
-    </p>
-  </div>
-
+<Layout
+  title="All AI neolabs — sortable table"
+  description={description}
+  path="/table"
+  jsonLd={jsonLd}
+  hideFooter
+>
   <div class="table-wrap">
+    <TableControls client:load labs={LABS} />
+
     <table class="labs" id="labs-table">
       <thead>
         <tr>
@@ -58,79 +59,79 @@ const jsonLd = {
       </thead>
       <tbody>
         {
-          rows.map(({ lab, step, lineage, priors }) => (
+          rows.map((r) => (
             <tr
-              data-name={lab.name}
-              data-val={lab.valuation.usdM}
-              data-year={lab.year}
-              data-space={spaceLabel(lab)}
-              data-lineage={lineage}
-              data-place={`${lab.location.country} ${lab.location.city}`}
+              data-name={r.lab.name}
+              data-val={r.lab.valuation.usdM}
+              data-year={r.lab.year}
+              data-space={spaceLabel(r.lab)}
+              data-lineage={r.lineage}
+              data-place={`${r.lab.location.country} ${r.lab.location.city}`}
+              data-slug={r.lab.slug}
             >
               <td class="name">
                 <span
                   class="swatch"
                   style={`background:${
-                    lab.valuation.qualifier === 'undisclosed'
+                    r.lab.valuation.qualifier === 'undisclosed'
                       ? 'var(--unknown-fill)'
-                      : `var(--seq-${step})`
+                      : `var(--seq-${r.step})`
                   }`}
                   aria-hidden="true"
                 />
-                <a href={`/labs/${lab.slug}`}>{lab.name}</a>
-                {lab.isNew && <span class="badge" style="margin-left:.4rem">New</span>}
+                <a href={`/labs/${r.lab.slug}`}>{r.lab.name}</a>
               </td>
               <td class="num">
-                {valuationLabel(lab.valuation)}
-                {lab.valuation.rumored && <span class="muted" title="Rumored"> *</span>}
+                {valuationLabel(r.lab.valuation)}
+                {r.lab.valuation.rumored && <span class="muted" title="Rumored"> *</span>}
               </td>
-              <td class="num">{lab.year}</td>
+              <td class="num">{r.lab.year}</td>
               <td>
-                {spaceLabel(lab)}
-                <div class="muted" style="font-size:.75rem">{DOMAINS[lab.domain].label}</div>
+                {spaceLabel(r.lab)}
+                <div class="muted" style="font-size:.75rem">{DOMAINS[r.lab.domain].label}</div>
               </td>
-              <td>{priors || <span class="muted">—</span>}</td>
-              <td>{founderNames(lab)}</td>
+              <td>{r.priors || <span class="muted">—</span>}</td>
+              <td>{founderNames(r.lab)}</td>
               <td>
-                {lab.location.city}
-                <div class="muted" style="font-size:.75rem">{lab.location.country}</div>
+                {r.lab.location.city}
+                <div class="muted" style="font-size:.75rem">{r.lab.location.country}</div>
               </td>
-              <td>{lab.knownFor}</td>
+              <td>{r.lab.knownFor}</td>
             </tr>
           ))
         }
       </tbody>
     </table>
-    <p class="muted" style="font-size:.75rem;margin-top:1rem">
-      * Rumored or unconfirmed valuation.
-    </p>
+
+    <p class="table-empty" id="labs-empty" hidden>No labs match that search.</p>
   </div>
 </Layout>
 
 <script>
-  // Progressive enhancement: the table is fully rendered and readable without
-  // this; the script only reorders existing rows.
+  // Sorting stays vanilla and progressive — the table is fully readable and
+  // ordered without JS. Filtering lives in the TableControls island, which
+  // shares its logic with the map so both mean the same thing.
   const table = document.getElementById('labs-table') as HTMLTableElement | null;
   if (table) {
     const tbody = table.tBodies[0];
-    let currentKey = 'val';
+    let sortKey = 'val';
     let descending = true;
 
     table.querySelectorAll<HTMLButtonElement>('button[data-sort]').forEach((button) => {
       button.addEventListener('click', () => {
         const key = button.dataset.sort!;
         const numeric = button.dataset.type === 'num';
-        descending = key === currentKey ? !descending : true;
-        currentKey = key;
+        descending = key === sortKey ? !descending : true;
+        sortKey = key;
 
-        const rows = Array.from(tbody.rows);
-        rows.sort((a, b) => {
-          const av = a.dataset[key] ?? '';
-          const bv = b.dataset[key] ?? '';
-          const cmp = numeric ? Number(av) - Number(bv) : av.localeCompare(bv);
-          return descending ? -cmp : cmp;
-        });
-        rows.forEach((row) => tbody.appendChild(row));
+        Array.from(tbody.rows)
+          .sort((a, b) => {
+            const av = a.dataset[key] ?? '';
+            const bv = b.dataset[key] ?? '';
+            const cmp = numeric ? Number(av) - Number(bv) : av.localeCompare(bv);
+            return descending ? -cmp : cmp;
+          })
+          .forEach((row) => tbody.appendChild(row));
 
         table.querySelectorAll('th').forEach((th) => th.removeAttribute('aria-sort'));
         button.closest('th')?.setAttribute('aria-sort', descending ? 'descending' : 'ascending');

@@ -12,6 +12,7 @@ import {
   toParams,
   type Filters,
 } from '../../lib/filters';
+import { Wordmark } from '../Wordmark';
 import { DetailPanel } from './DetailPanel';
 import { FilterIsland } from './FilterIsland';
 import { LabCanvas } from './LabCanvas';
@@ -86,9 +87,7 @@ export function Explorer({ labs, basemap }: Props) {
       />
 
       <div className="hud hud-top">
-        <a className="island island-brand" href="/">
-          neolabs<span className="brand-dot">.fyi</span>
-        </a>
+        <Wordmark />
         <ViewIsland view={filters.view} onChange={(view) => update({ view })} />
         <FilterIsland
           filters={filters}

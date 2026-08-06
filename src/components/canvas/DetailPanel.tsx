@@ -23,7 +23,6 @@ export function DetailPanel({ lab, onClose }: Props) {
 
       <header className="drawer-head">
         <h2>{lab.name}</h2>
-        {lab.isNew && <span className="badge">New</span>}
         {lab.status === 'acquihired' && <span className="badge badge-quiet">Acquihired</span>}
         {lab.status === 'public' && <span className="badge badge-quiet">Listed</span>}
       </header>

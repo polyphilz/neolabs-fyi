@@ -1,5 +1,18 @@
 @import 'tailwindcss';
 
+/*
+ * 0xProto, subsetted to the eleven glyphs in "neolabs.fyi" — 3.7KB instead of
+ * 56KB. Self-hosted (SIL OFL, licence in public/fonts). Used for the wordmark
+ * only; the UI stays proportional.
+ */
+@font-face {
+  font-family: '0xProto Wordmark';
+  src: url('/fonts/0xproto-wordmark.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* --------------------------------------------------------------------------
    Tokens. Light values are the defaults; dark is a selected set of steps from
    the same ramps, not an inversion.
@@ -18,6 +31,9 @@
   --rule: #c3c2b7;
   --border: rgba(11, 11, 11, 0.1);
   --accent: #eb6834;
+  /* Sampled from the ".fyi" in the cover art. Stepped down for the light
+     surface, where #5ca2ff only reaches ~2.6:1. */
+  --brand-blue: #1f6fd0;
 
   /* Sequential valuation ramp: pale (small) → deep (large). */
   --seq-0: #86b6ef;
@@ -61,6 +77,7 @@
     --rule: #383835;
     --border: rgba(255, 255, 255, 0.1);
     --accent: #d95926;
+    --brand-blue: #5ca2ff;
 
     --seq-0: #184f95;
     --seq-1: #256abf;
@@ -97,6 +114,7 @@
   --rule: #383835;
   --border: rgba(255, 255, 255, 0.1);
   --accent: #d95926;
+  --brand-blue: #5ca2ff;
 
   --seq-0: #184f95;
   --seq-1: #256abf;
@@ -142,33 +160,16 @@ a {
 
 .site-header {
   display: flex;
-  align-items: baseline;
-  gap: 1.25rem;
-  padding: 1.1rem 1.5rem 0.9rem;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  min-height: 65px;
   border-bottom: 1px solid var(--border);
-  flex-wrap: wrap;
-}
-
-.site-title {
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin: 0;
-}
-
-.site-title a {
-  text-decoration: none;
-}
-
-.site-tagline {
-  color: var(--ink-2);
-  font-size: 0.85rem;
-  margin: 0;
-  flex: 1 1 20ch;
 }
 
 .site-nav {
   display: flex;
+  align-items: center;
   gap: 1rem;
   font-size: 0.85rem;
 }
@@ -176,14 +177,18 @@ a {
 .site-nav a {
   color: var(--ink-2);
   text-decoration: none;
-  border-bottom: 1px solid transparent;
-  padding-bottom: 2px;
+  /* Matches the wordmark's line-height so both centre on the same line. */
+  line-height: 1.5;
 }
 
-.site-nav a:hover,
+.site-nav a:hover {
+  color: var(--ink);
+}
+
+/* The current page reads as brighter and heavier rather than underlined. */
 .site-nav a[aria-current='page'] {
   color: var(--ink);
-  border-bottom-color: var(--accent);
+  font-weight: 600;
 }
 
 .site-footer {
@@ -335,7 +340,7 @@ body.is-bare {
   position: absolute;
   display: flex;
   gap: 0.5rem;
-  align-items: flex-start;
+  align-items: center;
   /* Transparent to the pointer so the canvas stays draggable between islands;
      the islands themselves opt back in. */
   pointer-events: none;
@@ -389,18 +394,23 @@ body.is-bare {
   pointer-events: auto;
 }
 
-.island-brand {
-  padding: 0.34rem 0.85rem;
+.wordmark {
+  font-family: '0xProto Wordmark', ui-monospace, SFMono-Regular, Menlo, monospace;
   font-weight: 700;
-  font-size: 0.92rem;
-  letter-spacing: -0.02em;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
   text-decoration: none;
   color: var(--ink);
   white-space: nowrap;
+  /* Padding lives with the mark, so it sits identically in the HUD and the
+     header, and so the flex gap after it lands in the same place in both. */
+  padding: 0 0.7rem 0 0.75rem;
+  flex: none;
 }
 
-.brand-dot {
-  color: var(--accent);
+.wordmark-dot {
+  color: var(--brand-blue);
 }
 
 .island-nav {
@@ -550,6 +560,7 @@ body.is-bare {
   padding: 0.9rem 1rem 1rem;
   display: grid;
   gap: 1rem;
+  z-index: 20;
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.08),
     0 16px 40px -12px rgba(0, 0, 0, 0.3);
@@ -1040,10 +1051,119 @@ body.is-bare {
 
 .table-wrap {
   padding: 1.25rem 1.5rem 3rem;
+}
+
+/* Controls sit in one row above the table, and stay put while it scrolls. */
+.table-controls {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.search {
+  position: relative;
+  flex: 0 1 22rem;
+  min-width: 13rem;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.65rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 15px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.search input {
+  width: 100%;
+  appearance: none;
+  font: inherit;
+  font-size: 0.86rem;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.44rem 0.9rem 0.44rem 2rem;
+  outline: none;
+}
+
+.search input::placeholder {
+  color: var(--muted);
+}
+
+.search input:focus-visible {
+  border-color: var(--seq-4);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--seq-4) 25%, transparent);
+}
+
+.search input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+.filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  appearance: none;
+  font: inherit;
+  font-size: 0.84rem;
+  color: var(--ink-2);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.42rem 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.filter-btn:hover,
+.filter-btn.is-active {
+  color: var(--ink);
+  border-color: var(--rule);
+}
+
+.filter-icon {
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+
+/* The table's panel hangs from the left edge of its button, not the right. */
+.panel-left {
+  left: 0;
+  right: auto;
+}
+
+.table-count {
+  margin: 0 0 0 auto;
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.table-empty {
+  margin: 2.5rem 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.table-scroll {
   overflow-x: auto;
 }
 
 table.labs {
+  display: block;
+  overflow-x: auto;
+  white-space: normal;
   border-collapse: collapse;
   width: 100%;
   font-size: 0.84rem;
@@ -1061,6 +1181,7 @@ table.labs td {
 table.labs thead th {
   position: sticky;
   top: 0;
+  z-index: 1;
   background: var(--plane);
   font-size: 0.7rem;
   text-transform: uppercase;

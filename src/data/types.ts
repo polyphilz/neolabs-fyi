@@ -139,8 +139,6 @@ export interface Lab {
   founders: Founder[];
   knownFor: string;
   location: Location;
-  /** Emerged since the previous revision of the list. */
-  isNew?: boolean;
   /** `public` = now listed, so its "valuation" is a market cap that moves daily. */
   status?: 'active' | 'acquihired' | 'public';
 }
