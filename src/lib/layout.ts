@@ -270,7 +270,10 @@ function areaLayout(labs: Lab[], referenceLabs: Lab[]): LayoutResult {
   const innerRadius = 72;
   const outerRadius = 270;
   const nodeInnerRadius = 103;
-  const nodeOuterRadius = 205;
+  // Use the petal rather than reserving a large empty outer band. The
+  // remaining 25 units accommodate the largest area-view bubbles and keep
+  // their strokes inside the sector rim.
+  const nodeOuterRadius = 245;
   const labelRadius = 290;
   const gap = 0.032;
   const minimumSpan = 0.13;

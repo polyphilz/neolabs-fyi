@@ -364,8 +364,9 @@ body.is-bare {
   }
 
   .site-header .table-controls {
-    flex: 0 1 auto;
+    flex: 1 1 0;
     min-width: 0;
+    flex-wrap: nowrap;
   }
 }
 
@@ -427,6 +428,18 @@ body.is-bare {
   margin-left: auto;
   padding: 0.28rem 0.35rem;
   font-size: 0.82rem;
+}
+
+/* Keep view changes from reflowing the rest of the header. The active label
+   becomes semibold, so content-sized tabs otherwise change the capsule width
+   by a few pixels depending on which word is selected. */
+.island-views {
+  width: 21.5rem;
+  flex: none;
+}
+
+.island-views .viewtab {
+  flex: 1 1 0;
 }
 
 .island-nav a {
@@ -508,6 +521,7 @@ body.is-bare {
 
 .viewtab {
   display: inline-flex;
+  align-self: stretch;
   align-items: center;
   justify-content: center;
   appearance: none;
@@ -1647,7 +1661,7 @@ td.name a:hover {
   .site-header .island-views {
     grid-column: 2;
     grid-row: 1;
-    width: max-content;
+    width: min(21.5rem, 100%);
     max-width: 100%;
   }
 
