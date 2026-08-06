@@ -176,8 +176,19 @@ export const LABS: Lab[] = [
     year: 2026,
     domain: 'general',
     founders: [
+      {
+        person: 'heather-gorham',
+        prior: ['flyingfish', 'jpmorgan', 'onsemi', 'tesla'],
+      },
+      { person: 'lasse-espeholt', prior: ['microsoft', 'deepmind', 'google'] },
+      {
+        person: 'wojciech-marian-czarnecki',
+        prior: ['fundamental', 'deepmind', 'isomorphic'],
+      },
+      { person: 'junhyuk-oh', prior: ['deepmind'] },
+      { person: 'alex-laterre', prior: ['instadeep'] },
+      { person: 'chris-apps', prior: ['deepmind'] },
       { person: 'david-silver', prior: ['deepmind'] },
-      { person: 'alex-laterre', prior: ['deepmind'] },
     ],
     knownFor: "AlphaGo and AlphaZero's RL lead; Europe's largest seed round.",
     location: CITIES.london,
