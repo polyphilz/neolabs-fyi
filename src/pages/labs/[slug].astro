@@ -61,12 +61,10 @@ const jsonLd = {
     <h1>{lab.name}</h1>
     {lab.priorNames?.length && <p class="muted">Formerly {lab.priorNames.join(', ')}</p>}
 
-    <p class="lab-hero">
-      {valuationLabel(lab.valuation)}
-    </p>
-    <p class="muted" style="margin:0;font-size:.82rem">
-      {caveat ?? 'Reported valuation'}
-    </p>
+    <div class="lab-valuation-block">
+      <p class="lab-hero">{valuationLabel(lab.valuation)}</p>
+      <p class="lab-caveat">{caveat ?? 'Reported valuation'}</p>
+    </div>
 
     <p class="lab-lede">{lab.knownFor}</p>
 

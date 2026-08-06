@@ -1488,20 +1488,30 @@ td.name a:hover {
   margin: 0.65rem 0 0;
 }
 
-.lab-hero {
+.lab-valuation-block {
+  margin-top: 1.5rem;
+}
+
+.lab-page .lab-hero {
   color: var(--ink-2);
   font-size: clamp(1.9rem, 4vw, 2.5rem);
   font-weight: 600;
   line-height: 1.1;
   letter-spacing: -0.035em;
-  margin: 1rem 0 0.1rem;
+  margin: 0;
 }
 
-.lab-lede {
+.lab-page .lab-caveat {
+  color: var(--muted);
+  font-size: 0.82rem;
+  margin: 0.3rem 0 0;
+}
+
+.lab-page .lab-lede {
   font-size: 1.05rem;
   line-height: 1.6;
   color: var(--ink-2);
-  margin: 1.2rem 0 0;
+  margin: 1.75rem 0 0;
 }
 
 .lab-facts {
