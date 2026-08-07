@@ -279,11 +279,11 @@ export const LABS: Lab[] = [
       { person: 'eric-zelikman', prior: ['xai', 'stanford'] },
       { person: 'georges-harik', prior: ['google'] },
       { person: 'andi-peng', prior: ['anthropic'], departed: true },
-      { person: 'yuchen-he', prior: ['xai'] },
-      { person: 'noah-goodman', prior: ['stanford'] },
+      { person: 'yuchen-he', prior: ['xai', 'openai', 'meta'] },
+      { person: 'noah-goodman', prior: ['google', 'stanford'] },
     ],
     knownFor:
-      'Human-centric frontier lab founded by researchers from xAI, Anthropic and Stanford alongside Google\'s 7th employee; $480M seed within months of founding.',
+      'Human-centric frontier lab founded by alumni of xAI, OpenAI, Meta, Anthropic, Google, and Stanford; $480M seed within months of founding.',
     location: CITIES.sf,
   },
   {
