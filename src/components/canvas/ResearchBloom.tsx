@@ -151,8 +151,13 @@ export function BloomCore({
   const color = activeSector ? AREA_COLORS[activeSector.id] : AREA_COLORS.general;
   const titleLines = activeSector ? AREA_LABEL_LINES[activeSector.id] : [];
   const blurbLines = activeSector ? balancedBlurbLines(DOMAINS[activeSector.id].blurb) : [];
-  const titleFirstY = titleLines.length > 1 ? -30 : -23;
+  // Grow upward as titles gain lines, preserving the blurb/count/key stack
+  // below. A fixed two-line origin made longer labels collide with the count.
+  const titleFirstY = -22 - Math.max(0, titleLines.length - 1) * 9;
   const blurbFirstY = titleFirstY + titleLines.length * 14 - 1;
+  const blurbLastY = blurbFirstY + Math.max(0, blurbLines.length - 1) * 7;
+  const countY = Math.max(21, blurbLastY + 11);
+  const keyY = Math.max(39, countY + 18);
   const count = activeSector
     ? activeSector.count === activeSector.total
       ? `${activeSector.total} ${activeSector.total === 1 ? 'LAB' : 'LABS'}`
@@ -198,10 +203,10 @@ export function BloomCore({
               </tspan>
             ))}
           </text>
-          <text className="bloom-core-count" textAnchor="middle" y={21}>
+          <text className="bloom-core-count" textAnchor="middle" y={countY}>
             {count}
           </text>
-          <text className="bloom-core-key" textAnchor="middle" y={39}>
+          <text className="bloom-core-key" textAnchor="middle" y={keyY}>
             CLICK TO PIN
           </text>
         </>
