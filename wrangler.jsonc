@@ -1,0 +1,9 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "neolabs-fyi",
+  "compatibility_date": "2026-08-06",
+  "assets": {
+    "directory": "./dist"
+  }
+}
+

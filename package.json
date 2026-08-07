@@ -41,6 +41,7 @@
     "@types/d3-zoom": "^3.0.8",
     "@types/topojson-client": "^3.1.5",
     "@types/topojson-specification": "^1.0.5",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wrangler": "^4.119.0"
   }
 }
