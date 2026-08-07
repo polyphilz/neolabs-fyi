@@ -253,6 +253,32 @@ a {
   margin: 0 0 1.5rem;
 }
 
+/* Signs off the page: a byline, with the source link beside it. */
+.colophon {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.prose .colophon p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.colophon-link {
+  display: inline-flex;
+  color: var(--muted);
+  /* The icon is the link, so it gets none of the prose link treatment. */
+  text-decoration: none;
+}
+
+.colophon-link:hover {
+  color: var(--ink);
+}
+
 .about-exclusions summary {
   color: var(--ink);
   font-weight: 600;
