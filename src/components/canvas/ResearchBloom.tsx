@@ -6,12 +6,10 @@ import type { AreaAtlas, AreaSector } from '../../lib/layout';
 import { stable } from '../../lib/precision';
 
 /*
- * Categorical, so these are twelve hues rather than a ramp — but pulled toward
+ * Categorical, so these are eleven hues rather than a ramp — but pulled toward
  * the palette's earth-and-pond register (moss, midnight, ochre, terracotta)
  * instead of the saturated screen colours they were. Each is mixed against the
- * page at a low percentage, so they only ever appear as tints; the pairs that
- * sit closest in hue (coding/safety, rsi/neuro) are the ones separated most in
- * lightness.
+ * page at a low percentage, so they only ever appear as tints.
  */
 export const AREA_COLORS: Record<DomainId, string> = {
   general: '#4b8b96',
@@ -25,7 +23,6 @@ export const AREA_COLORS: Record<DomainId, string> = {
   compute: '#7285ad',
   applied: '#cf8f52',
   safety: '#5f9268',
-  neuro: '#ab77ab',
 };
 
 const AREA_LABEL_LINES: Record<DomainId, string[]> = {
@@ -35,12 +32,11 @@ const AREA_LABEL_LINES: Record<DomainId, string[]> = {
   physical: ['Physical AI', '& robotics'],
   world: ['World models', '& simulation'],
   media: ['Generative', 'media'],
-  science: ['AI for science'],
+  science: ['AI for math', '& science'],
   inference: ['Inference'],
   compute: ['Compute & chips'],
   applied: ['Applied & agents'],
   safety: ['Interpretability'],
-  neuro: ['Neurotech'],
 };
 
 interface ResearchBloomProps {

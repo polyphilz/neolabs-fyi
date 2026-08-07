@@ -947,7 +947,8 @@ export const LABS: Lab[] = [
     name: "Merge Labs",
     valuation: { usdM: 850, qualifier: "exact" },
     year: 2026,
-    domain: "neuro",
+    domain: "science",
+    tags: ["neurotech"],
     founders: [
       {
         person: "mikhail-shapiro",

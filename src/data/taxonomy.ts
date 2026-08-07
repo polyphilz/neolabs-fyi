@@ -31,8 +31,8 @@ export const DOMAINS: Record<DomainId, { label: string; blurb: string }> = {
     blurb: 'Models built to create images, video, audio, and other creative media.',
   },
   science: {
-    label: 'AI for science',
-    blurb: 'Bio, drug discovery, materials, formal math, quantum.',
+    label: 'AI for math & science',
+    blurb: 'Formal math, bio, drug discovery, materials, quantum.',
   },
   inference: {
     label: 'Inference',
@@ -50,10 +50,6 @@ export const DOMAINS: Record<DomainId, { label: string; blurb: string }> = {
     label: 'AI safety & interpretability',
     blurb: 'Understanding, evaluating, overseeing, and safely designing advanced AI.',
   },
-  neuro: {
-    label: 'Neurotech',
-    blurb: 'Brain-computer interfaces.',
-  },
 };
 
 /** Fixed display order — legend, filter chips, and area-view clusters all use it. */
@@ -69,7 +65,6 @@ export const DOMAIN_ORDER: DomainId[] = [
   'compute',
   'applied',
   'safety',
-  'neuro',
 ];
 
 /**
@@ -93,6 +88,7 @@ export const TAGS: Record<TagId, string> = {
   humanoid: 'Humanoid',
   'drug-discovery': 'Drug discovery',
   materials: 'Materials',
+  neurotech: 'Neurotech / BCI',
 };
 
 export const TAG_ORDER: TagId[] = [
@@ -110,6 +106,7 @@ export const TAG_ORDER: TagId[] = [
   'humanoid',
   'drug-discovery',
   'materials',
+  'neurotech',
   'sovereign',
   'academic-spinout',
 ];

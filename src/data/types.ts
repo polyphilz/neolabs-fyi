@@ -278,8 +278,7 @@ export type DomainId =
   | 'inference'
   | 'compute'
   | 'applied'
-  | 'safety'
-  | 'neuro';
+  | 'safety';
 
 /**
  * Cross-cutting attributes. Unlike `domain`, which is single-select and drives
@@ -302,7 +301,8 @@ export type TagId =
   | 'robot-foundation-models'
   | 'humanoid'
   | 'drug-discovery'
-  | 'materials';
+  | 'materials'
+  | 'neurotech';
 
 /**
  * A person's role at ONE lab. `prior` is per-lab on purpose: it means "what
