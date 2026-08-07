@@ -98,6 +98,7 @@ const CANVAS_NAMES: Record<string, string> = {
   'ineffable-intelligence': 'Ineffable',
   'physical-intelligence': 'Physical Intel.',
   'standard-intelligence': 'Standard Intel.',
+  'logical-intelligence': 'Logical Intel.',
   'core-automation': 'Core Auto.',
   // Deliberately "Ricursive", the lab's own spelling — "Recursive Intel." would
   // read as the same lab as Recursive Superintelligence two rows up.
@@ -162,6 +163,8 @@ export interface CanvasMarkShape {
    * change the letterform.
    */
   linecap?: 'round';
+  /** Preserve rounded corners independently from the stroke's end caps. */
+  linejoin?: 'round';
   /**
    * Set where the artwork uses subpaths to carve holes — eyes, counters — out
    * of the shape around them. Those holes let the hexagon's own fill through,
@@ -2042,7 +2045,174 @@ const DISCOVERY_LOOP_MARK: CanvasMark = {
   inset: 0.72,
 };
 
+/** AutoScience's radial circuit mark, preserving its rounded source strokes. */
+const AUTOSCIENCE_MARK: CanvasMark = {
+  shapes: [
+    {
+      d: 'M128.5 98.75V20.5M124.1 99.35V69.5l-19.6-18.5V28.5M117 102 83 68.5v-32M116.8 103.6 57.5 48.5M113.2 107 65 72H42.5M112.1 111.5 98 93H34.5M112 115.25H32.5M112.1 119 98 137.5H34.5M113.2 123.5 65 158H42.5M116.8 126.9 57.5 181.5M117 128.5 83 162v32.5M124.1 131.15v29.35l-19.6 18.5v24.5M128.5 131.75v78.75M132.9 131.15v29.35l19.6 18.5v24.5M140 128.5l34 33.5v32.5M140.2 126.9l59.3 54.6M143.8 123.5 192 158h22.5M144.9 119l14.1 18.5h63.5M145 115.25h79.5M144.9 111.5 159 93h63.5M143.8 107 192 72h22.5M140.2 103.6l59.3-55.1M140 102l34-33.5v-32M132.9 99.35V69.5l19.6-18.5V28.5',
+      strokeWidth: 6,
+      linecap: 'round',
+    },
+    {
+      d: 'M140.125 115.25A11.625 11.625 0 1 1 116.875 115.25A11.625 11.625 0 1 1 140.125 115.25Z',
+      strokeWidth: 9.75,
+    },
+    {
+      d:
+        'M128.5 13.5a7 7 0 1 1 0 14a7 7 0 1 1 0-14' +
+        'M104.5 21.5a7 7 0 1 1 0 14a7 7 0 1 1 0-14M152.5 21.5a7 7 0 1 1 0 14a7 7 0 1 1 0-14' +
+        'M83 29.5a7 7 0 1 1 0 14a7 7 0 1 1 0-14M174 29.5a7 7 0 1 1 0 14a7 7 0 1 1 0-14' +
+        'M57.5 41.5a7 7 0 1 1 0 14a7 7 0 1 1 0-14M199.5 41.5a7 7 0 1 1 0 14a7 7 0 1 1 0-14' +
+        'M42.5 65a7 7 0 1 1 0 14a7 7 0 1 1 0-14M214.5 65a7 7 0 1 1 0 14a7 7 0 1 1 0-14' +
+        'M34.5 86a7 7 0 1 1 0 14a7 7 0 1 1 0-14M222.5 86a7 7 0 1 1 0 14a7 7 0 1 1 0-14' +
+        'M32.5 108.25a7 7 0 1 1 0 14a7 7 0 1 1 0-14M224.5 108.25a7 7 0 1 1 0 14a7 7 0 1 1 0-14' +
+        'M34.5 130.5a7 7 0 1 1 0 14a7 7 0 1 1 0-14M222.5 130.5a7 7 0 1 1 0 14a7 7 0 1 1 0-14' +
+        'M42.5 151a7 7 0 1 1 0 14a7 7 0 1 1 0-14M214.5 151a7 7 0 1 1 0 14a7 7 0 1 1 0-14' +
+        'M57.5 174.5a7 7 0 1 1 0 14a7 7 0 1 1 0-14M199.5 174.5a7 7 0 1 1 0 14a7 7 0 1 1 0-14' +
+        'M83 187.5a7 7 0 1 1 0 14a7 7 0 1 1 0-14M174 187.5a7 7 0 1 1 0 14a7 7 0 1 1 0-14' +
+        'M104.5 196.5a7 7 0 1 1 0 14a7 7 0 1 1 0-14M152.5 196.5a7 7 0 1 1 0 14a7 7 0 1 1 0-14' +
+        'M128.5 203.5a7 7 0 1 1 0 14a7 7 0 1 1 0-14',
+    },
+  ],
+  x: 25.5,
+  y: 13.5,
+  width: 206,
+  height: 204,
+  inset: 0.78,
+};
+
+/** Cursive's canonical C emblem, extracted from the source wordmark. */
+const CURSIVE_MARK: CanvasMark = {
+  shapes: [
+    {
+      d: 'M68.309 34.563c12.863-3.333 27.504-5.024 43.52-5.024 14 0 26.944 1.3 38.484 3.867 23.105 5.14 27.039 29.824 27.843 55.742l.055 1.711h39.68l-.508-2.171c-4.692-20.016-18.293-37.52-38.36-49.325-4.597-2.465-8.418-6.074-11.046-10.449C156.3 9.457 137.934 0 111.828 0c-25.445 0-45.05 10.047-58.273 29.863a33.66 33.66 0 0 1-11.383 10.625C14.297 56.461.164 83.926.164 122.125c0 36.652 14.293 64.723 41.34 81.172 4.426 2.691 8.031 6.21 10.719 10.469 13.351 21.117 33.398 31.828 59.59 31.828 26.656 0 46.351-10.352 58.539-30.766 2.57-4.3 6.09-7.851 10.175-10.258 19.203-11.3 31.95-28.34 36.856-49.273l.508-2.168h-39.68l-.055 1.71c-.074 2.419-.125 4.794-.176 7.11-.187 8.91-.367 17.332-1.964 24.754-2.578 11.996-11.559 21.29-23.438 24.262-12.258 3.07-25.973 4.625-40.765 4.625-16.383 0-31.399-1.965-44.63-5.844-10.288-3.02-18.183-10.84-21.117-20.914-4.945-16.992-7.347-38.812-7.347-66.707 0-28.062 2.582-49.996 7.902-67.059 3.113-9.984 11.426-17.843 21.688-20.504Z',
+    },
+  ],
+  x: 0.164,
+  y: 0,
+  width: 217.727,
+  height: 245.594,
+};
+
+/** FutureHouse's four-piece emblem, without its presentation tile. */
+const FUTUREHOUSE_MARK: CanvasMark = {
+  shapes: [
+    {
+      d: 'M47.6541 20.468844141V37.931944141H30.2012l9.7217 9.7219H57.376V30.200744141ZM9.72183 20.468844141V37.931944141H27.185l-9.7319 9.7219H0V30.200744141ZM47.6541 17.453144141 30.2012 0h17.4529ZM27.1858 0 9.72266 17.453144141V0Z',
+    },
+  ],
+  x: 0,
+  y: 0,
+  width: 57.376,
+  height: 47.653844141,
+};
+
+/** Inherent's nested-circle line mark, measured from the supplied source. */
+const INHERENT_MARK: CanvasMark = {
+  shapes: [
+    {
+      d: 'M253 129A124 124 0 1 1 5 129A124 124 0 1 1 253 129Z',
+      strokeWidth: 10,
+    },
+    { d: 'M208 173A79 79 0 1 1 50 173A79 79 0 1 1 208 173Z', strokeWidth: 10 },
+    { d: 'M166 215A37 37 0 1 1 92 215A37 37 0 1 1 166 215Z', strokeWidth: 10 },
+    { d: 'M129 5V253', strokeWidth: 10, linecap: 'round' },
+  ],
+  x: 0,
+  y: 0,
+  width: 258,
+  height: 258,
+  inset: 0.78,
+};
+
+/** LawZero's flat L, with its broad cubic outside bend kept intact. */
+const LAWZERO_MARK: CanvasMark = {
+  shapes: [{ d: 'M0 0h10.5v76h47v10h-33C10.969 86 0 75.031 0 61.5Z' }],
+  x: 0,
+  y: 0,
+  width: 57.5,
+  height: 86,
+};
+
+/** Oumi's source icon, with every letter counter cut through the square. */
+const OUMI_MARK: CanvasMark = {
+  shapes: [
+    {
+      d: 'M0 0H44V44H0ZM5.69531 5.69434H20.1894V20.1885H5.69531ZM9.31884 9.31787V16.5649H16.5659V9.31787ZM23.8125 5.69434H27.436V16.5649H34.6831V5.69434H38.3066V20.1885H23.8125ZM5.69531 23.8115H31.06V38.3056H27.4365V27.4351H20.188V38.3056H16.5645V27.4351H9.31884V38.3056H5.69531ZM34.6836 23.8115H38.3071V38.3056H34.6836Z',
+      fillRule: 'evenodd',
+    },
+  ],
+  x: 0,
+  y: 0,
+  width: 44,
+  height: 44,
+};
+
+/** Transluce's square with its two rays and corner cut away as real holes. */
+const TRANSLUCE_MARK: CanvasMark = {
+  shapes: [
+    {
+      d: 'M0 0H243V243H0ZM243 92 78 243H87L243 100ZM243 115 103 243H112L243 123ZM243 130 120 243H243Z',
+      fillRule: 'evenodd',
+    },
+  ],
+  x: 0,
+  y: 0,
+  width: 243,
+  height: 243,
+};
+
+/** Logical Intelligence's funnel-ball emblem, kept as source strokes and fill. */
+const LOGICAL_INTELLIGENCE_MARK: CanvasMark = {
+  shapes: [
+    {
+      d:
+        'M0 71C120 93 215 365 423 429M115 59C210 105 245 365 423 429M181 46C260 102 285 350 423 429' +
+        'M356 0C400 95 400 305 423 429M612 29C520 112 500 330 423 429M774 58C630 115 570 353 423 429' +
+        'M833 92C675 135 625 370 423 429' +
+        'M743.87 136.57A318.51 63.47 0 1 1 106.85 136.57A318.51 63.47 0 1 1 743.87 136.57Z' +
+        'M620.46 275.58A195.05 48.74 0 1 1 230.36 275.58A195.05 48.74 0 1 1 620.46 275.58Z',
+      strokeWidth: 10,
+      linecap: 'round',
+      linejoin: 'round',
+    },
+    {
+      d: 'M487.5 352A62.5 62.5 0 1 1 362.5 352A62.5 62.5 0 1 1 487.5 352Z',
+    },
+  ],
+  x: -5,
+  y: -5,
+  width: 843,
+  height: 439,
+  inset: 0.76,
+};
+
+/** Latent Labs' continuous LL mark, preserving the source's rounded joins. */
+const LATENT_LABS_MARK: CanvasMark = {
+  shapes: [
+    {
+      d: 'M37.671 102.585V21.442A16.229 16.229 0 0 0 5.214 21.442V70.128A32.457 32.457 0 0 0 37.671 102.585ZM37.671 102.585H102.585A32.457 32.457 0 0 1 37.671 102.585ZM102.585 102.585V70.128A32.457 32.457 0 0 1 135.042 37.671V70.128A32.457 32.457 0 0 1 102.585 102.585ZM135.042 37.671H199.956A32.457 32.457 0 0 0 135.042 37.671ZM199.956 37.671A32.457 32.457 0 0 1 232.413 70.128V118.813A16.229 16.229 0 0 1 199.956 118.813V37.671Z',
+      strokeWidth: 10.427,
+      linejoin: 'round',
+    },
+  ],
+  x: 0,
+  y: 0,
+  width: 237.626,
+  height: 140.255,
+  inset: 0.76,
+};
+
 const SHORT_MARKS: Record<string, CanvasMark> = {
+  autoscience: AUTOSCIENCE_MARK,
+  cursive: CURSIVE_MARK,
+  futurehouse: FUTUREHOUSE_MARK,
+  inherent: INHERENT_MARK,
+  lawzero: LAWZERO_MARK,
+  'latent-labs': LATENT_LABS_MARK,
+  'logical-intelligence': LOGICAL_INTELLIGENCE_MARK,
+  oumi: OUMI_MARK,
+  transluce: TRANSLUCE_MARK,
   evolutionaryscale: EVOLUTIONARYSCALE_MARK,
   kyutai: KYUTAI_MARK,
   hark: HARK_MARK,

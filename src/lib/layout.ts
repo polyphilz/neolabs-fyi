@@ -234,6 +234,8 @@ export interface LayoutResult {
   decorations: Decorations;
   /** Some layouts want collision relaxation; the map view mostly doesn't. */
   collideStrength: number;
+  /** Extra breathing room around collision circles. Defaults to 2 units. */
+  collisionPadding?: number;
   /** How this view turns a lab's valuation into a collision/drawing radius. */
   sizing: BubbleSizing;
   /** Pull toward the data position. Area view is firmer so year remains legible. */
@@ -596,11 +598,60 @@ function geographyLayout(
   const offsetX = (VIEW_W - basemap.width * scale) / 2;
   const offsetY = (VIEW_H - basemap.height * scale) / 2;
 
+  /**
+   * Many labs share one city coordinate. Pulling all of them toward that exact
+   * point lets circle collision settle into a conspicuously regular lattice.
+   * Give members of the same coordinate a small deterministic cloud instead.
+   * The cloud is centred on the true point, and uses the full dataset so
+   * filtering never reshuffles the survivors.
+   */
+  const clusters = new Map<string, Lab[]>();
+  for (const lab of referenceLabs) {
+    const key = `${lab.location.lat},${lab.location.lon}`;
+    const cluster = clusters.get(key);
+    if (cluster) cluster.push(lab);
+    else clusters.set(key, [lab]);
+  }
+
+  const scatter = new Map<string, Vec>();
+  for (const members of clusters.values()) {
+    if (members.length === 1) {
+      scatter.set(members[0].slug, { x: 0, y: 0 });
+      continue;
+    }
+
+    // Large hubs need enough variation to break symmetry, but the offset must
+    // remain much smaller than the cluster collision already creates.
+    const radius = Math.min(16, 3 + Math.sqrt(members.length) * 1.8);
+    const offsets = members.map((lab) => {
+      const h = stableHash(lab.slug);
+      const angle = ((h & 0xffff) / 0xffff) * Math.PI * 2;
+      const distance = Math.sqrt(((h >>> 16) & 0xffff) / 0xffff) * radius;
+      return {
+        slug: lab.slug,
+        x: Math.cos(angle) * distance,
+        y: Math.sin(angle) * distance,
+      };
+    });
+    const meanX = offsets.reduce((sum, offset) => sum + offset.x, 0) / offsets.length;
+    const meanY = offsets.reduce((sum, offset) => sum + offset.y, 0) / offsets.length;
+    for (const offset of offsets) {
+      scatter.set(offset.slug, {
+        x: stable(offset.x - meanX),
+        y: stable(offset.y - meanY),
+      });
+    }
+  }
+
   const targets = new Map<string, Vec>();
   for (const lab of labs) {
     const p = basemap.positions[lab.slug];
     if (!p) continue;
-    targets.set(lab.slug, { x: offsetX + p.x * scale, y: offsetY + p.y * scale });
+    const offset = scatter.get(lab.slug) ?? { x: 0, y: 0 };
+    targets.set(lab.slug, {
+      x: stable(offsetX + p.x * scale + offset.x),
+      y: stable(offsetY + p.y * scale + offset.y),
+    });
   }
 
   return {
@@ -614,9 +665,23 @@ function geographyLayout(
     },
     // Weak collision: nudge overlapping labs apart without lying about location.
     collideStrength: 0.4,
+    // The drawn hexes already vary down to 90% of their packing radius. A
+    // smaller pad lets those organic gaps show instead of enforcing a moat.
+    collisionPadding: 0.35,
     sizing: categoricalSizing(referenceLabs, sizeScale, COMPACT_RADII),
+    targetStrength: 0.2,
     bounded: true,
   };
+}
+
+/** FNV-1a: stable pseudo-random bits without hydration or reload jitter. */
+function stableHash(key: string): number {
+  let hash = 0x811c9dc5;
+  for (let index = 0; index < key.length; index++) {
+    hash ^= key.charCodeAt(index);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return hash >>> 0;
 }
 
 // ---------------------------------------------------------------------------

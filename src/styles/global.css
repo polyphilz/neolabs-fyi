@@ -1171,6 +1171,12 @@ body.is-bare {
     filter 180ms ease;
 }
 
+/* Lineage focus can affect every mark at once. Let that state snap cleanly;
+   hundreds of simultaneous SVG opacity transitions read as a flash. */
+.canvas-svg[data-view='lineage'] .bubble {
+  transition: none;
+}
+
 .bubble-disc {
   stroke: var(--surface);
   /* The hexagon's corners are already rounded in the path; rounding the join
@@ -1193,7 +1199,8 @@ body.is-bare {
 .bubble.is-selected .bubble-disc,
 .bubble:focus-visible .bubble-disc {
   stroke: var(--accent);
-  stroke-width: 3;
+  stroke-width: var(--selection-stroke, 2);
+  vector-effect: non-scaling-stroke;
 }
 
 .bubble.is-area-muted {
@@ -1203,19 +1210,6 @@ body.is-bare {
 
 .bubble.is-area-highlighted:not(.is-active):not(.is-selected) .bubble-disc {
   stroke: color-mix(in srgb, var(--area-color) 78%, var(--ink));
-}
-
-/* Lineage focus. Lighter than the area mute: these labs stay legible because
-   reading which ones belong to a pinned origin is the task, not a side effect
-   of it. */
-.bubble.is-lineage-muted {
-  opacity: 0.2;
-  filter: saturate(0.4);
-}
-
-.bubble.is-lineage-lit:not(.is-active):not(.is-selected) .bubble-disc {
-  stroke: var(--accent);
-  stroke-width: 1.6;
 }
 
 /* Label inside a large bubble. Fill comes from the per-step ink token, set
@@ -1489,33 +1483,27 @@ body.is-bare {
 
 /* Lineage — ranked origin rail, year columns, directed edges ---------------- */
 
-/*
- * Every edge is drawn at rest, all 193 of them. That faint layer IS the
- * subject: founders leaving somewhere and landing somewhere else, and most
- * teams leaving several places at once. Hiding it until hover would make
- * multi-origin founding — which is 56 of the 71 labs — an easter egg.
- */
+.lineage-edges {
+  pointer-events: none;
+}
+
+/* Every connection is one subpath of this compound base path. The faint layer
+   remains visible at rest, but React no longer manages hundreds of elements. */
 .edge {
   fill: none;
   stroke: var(--rule);
   stroke-width: 0.7;
-  transition:
-    opacity 0.18s ease,
-    stroke 0.18s ease;
 }
 
-/* Low enough that 193 curves read as a texture rather than a haze. Any heavier
-   and the bundle competes with the bars for attention, which inverts the
-   hierarchy this view is built on. */
-.edge.is-ghost {
+.edge-base {
   opacity: 0.14;
 }
 
-.edge.is-dim {
+.lineage-edges.has-focus .edge-base {
   opacity: 0.07;
 }
 
-.edge.is-live {
+.edge-live {
   stroke: var(--accent);
   stroke-width: 1.7;
   opacity: 0.95;
@@ -1526,14 +1514,14 @@ body.is-bare {
  * labs you just pinned — dotted so they read as a different kind of statement
  * from the solid ones, present so no lab looks like it came from one place.
  */
-.edge.is-secondary {
+.edge-secondary {
   stroke: var(--ink-2);
   stroke-width: 1;
   stroke-dasharray: 2 3.5;
   opacity: 0.42;
 }
 
-.lineage-arrowhead {
+.edge-arrowheads {
   fill: var(--accent);
 }
 
@@ -1569,6 +1557,28 @@ body.is-bare {
   fill: transparent;
 }
 
+.rail-leader {
+  stroke: var(--rule);
+  stroke-width: 0.9;
+  stroke-dasharray: 0.2 3;
+  stroke-linecap: round;
+  opacity: 0.82;
+  pointer-events: none;
+}
+
+.rail-leader-overlap,
+.rail-row.has-overlap .rail-leader-default {
+  visibility: hidden;
+}
+
+.rail-row.has-overlap .rail-leader-overlap {
+  visibility: visible;
+}
+
+.rail-row.is-residual .rail-leader {
+  opacity: 0.5;
+}
+
 .rail-label {
   fill: var(--ink);
   font-family: var(--font-display);
@@ -1581,6 +1591,19 @@ body.is-bare {
   font-size: 11px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
+}
+
+/* Count variants remain in the tree while lineage focus changes. One row class
+   controls both variants without mounting or touching each child separately. */
+.rail-count-overlap,
+.rail-overlap,
+.rail-row.has-overlap .rail-count-default {
+  visibility: hidden;
+}
+
+.rail-row.has-overlap .rail-count-overlap,
+.rail-row.has-overlap .rail-overlap {
+  visibility: visible;
 }
 
 .rail-track {
@@ -1604,17 +1627,15 @@ body.is-bare {
   opacity: 0.55;
 }
 
-.rail-row.is-muted {
+.canvas-svg[data-active-lineage] .rail-row:not(.is-pinned) {
   opacity: 0.45;
 }
 
-.rail-row.is-active .rail-bar,
 .rail-row.is-pinned .rail-bar {
   fill: var(--accent);
   opacity: 1;
 }
 
-.rail-row.is-active,
 .rail-row.is-pinned {
   opacity: 1;
 }
@@ -1622,8 +1643,7 @@ body.is-bare {
 /* Only the row you are actually looking at goes bold. A pinned row keeps its
    accent bar and full opacity so the frame is still legible, but weighting both
    reads as two active rows at once. */
-.rail-row.is-active .rail-label,
-.rail-row.is-pinned:not(.is-muted) .rail-label {
+.canvas-svg:not([data-active-lineage]) .rail-row.is-pinned .rail-label {
   fill: var(--ink);
   font-weight: 600;
 }

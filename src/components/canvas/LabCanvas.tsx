@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
+import { LINEAGE_ORDER } from '../../data/taxonomy';
 import type { DomainId, Lab, LineageGroup } from '../../data/types';
 import type { Basemap } from '../../lib/basemap';
 import { UNKNOWN_FILL, UNKNOWN_INK, fillFor, valuationStep } from '../../lib/color';
@@ -19,7 +20,6 @@ import {
   type CanvasLabel,
   type CanvasMark,
 } from '../../lib/format';
-import { stable } from '../../lib/precision';
 import {
   LINE_SPACING,
   fitLabel,
@@ -29,6 +29,7 @@ import {
   type FittedMark,
 } from '../../lib/labelFit';
 import { AREA_COLORS, BloomCore, ResearchBloom } from './ResearchBloom';
+import { LineageEdges } from './LineageEdges';
 import { LineageRail, LineageYearAxis } from './LineageRail';
 import { useSimulation, type SimNode } from './useSimulation';
 import { useViewport } from './useViewport';
@@ -83,6 +84,39 @@ const NOMINAL_FONT = 12;
  * moved threshold.
  */
 const PROMOTE = 1.12;
+
+/**
+ * Selected outlines live in screen space so zoom cannot turn a small hex's
+ * border into a heavy ring. Within these legibility bounds, larger rendered
+ * hexes still earn a proportionally stronger outline.
+ */
+const SELECTION_STROKE_MIN_PX = 1.5;
+const SELECTION_STROKE_MAX_PX = 4;
+const SELECTION_STROKE_RADIUS_RATIO = 0.08;
+
+function selectionStrokeWidth(radius: number, screenScale: number): number {
+  return Math.min(
+    SELECTION_STROKE_MAX_PX,
+    Math.max(SELECTION_STROKE_MIN_PX, radius * screenScale * SELECTION_STROKE_RADIUS_RATIO)
+  );
+}
+
+const EMPTY_LINEAGE_OVERLAP = new Map<LineageGroup, number>();
+
+/**
+ * Lineage membership never changes during a hover, so encode it once on each
+ * bubble and let one attribute on the SVG select the active set. This replaces
+ * a React class mutation on every bubble with a single root mutation.
+ */
+const LINEAGE_FOCUS_CSS = LINEAGE_ORDER.map(
+  (group) => `
+.canvas-svg[data-active-lineage="${group}"] .bubble:not([data-lineages~="${group}"]) { opacity: 0.2; }
+.canvas-svg[data-active-lineage="${group}"] .bubble[data-lineages~="${group}"]:not(.is-active):not(.is-selected) .bubble-disc { stroke: var(--accent); stroke-width: 1.6; }
+.canvas-svg[data-active-lineage="${group}"] .rail-row[data-lineage-row="${group}"] { opacity: 1; }
+.canvas-svg[data-active-lineage="${group}"] .rail-row[data-lineage-row="${group}"] .rail-bar { fill: var(--accent); opacity: 1; }
+.canvas-svg[data-active-lineage="${group}"] .rail-row[data-lineage-row="${group}"] .rail-label { fill: var(--ink); font-weight: 600; }
+`
+).join('');
 
 /** What chooseLabel settled on: a fitted line of type, or a fitted mark. */
 type ChosenLabel =
@@ -139,8 +173,6 @@ function chooseLabel(
 }
 
 export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, onSelect }: Props) {
-  /** Which rung of the name ladder each lab is currently showing. */
-  const labelRung = useRef(new Map<string, number>());
   const svgRef = useRef<SVGSVGElement>(null);
   const [hovered, setHovered] = useState<string | null>(null);
   const [hoveredLineage, setHoveredLineage] = useState<LineageGroup | null>(null);
@@ -185,7 +217,7 @@ export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, o
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  const { nodes, reheat, cool } = useSimulation(labs, layout);
+  const { nodes, frame, reheat, cool } = useSimulation(labs, layout);
   const vp = useViewport(svgRef, VIEW_W, VIEW_H);
   const { transform } = vp;
 
@@ -208,24 +240,6 @@ export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, o
 
   /** Canvas units -> screen pixels, including zoom. */
   const screenScale = transform.k * fitScale;
-
-  // Label fitting measures real text, but only after mount — measuring during
-  // SSR would desync server and client HTML. Re-measure once webfonts land,
-  // since until then the browser is measuring the fallback face.
-  const [, remeasure] = useState(0);
-  useEffect(() => {
-    const apply = () => {
-      refreshLabelMetrics();
-      // Rungs chosen against the fallback face are worthless, and worse than
-      // worthless once the hysteresis is holding one in place: the first paint
-      // measures type generously, drops a lab to its short name, and then the
-      // promotion margin keeps it there even though the real font fits.
-      labelRung.current.clear();
-      remeasure((n) => n + 1);
-    };
-    apply();
-    document.fonts?.ready.then(apply).catch(() => {});
-  }, []);
 
   /**
    * Paint order: largest first, so small bubbles land on top and their hit
@@ -271,7 +285,7 @@ export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, o
       drag.node.fx = p.x;
       drag.node.fy = p.y;
     },
-    [vp, reheat]
+    [vp.toCanvas, reheat]
   );
 
   const onNodePointerUp = useCallback(
@@ -353,6 +367,7 @@ export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, o
   const dec = layout.decorations;
   const active = hovered ?? selected;
   const activeNode = active ? positions.get(active) : null;
+  const hoveredNode = hovered ? positions.get(hovered) : null;
   const activeArea =
     view === 'area' ? (hoveredArea ?? activeNode?.lab.domain ?? pinnedArea) : null;
   // Hover beats pin while it lasts, the same contract the research bloom uses:
@@ -366,37 +381,36 @@ export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, o
   }, [labs]);
 
   /**
-   * With an origin active, how many of its labs each other origin also claims.
-   * This is the reading the view is really for: pin Google and the overlap
-   * segment on the DeepMind row says 13 of those 27 came out of both.
+   * Every pairwise overlap is static for the filtered dataset. Compute the
+   * complete matrix once instead of rescanning every lab on pointer movement.
    */
-  const lineageOverlap = useMemo(() => {
-    const map = new Map<LineageGroup, number>();
-    if (!activeLineage) return map;
+  const lineageOverlaps = useMemo(() => {
+    const matrix = new Map<LineageGroup, Map<LineageGroup, number>>();
     for (const groups of groupsBySlug.values()) {
-      if (!groups.includes(activeLineage)) continue;
-      for (const g of groups) {
-        if (g !== activeLineage) map.set(g, (map.get(g) ?? 0) + 1);
+      for (const activeGroup of groups) {
+        let overlaps = matrix.get(activeGroup);
+        if (!overlaps) {
+          overlaps = new Map();
+          matrix.set(activeGroup, overlaps);
+        }
+        for (const otherGroup of groups) {
+          if (otherGroup !== activeGroup) {
+            overlaps.set(otherGroup, (overlaps.get(otherGroup) ?? 0) + 1);
+          }
+        }
       }
     }
-    return map;
-  }, [activeLineage, groupsBySlug]);
+    return matrix;
+  }, [groupsBySlug]);
 
-  /**
-   * Four states, and the one that matters is `secondary`: a lab tied to the
-   * active origin keeps visible dotted lines back to its *other* origins. That
-   * is what stops "pinned on Google" from implying these labs are only Google.
-   */
-  const edgeState = useCallback(
-    (from: string, toGroup: LineageGroup) => {
-      if (active === from) return 'live';
-      if (activeLineage) {
-        if (toGroup === activeLineage) return 'live';
-        return groupsBySlug.get(from)?.includes(activeLineage) ? 'secondary' : 'dim';
-      }
-      return active ? 'dim' : 'ghost';
-    },
-    [active, activeLineage, groupsBySlug]
+  const lineageOverlap = activeLineage
+    ? (lineageOverlaps.get(activeLineage) ?? EMPTY_LINEAGE_OVERLAP)
+    : EMPTY_LINEAGE_OVERLAP;
+
+  const onToggleLineage = useCallback(
+    (group: LineageGroup) =>
+      setPinnedLineage((current) => (current === group ? null : group)),
+    []
   );
 
   return (
@@ -406,6 +420,8 @@ export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, o
         viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
         preserveAspectRatio="xMidYMid meet"
         className="canvas-svg"
+        data-view={view}
+        data-active-lineage={activeLineage ?? undefined}
         role="application"
         aria-label={`Neolab map, ${view} view. ${labs.length} labs shown. The same labs are available as a sortable table from the Table view.`}
         onPointerDown={onBackgroundDown}
@@ -447,141 +463,32 @@ export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, o
           {dec.yearAxis && <LineageYearAxis axis={dec.yearAxis} />}
 
           {dec.edges && dec.lineageRail && (
-            <g className="lineage-edges" aria-hidden="true">
-              {dec.edges.map((e) => {
-                const node = positions.get(e.from);
-                const row = dec.lineageRail!.rows.find((r) => r.id === e.toGroup);
-                if (!node || !row) return null;
-                const state = edgeState(e.from, e.toGroup);
-                return (
-                  <path
-                    key={`${e.from}-${e.toGroup}`}
-                    d={edgePath(dec.lineageRail!.anchorX, row.y, node.x - node.r - 3, node.y)}
-                    className={`edge is-${state}`}
-                    markerEnd={state === 'live' ? 'url(#lineage-arrow)' : undefined}
-                  />
-                );
-              })}
-            </g>
+            <LineageEdges
+              edges={dec.edges}
+              rail={dec.lineageRail}
+              positions={positions}
+              groupsBySlug={groupsBySlug}
+              activeLab={active}
+              activeGroup={activeLineage}
+              frame={frame}
+            />
           )}
 
-          <g className="bubbles">
-            {drawOrder.map((n) => {
-              const isActive = active === n.slug;
-              const isSelected = selected === n.slug;
-              const areaMuted = Boolean(activeArea && n.lab.domain !== activeArea);
-              const areaHighlighted = activeArea === n.lab.domain;
-              const inLineage = activeLineage
-                ? Boolean(groupsBySlug.get(n.slug)?.includes(activeLineage))
-                : false;
-              const lineageMuted = Boolean(activeLineage) && !inLineage;
-              const unknown =
-                n.lab.valuation.qualifier === 'undisclosed' ||
-                n.lab.structure === 'subsidiary' ||
-                n.lab.structure === 'nonprofit';
-              const step = valuationStep(n.lab.valuation.usdM);
-              // Rotation and scale are per-lab and stable; the label has to be
-              // fitted to the hexagon as actually drawn, not the packing circle.
-              const jitter = hexJitter(n.slug);
-              const shapeR = n.r * jitter.scale;
-              // Longest name that's actually readable at this zoom, or nothing.
-              const label = chooseLabel(
-                n.slug,
-                canvasNames(n.lab),
-                shapeR,
-                jitter.rot,
-                screenScale,
-                labelRung.current
-              );
-              return (
-                <g
-                  key={n.slug}
-                  transform={`translate(${n.x},${n.y})`}
-                  className={`bubble${isSelected ? ' is-selected' : ''}${isActive ? ' is-active' : ''}${areaMuted ? ' is-area-muted' : ''}${areaHighlighted ? ' is-area-highlighted' : ''}${lineageMuted ? ' is-lineage-muted' : ''}${inLineage ? ' is-lineage-lit' : ''}`}
-                  style={{ '--area-color': AREA_COLORS[n.lab.domain] } as React.CSSProperties}
-                  onPointerDown={(e) => onNodePointerDown(e, n)}
-                  onPointerMove={onNodePointerMove}
-                  onPointerUp={(e) => onNodePointerUp(e, n)}
-                  onPointerEnter={() => setHovered(n.slug)}
-                  onPointerLeave={() => setHovered((h) => (h === n.slug ? null : h))}
-                  tabIndex={0}
-                  role="button"
-                  aria-label={`${n.lab.name}, ${labValuationLabel(n.lab)}, ${spaceLabel(n.lab)}, founded ${n.lab.year}`}
-                  onFocus={() => setHovered(n.slug)}
-                  onBlur={() => setHovered((h) => (h === n.slug ? null : h))}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      onSelect(n.slug === selected ? null : n.slug);
-                    }
-                  }}
-                >
-                  <path
-                    d={hexPath(shapeR, jitter.corner, jitter.rot)}
-                    fill={unknown ? UNKNOWN_FILL : fillFor(n.lab.valuation.usdM)}
-                    strokeWidth={Math.min(2, n.r * 0.12)}
-                    className="bubble-disc"
-                  />
-                  {/* A $335M lab is ~10px across, which is a miserable target.
-                      This pads it out to a usable size without changing what's
-                      drawn. Sized in screen pixels, so it holds at any zoom. */}
-                  {hitRadius > n.r && <circle r={hitRadius} className="bubble-hit" />}
-                  {label?.kind === 'text' && (
-                    <g transform={`scale(${label.fitted.fontSize / NOMINAL_FONT})`}>
-                      <text
-                        className="bubble-label"
-                        textAnchor="middle"
-                        style={{
-                          fontSize: NOMINAL_FONT,
-                          fill: unknown ? UNKNOWN_INK : `var(--on-seq-${step})`,
-                        }}
-                      >
-                        {label.fitted.lines.map((line, i) => (
-                          <tspan
-                            key={line + i}
-                            x={0}
-                            y={
-                              (i - (label.fitted.lines.length - 1) / 2) *
-                                NOMINAL_FONT *
-                                LINE_SPACING +
-                              NOMINAL_FONT * 0.34
-                            }
-                          >
-                            {line}
-                          </tspan>
-                        ))}
-                      </text>
-                    </g>
-                  )}
-                  {/* Same ink as the type it stands in for — the mark carries no
-                      colour of its own, so it reads as a label rather than as a
-                      second thing sitting on the hexagon. */}
-                  {label?.kind === 'mark' && (
-                    <g
-                      className="bubble-mark"
-                      // Ink is set once, as `color`, so fills and strokes in the
-                      // artwork both follow it via currentColor.
-                      style={{ color: unknown ? UNKNOWN_INK : `var(--on-seq-${step})` }}
-                      transform={`scale(${label.fitted.scale}) translate(${-(label.mark.x + label.mark.width / 2)},${-(label.mark.y + label.mark.height / 2)})`}
-                    >
-                      {label.mark.shapes.map((shape) => (
-                        <path
-                          key={shape.d}
-                          d={shape.d}
-                          fill={shape.strokeWidth ? 'none' : 'currentColor'}
-                          fillRule={shape.fillRule}
-                          stroke={shape.strokeWidth ? 'currentColor' : 'none'}
-                          strokeWidth={shape.strokeWidth}
-                          strokeLinecap={shape.linecap}
-                          strokeLinejoin={shape.linecap}
-                        />
-                      ))}
-                    </g>
-                  )}
-                </g>
-              );
-            })}
-          </g>
+          <BubbleLayer
+            drawOrder={drawOrder}
+            frame={frame}
+            selected={selected}
+            active={active}
+            activeArea={activeArea}
+            groupsBySlug={groupsBySlug}
+            screenScale={screenScale}
+            hitRadius={hitRadius}
+            onNodePointerDown={onNodePointerDown}
+            onNodePointerMove={onNodePointerMove}
+            onNodePointerUp={onNodePointerUp}
+            onHover={setHovered}
+            onSelect={onSelect}
+          />
 
           {dec.areaAtlas && (
             <BloomCore
@@ -604,45 +511,198 @@ export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, o
               pinnedGroup={pinnedLineage}
               overlap={lineageOverlap}
               onHover={setHoveredLineage}
-              onToggle={(group) =>
-                setPinnedLineage((current) => (current === group ? null : group))
-              }
+              onToggle={onToggleLineage}
             />
           )}
         </g>
 
         <defs>
-          <marker
-            id="lineage-arrow"
-            viewBox="0 0 8 8"
-            refX="7"
-            refY="4"
-            markerWidth="5"
-            markerHeight="5"
-            orient="auto-start-reverse"
-          >
-            <path d="M 0 1 L 7 4 L 0 7 z" className="lineage-arrowhead" />
-          </marker>
+          <style>{LINEAGE_FOCUS_CSS}</style>
         </defs>
       </svg>
 
-      {activeNode && <Tooltip node={activeNode} transform={transform} fit={vp.fit} />}
+      {/* Selection has its own full detail card. Keeping the hover summary on
+          screen at the same time only duplicates and obscures that content. */}
+      {!selected && hoveredNode && (
+        <Tooltip node={hoveredNode} transform={transform} fit={vp.fit} />
+      )}
     </div>
   );
 }
 
-/**
- * Rail row to lab, as a curve that leaves and arrives horizontally.
- *
- * Straight segments at this density read as a hairball because every line
- * crosses the field at its own angle. Forcing a horizontal departure makes the
- * whole bundle travel the same way — which is what turns 193 lines into a
- * legible flow, and what makes direction readable before the arrowhead is.
- */
-function edgePath(x1: number, y1: number, x2: number, y2: number): string {
-  const bend = Math.max(40, (x2 - x1) * 0.42);
-  return `M ${stable(x1)} ${stable(y1)} C ${stable(x1 + bend)} ${stable(y1)}, ${stable(x2 - bend)} ${stable(y2)}, ${stable(x2)} ${stable(y2)}`;
+interface BubbleLayerProps {
+  drawOrder: SimNode[];
+  /** Mutable simulation nodes need an explicit revision to cross memo(). */
+  frame: number;
+  selected: string | null;
+  active: string | null;
+  activeArea: DomainId | null;
+  groupsBySlug: Map<string, LineageGroup[]>;
+  screenScale: number;
+  hitRadius: number;
+  onNodePointerDown: (event: React.PointerEvent, node: SimNode) => void;
+  onNodePointerMove: (event: React.PointerEvent) => void;
+  onNodePointerUp: (event: React.PointerEvent, node: SimNode) => void;
+  onHover: React.Dispatch<React.SetStateAction<string | null>>;
+  onSelect: (slug: string | null) => void;
 }
+
+/**
+ * A memo boundary around the expensive label-fitting layer. Lineage focus is
+ * intentionally absent from these props: one root data attribute handles that
+ * visual state, so moving across the origin rail never revisits every label.
+ */
+const BubbleLayer = memo(function BubbleLayer({
+  drawOrder,
+  frame,
+  selected,
+  active,
+  activeArea,
+  groupsBySlug,
+  screenScale,
+  hitRadius,
+  onNodePointerDown,
+  onNodePointerMove,
+  onNodePointerUp,
+  onHover,
+  onSelect,
+}: BubbleLayerProps) {
+  /** Which rung of the name ladder each lab is currently showing. */
+  const labelRung = useRef(new Map<string, number>());
+  const [, remeasure] = useState(0);
+  // The value itself is not rendered; changing it tells memo() that mutable
+  // simulation coordinates have advanced and the transforms must be refreshed.
+  void frame;
+
+  // Label fitting measures real text, but only after mount — measuring during
+  // SSR would desync server and client HTML. Re-measure once webfonts land.
+  useEffect(() => {
+    const apply = () => {
+      refreshLabelMetrics();
+      labelRung.current.clear();
+      remeasure((n) => n + 1);
+    };
+    apply();
+    document.fonts?.ready.then(apply).catch(() => {});
+  }, []);
+
+  return (
+    <g className="bubbles">
+      {drawOrder.map((n) => {
+        const isActive = active === n.slug;
+        const isSelected = selected === n.slug;
+        const areaMuted = Boolean(activeArea && n.lab.domain !== activeArea);
+        const areaHighlighted = activeArea === n.lab.domain;
+        const unknown =
+          n.lab.valuation.qualifier === 'undisclosed' ||
+          n.lab.structure === 'subsidiary' ||
+          n.lab.structure === 'nonprofit';
+        const step = valuationStep(n.lab.valuation.usdM);
+        // Rotation and scale are per-lab and stable; the label has to be fitted
+        // to the hexagon as actually drawn, not the packing circle.
+        const jitter = hexJitter(n.slug);
+        const shapeR = n.r * jitter.scale;
+        const selectionStroke = selectionStrokeWidth(shapeR, screenScale);
+        const label = chooseLabel(
+          n.slug,
+          canvasNames(n.lab),
+          shapeR,
+          jitter.rot,
+          screenScale,
+          labelRung.current
+        );
+
+        return (
+          <g
+            key={n.slug}
+            transform={`translate(${n.x},${n.y})`}
+            className={`bubble${isSelected ? ' is-selected' : ''}${isActive ? ' is-active' : ''}${areaMuted ? ' is-area-muted' : ''}${areaHighlighted ? ' is-area-highlighted' : ''}`}
+            data-lineages={groupsBySlug.get(n.slug)?.join(' ')}
+            style={
+              {
+                '--area-color': AREA_COLORS[n.lab.domain],
+                '--selection-stroke': selectionStroke,
+              } as React.CSSProperties
+            }
+            onPointerDown={(event) => onNodePointerDown(event, n)}
+            onPointerMove={onNodePointerMove}
+            onPointerUp={(event) => onNodePointerUp(event, n)}
+            onPointerEnter={() => onHover(n.slug)}
+            onPointerLeave={() => onHover((hovered) => (hovered === n.slug ? null : hovered))}
+            tabIndex={0}
+            role="button"
+            aria-label={`${n.lab.name}, ${labValuationLabel(n.lab)}, ${spaceLabel(n.lab)}, founded ${n.lab.year}`}
+            onFocus={() => onHover(n.slug)}
+            onBlur={() => onHover((hovered) => (hovered === n.slug ? null : hovered))}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                onSelect(n.slug === selected ? null : n.slug);
+              }
+            }}
+          >
+            <path
+              d={hexPath(shapeR, jitter.corner, jitter.rot)}
+              fill={unknown ? UNKNOWN_FILL : fillFor(n.lab.valuation.usdM)}
+              strokeWidth={Math.min(2, n.r * 0.12)}
+              className="bubble-disc"
+            />
+            {/* A $335M lab is ~10px across, which is a miserable target. This
+                pads it out without changing what's drawn. */}
+            {hitRadius > n.r && <circle r={hitRadius} className="bubble-hit" />}
+            {label?.kind === 'text' && (
+              <g transform={`scale(${label.fitted.fontSize / NOMINAL_FONT})`}>
+                <text
+                  className="bubble-label"
+                  textAnchor="middle"
+                  style={{
+                    fontSize: NOMINAL_FONT,
+                    fill: unknown ? UNKNOWN_INK : `var(--on-seq-${step})`,
+                  }}
+                >
+                  {label.fitted.lines.map((line, index) => (
+                    <tspan
+                      key={line + index}
+                      x={0}
+                      y={
+                        (index - (label.fitted.lines.length - 1) / 2) *
+                          NOMINAL_FONT *
+                          LINE_SPACING +
+                        NOMINAL_FONT * 0.34
+                      }
+                    >
+                      {line}
+                    </tspan>
+                  ))}
+                </text>
+              </g>
+            )}
+            {label?.kind === 'mark' && (
+              <g
+                className="bubble-mark"
+                style={{ color: unknown ? UNKNOWN_INK : `var(--on-seq-${step})` }}
+                transform={`scale(${label.fitted.scale}) translate(${-(label.mark.x + label.mark.width / 2)},${-(label.mark.y + label.mark.height / 2)})`}
+              >
+                {label.mark.shapes.map((shape) => (
+                  <path
+                    key={shape.d}
+                    d={shape.d}
+                    fill={shape.strokeWidth ? 'none' : 'currentColor'}
+                    fillRule={shape.fillRule}
+                    stroke={shape.strokeWidth ? 'currentColor' : 'none'}
+                    strokeWidth={shape.strokeWidth}
+                    strokeLinecap={shape.linecap}
+                    strokeLinejoin={shape.linejoin ?? shape.linecap}
+                  />
+                ))}
+              </g>
+            )}
+          </g>
+        );
+      })}
+    </g>
+  );
+});
 
 interface TipProps {
   node: SimNode;

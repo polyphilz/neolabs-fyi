@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { forceCollide, forceSimulation, forceX, forceY, type Simulation } from 'd3-force';
 
 import type { Lab } from '../../data/types';
@@ -161,7 +161,7 @@ function forceRadialBounds(
 export function useSimulation(labs: Lab[], layout: LayoutResult) {
   const nodesRef = useRef(new Map<string, SimNode>());
   const simRef = useRef<Simulation<SimNode, undefined> | null>(null);
-  const [, forceRender] = useState(0);
+  const [frame, forceRender] = useState(0);
   const activeRef = useRef<SimNode[]>([]);
 
   if (!simRef.current) {
@@ -209,7 +209,7 @@ export function useSimulation(labs: Lab[], layout: LayoutResult) {
     sim.force('y', forceY<SimNode>((d) => d.ty).strength(targetStrength));
     sim.force(
       'collide',
-      forceCollide<SimNode>((d) => d.r + 2)
+      forceCollide<SimNode>((d) => d.r + (layout.collisionPadding ?? 2))
         .strength(layout.collideStrength)
         .iterations(2)
     );
@@ -244,8 +244,11 @@ export function useSimulation(labs: Lab[], layout: LayoutResult) {
     []
   );
 
-  const reheat = (alpha = 0.3) => simRef.current?.alphaTarget(alpha).restart();
-  const cool = () => simRef.current?.alphaTarget(0);
+  const reheat = useCallback(
+    (alpha = 0.3) => simRef.current?.alphaTarget(alpha).restart(),
+    []
+  );
+  const cool = useCallback(() => simRef.current?.alphaTarget(0), []);
 
-  return { nodes: activeRef.current, reheat, cool };
+  return { nodes: activeRef.current, frame, reheat, cool };
 }

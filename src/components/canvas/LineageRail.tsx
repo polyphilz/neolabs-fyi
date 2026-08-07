@@ -1,3 +1,5 @@
+import { memo, useLayoutEffect, useRef } from 'react';
+
 import type { LineageGroup } from '../../data/types';
 import type { LineageRail as Rail, LineageRailRow, YearAxis } from '../../lib/layout';
 import { stable } from '../../lib/precision';
@@ -10,7 +12,7 @@ import { stable } from '../../lib/precision';
  * fill up to the right is the point: 18 labs in 2023, 20 in 2025, and 12 in
  * 2026 with most of the year still to run.
  */
-export function LineageYearAxis({ axis }: { axis: YearAxis }) {
+export const LineageYearAxis = memo(function LineageYearAxis({ axis }: { axis: YearAxis }) {
   return (
     <g className="year-axis" aria-hidden="true">
       {axis.columns.map((column, index) => (
@@ -28,7 +30,7 @@ export function LineageYearAxis({ axis }: { axis: YearAxis }) {
       ))}
     </g>
   );
-}
+});
 
 interface Props {
   rail: Rail;
@@ -52,7 +54,7 @@ interface Props {
  * lineage view exists to answer — so it is a legend, a ranking, a filter and
  * the left-hand anchor for direction, all in one element.
  */
-export function LineageRail({
+export const LineageRail = memo(function LineageRail({
   rail,
   activeGroup,
   pinnedGroup,
@@ -63,7 +65,10 @@ export function LineageRail({
   const scale = (value: number) => stable((value / rail.maxTotal) * rail.barWidth);
 
   return (
-    <g className={`lineage-rail${activeGroup ? ' has-active' : ''}`}>
+    <g
+      className="lineage-rail"
+      onPointerLeave={() => onHover(null)}
+    >
       <text className="rail-kicker" x={rail.x} y={RAIL_KICKER_Y}>
         NEOLABS BY ORIGIN
       </text>
@@ -78,7 +83,6 @@ export function LineageRail({
           overlapWidth={scale(Math.min(overlap.get(row.id) ?? 0, row.count))}
           overlapCount={overlap.get(row.id) ?? 0}
           isActive={activeGroup === row.id}
-          isMuted={Boolean(activeGroup && activeGroup !== row.id)}
           isPinned={pinnedGroup === row.id}
           onHover={onHover}
           onToggle={onToggle}
@@ -99,7 +103,7 @@ export function LineageRail({
       <Caption rail={rail} />
     </g>
   );
-}
+});
 
 /** Above the first row but below the floating header, which covers y < ~60. */
 const RAIL_KICKER_Y = 68;
@@ -113,7 +117,6 @@ function RailRow({
   overlapWidth,
   overlapCount,
   isActive,
-  isMuted,
   isPinned,
   onHover,
   onToggle,
@@ -125,7 +128,6 @@ function RailRow({
   overlapWidth: number;
   overlapCount: number;
   isActive: boolean;
-  isMuted: boolean;
   isPinned: boolean;
   onHover: (group: LineageGroup | null) => void;
   onToggle: (group: LineageGroup) => void;
@@ -139,17 +141,52 @@ function RailRow({
   // "13 of 22" is the actual finding, and it fits where a second label on the
   // bar would have collided with it.
   const showOverlap = overlapCount > 0 && !isActive;
+  const labelRef = useRef<SVGTextElement>(null);
+  const defaultCountRef = useRef<SVGTextElement>(null);
+  const defaultLeaderRef = useRef<SVGLineElement>(null);
+  const overlapLeaderRef = useRef<SVGLineElement>(null);
+
+  useLayoutEffect(() => {
+    let cancelled = false;
+    const measure = () => {
+      if (cancelled) return;
+      const label = labelRef.current;
+      const count = defaultCountRef.current;
+      const defaultLeader = defaultLeaderRef.current;
+      const overlapLeader = overlapLeaderRef.current;
+      if (!label || !count || !defaultLeader || !overlapLeader) return;
+
+      const labelBox = label.getBBox();
+      const countBox = count.getBBox();
+      const start = labelBox.x + labelBox.width + 6;
+      const defaultEnd = countBox.x - 6;
+      // The overlap form can be as wide as "20 of 51". Reserve that space so
+      // its changing value never requires another measurement during hover.
+      const overlapEnd = rail.x + rail.barWidth - 58;
+
+      defaultLeader.setAttribute('x1', String(Math.min(start, defaultEnd)));
+      defaultLeader.setAttribute('x2', String(defaultEnd));
+      overlapLeader.setAttribute('x1', String(Math.min(start, overlapEnd)));
+      overlapLeader.setAttribute('x2', String(overlapEnd));
+    };
+
+    measure();
+    document.fonts?.ready.then(measure).catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [countLabel, rail.barWidth, rail.x, row.label]);
 
   return (
     <g
       className={
         'rail-row' +
-        (isActive ? ' is-active' : '') +
-        (isMuted ? ' is-muted' : '') +
         (isPinned ? ' is-pinned' : '') +
+        (showOverlap ? ' has-overlap' : '') +
         (row.residual ? ' is-residual' : '') +
         (row.count === 0 ? ' is-empty' : '')
       }
+      data-lineage-row={row.id}
       role="button"
       tabIndex={0}
       aria-pressed={isPinned}
@@ -160,7 +197,6 @@ function RailRow({
         onToggle(row.id);
       }}
       onPointerEnter={() => onHover(row.id)}
-      onPointerLeave={() => onHover(null)}
       onFocus={() => onHover(row.id)}
       onBlur={() => onHover(null)}
       onKeyDown={(event) => {
@@ -182,27 +218,54 @@ function RailRow({
         height={rail.rowPitch}
       />
 
-      <text className="rail-label" x={rail.x} y={row.y - 5}>
+      <line
+        ref={defaultLeaderRef}
+        className="rail-leader rail-leader-default"
+        y1={row.y - 9}
+        y2={row.y - 9}
+      />
+      <line
+        ref={overlapLeaderRef}
+        className="rail-leader rail-leader-overlap"
+        y1={row.y - 9}
+        y2={row.y - 9}
+      />
+      <text ref={labelRef} className="rail-label" x={rail.x} y={row.y - 5}>
         {row.label}
       </text>
-      <text className="rail-count" x={rail.x + rail.barWidth} y={row.y - 5} textAnchor="end">
-        {showOverlap ? (
-          <>
-            <tspan className="rail-count-shared">{overlapCount}</tspan>
-            <tspan className="rail-count-of"> of {row.count}</tspan>
-          </>
-        ) : (
-          countLabel
-        )}
+      {/* Both count variants stay mounted while focus moves between origins.
+          Swapping a text node for tspans across every row caused needless SVG
+          child-list churn on every pointer enter and leave. */}
+      <text
+        ref={defaultCountRef}
+        className="rail-count rail-count-default"
+        x={rail.x + rail.barWidth}
+        y={row.y - 5}
+        textAnchor="end"
+      >
+        {countLabel}
+      </text>
+      <text
+        className="rail-count rail-count-overlap"
+        x={rail.x + rail.barWidth}
+        y={row.y - 5}
+        textAnchor="end"
+      >
+        <tspan className="rail-count-shared">{overlapCount}</tspan>
+        <tspan className="rail-count-of"> of {row.count}</tspan>
       </text>
 
       {/* Track shows the unfiltered total, so filtering reads as a bar
           emptying rather than as an origin shrinking. */}
       <rect className="rail-track" x={rail.x} y={row.y + 3} width={trackWidth} height={BAR_H} />
       <rect className="rail-bar" x={rail.x} y={row.y + 3} width={width} height={BAR_H} />
-      {showOverlap && (
-        <rect className="rail-overlap" x={rail.x} y={row.y + 3} width={overlapWidth} height={BAR_H} />
-      )}
+      <rect
+        className="rail-overlap"
+        x={rail.x}
+        y={row.y + 3}
+        width={overlapWidth}
+        height={BAR_H}
+      />
     </g>
   );
 }
