@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 
 import type { ViewId } from '../lib/layout';
+import { ThemeToggle } from './ThemeToggle';
 import { ViewTabs } from './ViewTabs';
 import { Wordmark } from './Wordmark';
 
@@ -44,10 +45,15 @@ export function SiteHeader({
           which is what stops a widening Filters island from sharing a grid
           column with the site nav and squeezing the tabs above it. */}
       {children && <div className="header-tools">{children}</div>}
+      {/* The toggle rides inside the nav island rather than beside it. Every
+          stacked layout below places `.island-nav` as a single grid item, so
+          growing the island costs nothing structurally — a sibling would have
+          needed a column of its own at each breakpoint. */}
       <nav className="island island-nav" aria-label="Site">
         <a href="/about" aria-current={currentPath === '/about' ? 'page' : undefined}>
           About
         </a>
+        <ThemeToggle />
       </nav>
     </header>
   );

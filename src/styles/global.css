@@ -2,8 +2,9 @@
 
 /*
  * 0xProto, subsetted to the eleven glyphs in "neolabs.fyi" — 3.7KB instead of
- * 56KB. Self-hosted (SIL OFL, licence in public/fonts). Used for the wordmark
- * only; the UI stays proportional.
+ * 56KB. Self-hosted (SIL OFL, licence in public/fonts). Still the wordmark's
+ * own face — the UI around it is now mono too, but 0xProto's dotted zero and
+ * slashed glyphs are what the mark was drawn against.
  */
 @font-face {
   font-family: "0xProto Wordmark";
@@ -16,26 +17,44 @@
 /* --------------------------------------------------------------------------
    Tokens. Light values are the defaults; dark is a selected set of steps from
    the same ramps, not an inversion.
+
+   Palette is the "solarpunk pond" set: dark green #0A3323, midnight green
+   #105666, moss #839958, rosy brown #D3968C, beige #F7F4D5. Light mode is warm
+   cream with green ink; dark mode moves to a deep blue-black with the same five
+   hues lightened, rather than inverting the cream.
    -------------------------------------------------------------------------- */
 
 :root {
   color-scheme: light;
 
-  --surface: #fcfcfb;
-  --plane: #f9f9f7;
-  --raised: #ffffff;
-  --ink: #0b0b0b;
-  --ink-2: #52514e;
-  --muted: #898781;
-  --grid: #e1e0d9;
-  --rule: #c3c2b7;
-  --border: rgba(11, 11, 11, 0.1);
+  /* The five palette anchors, kept as named tokens so the derived ones below
+     stay readable. */
+  --pond-green: #0a3323;
+  --pond-midnight: #105666;
+  --pond-moss: #839958;
+  --pond-rosy: #d3968c;
+  /* Warmed off the source beige: hue 55° → 45° and a little less saturated, so
+     the ground reads as cream rather than picking up a green cast from the ink
+     sitting on it. */
+  --pond-beige: #faf4e2;
+
+  --surface: #faf4e2;
+  --plane: #f3ecd8;
+  --raised: #fdf9ee;
+  --ink: #0a3323;
+  --ink-2: #1a3b2c;
+  --muted: #4a6657;
+  /* The reference's rgba(10,51,35,0.14) rule, resolved against the cream so it
+     can also be used as an opaque SVG stroke. --rule is the same ink at 28%. */
+  --grid: #d8d9c7;
+  --rule: #b7bead;
+  --border: rgba(10, 51, 35, 0.14);
   /* Hover and press wash for controls sitting on a raised surface. Translucent
      so it layers over the island, panel or card underneath rather than
      assuming one. A page-surface token can't do this job: --plane is below
      --raised in light and far below it in dark, so it read as a black hole on
      the dark islands. */
-  --control-hover: rgba(11, 11, 11, 0.05);
+  --control-hover: rgba(10, 51, 35, 0.07);
   /* Strength of the research bloom's tints, which are mixed against the page.
      The same percentage does not read the same on both grounds: over the dark
      surface a small amount of colour adds light and registers at once, while
@@ -47,46 +66,73 @@
   --area-rim-mix: 80%;
   --area-spine-mix: 48%;
   --area-leader-mix: 72%;
-  --accent: #eb6834;
-  /* Sampled from the ".fyi" in the cover art. Stepped down for the light
-     surface, where #5ca2ff only reaches ~2.6:1. */
-  --brand-blue: #1f6fd0;
+  /* Rosy brown, deepened. #d3968c itself only reaches 2.2:1 against white, so
+     badges and pips sitting on it would be unreadable; this is the same hue at
+     the weight the reference uses for its own ink-on-cream rosy. */
+  --accent: #b45a48;
+  --on-accent: #faf4e2;
+  /* The ".fyi" in the wordmark, and the selected state on every control.
+     Midnight green is the palette's one cool hue — it's what the reference
+     reserves for links and emphasis. */
+  --brand: #105666;
+  /* The "neolabs" half of the mark, in the favicon's terracotta. Deliberately
+     not --accent: the two happen to sit a shade apart, but identity and
+     "something needs your attention" should be free to move independently. */
+  --wordmark: #b55a48;
+  --select: #105666;
+  --on-select: #faf4e2;
+  /* Prose and drawer links. Midnight, going rosy on hover, exactly as on the
+     reference. */
+  --link: #105666;
+  --link-hover: #b45a48;
 
-  /* Sequential valuation ramp: pale (small) → deep (large). */
-  --seq-0: #86b6ef;
-  --seq-1: #6da7ec;
-  --seq-2: #5598e7;
-  --seq-3: #3987e5;
-  --seq-4: #2a78d6;
-  --seq-5: #256abf;
-  --seq-6: #184f95;
-  --seq-7: #0d366b;
+  /* Sequential valuation ramp: pale moss (small) → midnight → dark green
+     (large). Single-hue is no longer possible here — the palette's light end is
+     yellow-green and its dark end is blue-green — but lightness stays strictly
+     monotonic, which is the property the ramp is actually read by. */
+  --seq-0: #d3dcb5;
+  --seq-1: #c2cf9e;
+  --seq-2: #aebe86;
+  --seq-3: #96ac6a;
+  --seq-4: #7f9c52;
+  --seq-5: #4c7f5a;
+  --seq-6: #17606a;
+  --seq-7: #0a3323;
 
   /* Ink for a label sitting on each ramp step. Picked per step as whichever of
      black/white has more contrast against that fill — every pair clears 4.4:1.
      A single "on-fill" colour can't work when the ramp spans both ends. */
-  --on-seq-0: #0b0b0b;
-  --on-seq-1: #0b0b0b;
-  --on-seq-2: #0b0b0b;
-  --on-seq-3: #0b0b0b;
-  --on-seq-4: #0b0b0b;
+  --on-seq-0: #0a3323;
+  --on-seq-1: #0a3323;
+  --on-seq-2: #0a3323;
+  --on-seq-3: #0a3323;
+  --on-seq-4: #0a3323;
   --on-seq-5: #ffffff;
   --on-seq-6: #ffffff;
-  --on-seq-7: #ffffff;
+  --on-seq-7: #faf4e2;
 
   /* Off-ramp neutral for labs with no reported valuation. */
-  --unknown-fill: #c3c2b7;
-  --unknown-ink: #0b0b0b;
+  --unknown-fill: #b7bead;
+  --unknown-ink: #0a3323;
 
-  --font: "Google Sans Flex", system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Mono for the interface, serif for headings. IBM Plex Mono shares 0xProto's
+     0.6em advance, so the wordmark and the controls beside it sit on the same
+     rhythm; the local ui-monospace stack behind it is deliberate, and renders
+     close enough on macOS that nothing shifts before the webfont lands. */
+  --font: "IBM Plex Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo,
+    Consolas, monospace;
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
 
   /* Header metrics. Every control in the header row derives from these, so the
      row can only ever be one height and the pills inside it one size. */
   --island-h: 2.5rem;
   --island-pad: 0.28rem;
   --island-gap: 0.35rem;
-  --control-font: 0.82rem;
-  --control-pad-x: 0.72rem;
+  /* Mono runs wide — a label set in IBM Plex Mono is roughly 15% longer than
+     the same label in a proportional face. Font size and padding are stepped
+     down to keep the pills the width the header was laid out around. */
+  --control-font: 0.74rem;
+  --control-pad-x: 0.6rem;
   --header-pad: 0.75rem;
   --header-gap: 0.5rem;
 }
@@ -94,14 +140,23 @@
 @media (prefers-color-scheme: dark) {
   :root:where(:not([data-theme="light"])) {
     color-scheme: dark;
-    --surface: #1a1a19;
-    --plane: #0d0d0d;
-    --raised: #232322;
-    --ink: #ffffff;
-    --ink-2: #c3c2b7;
-    --muted: #898781;
-    --grid: #2c2c2a;
-    --rule: #383835;
+    /* Not an inversion of the cream: the reference's own dark mode drops to a
+       deep blue-black and lightens the five hues rather than tinting the ground
+       green, which at this size would read as a mistake. */
+    --pond-green: #d6e2dc;
+    --pond-midnight: #9ec5cc;
+    --pond-moss: #b8cda1;
+    --pond-rosy: #e6b3aa;
+    --pond-beige: #f0eed8;
+
+    --surface: #0a0f1a;
+    --plane: #060a12;
+    --raised: #141b28;
+    --ink: #e6e9ef;
+    --ink-2: #cdd3dd;
+    --muted: #8a93a6;
+    --grid: #232b3a;
+    --rule: #333d4f;
     --border: rgba(255, 255, 255, 0.1);
     --control-hover: rgba(255, 255, 255, 0.08);
     --area-fill-mix: 7%;
@@ -110,42 +165,57 @@
     --area-rim-mix: 70%;
     --area-spine-mix: 36%;
     --area-leader-mix: 62%;
-    --accent: #d95926;
-    --brand-blue: #5ca2ff;
+    --accent: #e6b3aa;
+    --on-accent: #2b1512;
+    --brand: #9ec5cc;
+    /* #b55a48 sits at 2.1:1 on the blue-black — too dark to be a logotype.
+       Same hue lifted until it clears 6:1, rather than the palette's pastel
+       dark rosy, which drains the terracotta the mark is recognised by. */
+    --wordmark: #d9866f;
+    --select: #9ec5cc;
+    --on-select: #0a0f1a;
+    --link: #9ec5cc;
+    --link-hover: #e6b3aa;
 
-    --seq-0: #184f95;
-    --seq-1: #256abf;
-    --seq-2: #2a78d6;
-    --seq-3: #3987e5;
-    --seq-4: #5598e7;
-    --seq-5: #6da7ec;
-    --seq-6: #86b6ef;
-    --seq-7: #b7d3f6;
+    --seq-0: #17606a;
+    --seq-1: #2c7a72;
+    --seq-2: #4c8f66;
+    --seq-3: #6ba25c;
+    --seq-4: #8fb46a;
+    --seq-5: #a9c489;
+    --seq-6: #c2d3a5;
+    --seq-7: #dbe4c4;
 
     --on-seq-0: #ffffff;
     --on-seq-1: #ffffff;
-    --on-seq-2: #0b0b0b;
-    --on-seq-3: #0b0b0b;
-    --on-seq-4: #0b0b0b;
-    --on-seq-5: #0b0b0b;
-    --on-seq-6: #0b0b0b;
-    --on-seq-7: #0b0b0b;
+    --on-seq-2: #0a0f1a;
+    --on-seq-3: #0a0f1a;
+    --on-seq-4: #0a0f1a;
+    --on-seq-5: #0a0f1a;
+    --on-seq-6: #0a0f1a;
+    --on-seq-7: #0a0f1a;
 
-    --unknown-fill: #4a4a46;
-    --unknown-ink: #ffffff;
+    --unknown-fill: #4a5850;
+    --unknown-ink: #e6e9ef;
   }
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --surface: #1a1a19;
-  --plane: #0d0d0d;
-  --raised: #232322;
-  --ink: #ffffff;
-  --ink-2: #c3c2b7;
-  --muted: #898781;
-  --grid: #2c2c2a;
-  --rule: #383835;
+  --pond-green: #d6e2dc;
+  --pond-midnight: #9ec5cc;
+  --pond-moss: #b8cda1;
+  --pond-rosy: #e6b3aa;
+  --pond-beige: #f0eed8;
+
+  --surface: #0a0f1a;
+  --plane: #060a12;
+  --raised: #141b28;
+  --ink: #e6e9ef;
+  --ink-2: #cdd3dd;
+  --muted: #8a93a6;
+  --grid: #232b3a;
+  --rule: #333d4f;
   --border: rgba(255, 255, 255, 0.1);
   --control-hover: rgba(255, 255, 255, 0.08);
   --area-fill-mix: 7%;
@@ -154,29 +224,35 @@
   --area-rim-mix: 70%;
   --area-spine-mix: 36%;
   --area-leader-mix: 62%;
-  --accent: #d95926;
-  --brand-blue: #5ca2ff;
+  --accent: #e6b3aa;
+  --on-accent: #2b1512;
+  --brand: #9ec5cc;
+  --wordmark: #d9866f;
+  --select: #9ec5cc;
+  --on-select: #0a0f1a;
+  --link: #9ec5cc;
+  --link-hover: #e6b3aa;
 
-  --seq-0: #184f95;
-  --seq-1: #256abf;
-  --seq-2: #2a78d6;
-  --seq-3: #3987e5;
-  --seq-4: #5598e7;
-  --seq-5: #6da7ec;
-  --seq-6: #86b6ef;
-  --seq-7: #b7d3f6;
+  --seq-0: #17606a;
+  --seq-1: #2c7a72;
+  --seq-2: #4c8f66;
+  --seq-3: #6ba25c;
+  --seq-4: #8fb46a;
+  --seq-5: #a9c489;
+  --seq-6: #c2d3a5;
+  --seq-7: #dbe4c4;
 
   --on-seq-0: #ffffff;
   --on-seq-1: #ffffff;
-  --on-seq-2: #0b0b0b;
-  --on-seq-3: #0b0b0b;
-  --on-seq-4: #0b0b0b;
-  --on-seq-5: #0b0b0b;
-  --on-seq-6: #0b0b0b;
-  --on-seq-7: #0b0b0b;
+  --on-seq-2: #0a0f1a;
+  --on-seq-3: #0a0f1a;
+  --on-seq-4: #0a0f1a;
+  --on-seq-5: #0a0f1a;
+  --on-seq-6: #0a0f1a;
+  --on-seq-7: #0a0f1a;
 
-  --unknown-fill: #4a4a46;
-  --unknown-ink: #ffffff;
+  --unknown-fill: #4a5850;
+  --unknown-ink: #e6e9ef;
 }
 
 * {
@@ -188,11 +264,33 @@ body {
   background: var(--surface);
   color: var(--ink);
   font-family: var(--font);
+  /* 15px/1.7, as the reference sets it. Everything sized in rem is unaffected —
+     this governs the long-form pages and anything that inherits. */
+  font-size: 0.9375rem;
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 a {
   color: inherit;
+}
+
+::selection {
+  background: var(--pond-moss);
+  color: var(--pond-beige);
+}
+
+:root[data-theme="dark"] ::selection {
+  background: var(--pond-midnight);
+  color: var(--surface);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) ::selection {
+    background: var(--pond-midnight);
+    color: var(--surface);
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -239,7 +337,7 @@ a {
   max-width: 68ch;
   margin: 0 auto;
   padding: 2.5rem 1.5rem;
-  line-height: 1.65;
+  line-height: 1.75;
   color: var(--ink-2);
 }
 
@@ -251,28 +349,37 @@ a {
 .lab-page h2,
 .lab-page h3 {
   color: var(--ink);
-  letter-spacing: -0.02em;
+  /* Fraunces at 500 is the reference's only display weight; it has no bold in
+     the loaded set, so nothing here asks for one. */
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.01em;
   line-height: 1.25;
 }
 
 .prose h1 {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 2.1rem;
   margin: 0 0 1rem;
 }
 
+/*
+ * Upright and midnight, flush to the measure. Weight and the space above it are
+ * what separate one section from the next — a marker in the left margin was
+ * doing that job, and with it gone 500 sat too quietly to break the column.
+ */
 .prose h2,
 .lab-page h2 {
-  font-size: 1.3rem;
-  font-weight: 700;
-  margin: 2.2rem 0 0.7rem;
+  font-size: 1.28rem;
+  font-weight: 600;
+  color: var(--link);
+  letter-spacing: 0.01em;
+  margin: 2.9rem 0 0.9rem;
 }
 
 .prose h3,
 .lab-page h3 {
-  font-size: 1rem;
-  font-weight: 700;
-  margin: 1.6rem 0 0.5rem;
+  font-size: 1.08rem;
+  margin: 1.7rem 0 0.4rem;
 }
 
 .prose p,
@@ -350,23 +457,25 @@ a {
   color: var(--ink-2);
 }
 
+/*
+ * Underlined with a border rather than text-decoration, so the rule sits clear
+ * of the mono descenders and can change colour on hover independently — the
+ * reference's link treatment exactly.
+ */
 .prose a,
 .lab-page a:not(.backlink) {
-  color: var(--seq-5);
-  text-decoration-color: color-mix(in srgb, var(--seq-5) 40%, transparent);
-  text-underline-offset: 2px;
+  color: var(--link);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--link) 38%, transparent);
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
 }
 
-:root[data-theme="dark"] .prose a,
-:root[data-theme="dark"] .lab-page a:not(.backlink) {
-  color: var(--seq-6);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:where(:not([data-theme="light"])) .prose a,
-  :root:where(:not([data-theme="light"])) .lab-page a:not(.backlink) {
-    color: var(--seq-6);
-  }
+.prose a:hover,
+.lab-page a:not(.backlink):hover {
+  color: var(--link-hover);
+  border-bottom-color: var(--link-hover);
 }
 
 .prose code,
@@ -554,7 +663,7 @@ body.is-bare {
   line-height: 1.5;
   letter-spacing: -0.01em;
   text-decoration: none;
-  color: var(--ink);
+  color: var(--wordmark);
   white-space: nowrap;
   /* Left padding lands the mark's first glyph on the same 1.5rem gutter the
      page content below it uses. The extra margin on the right separates
@@ -565,12 +674,60 @@ body.is-bare {
 }
 
 .wordmark-dot {
-  color: var(--brand-blue);
+  color: var(--brand);
 }
 
 .island-nav {
   margin-left: auto;
   flex: none;
+}
+
+/*
+ * Square rather than label-shaped, so the island grows by about one control
+ * height and no more. It shares the metrics of everything else in a header
+ * island via `.island-btn`, so it can't drift out of step with the link
+ * beside it.
+ */
+.theme-toggle {
+  padding: 0;
+  width: calc(var(--island-h) - 2 * var(--island-pad));
+  color: var(--muted);
+}
+
+.theme-toggle:hover {
+  color: var(--ink);
+  background: var(--control-hover);
+}
+
+.theme-icon {
+  display: block;
+}
+
+/*
+ * Which icon shows is a stylesheet decision, not a scripted one — see the note
+ * in ThemeToggle. The moon is the default because the unset state is light;
+ * each of the three ways a page can end up dark turns it over to the sun.
+ */
+.theme-icon-sun {
+  display: none;
+}
+
+:root[data-theme="dark"] .theme-icon-sun {
+  display: block;
+}
+
+:root[data-theme="dark"] .theme-icon-moon {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) .theme-icon-sun {
+    display: block;
+  }
+
+  :root:where(:not([data-theme="light"])) .theme-icon-moon {
+    display: none;
+  }
 }
 
 .island-nav a[aria-current="page"] {
@@ -688,8 +845,8 @@ body.is-bare {
 }
 
 .viewtab.is-active {
-  background: var(--seq-4);
-  color: #fff;
+  background: var(--select);
+  color: var(--on-select);
   font-weight: 600;
 }
 
@@ -709,7 +866,7 @@ body.is-bare {
 
 .pip {
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   font-size: 0.62rem;
   font-weight: 700;
   min-width: 1.05rem;
@@ -878,7 +1035,7 @@ body.is-bare {
 }
 
 .range-fill {
-  background: var(--seq-4);
+  background: var(--select);
 }
 
 .range-track-wrap input[type="range"] {
@@ -898,7 +1055,7 @@ body.is-bare {
   height: 14px;
   border-radius: 50%;
   background: var(--raised);
-  border: 2px solid var(--seq-5);
+  border: 2px solid var(--select);
   cursor: grab;
 }
 
@@ -908,7 +1065,7 @@ body.is-bare {
   height: 14px;
   border-radius: 50%;
   background: var(--raised);
-  border: 2px solid var(--seq-5);
+  border: 2px solid var(--select);
   cursor: grab;
 }
 
@@ -956,9 +1113,9 @@ body.is-bare {
 }
 
 .chip.is-on {
-  background: var(--seq-4);
-  border-color: var(--seq-4);
-  color: #fff;
+  background: var(--select);
+  border-color: var(--select);
+  color: var(--on-select);
   font-weight: 600;
 }
 
@@ -1007,6 +1164,9 @@ body.is-bare {
    inline, because it depends on which ramp step the bubble landed on. */
 .bubble-label {
   font-weight: 600;
+  /* Mono here would blow past the width labelFit measured for; the display face
+     is narrower and reads better at bubble scale. */
+  font-family: var(--font-display);
   pointer-events: none;
 }
 
@@ -1103,9 +1263,10 @@ body.is-bare {
 
 .area-label-title {
   fill: var(--ink);
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: -0.015em;
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0;
 }
 
 .area-label-count {
@@ -1185,9 +1346,10 @@ body.is-bare {
 
 .bloom-core-title {
   fill: var(--ink);
-  font-size: 10.5px;
-  font-weight: 760;
-  letter-spacing: 0.025em;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 .bloom-core-count {
@@ -1241,8 +1403,9 @@ body.is-bare {
 
 .hub-label {
   fill: var(--ink);
-  font-size: 12px;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 500;
   paint-order: stroke;
   stroke: var(--surface);
   stroke-width: 3px;
@@ -1300,9 +1463,10 @@ body.is-bare {
 
 .tooltip-title {
   color: var(--ink);
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0;
   line-height: 1.25;
 }
 
@@ -1378,8 +1542,10 @@ body.is-bare {
 
 .drawer-head h2 {
   margin: 0;
-  font-size: 1.15rem;
-  letter-spacing: -0.02em;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.25rem;
+  letter-spacing: 0;
 }
 
 .badge {
@@ -1388,7 +1554,7 @@ body.is-bare {
   letter-spacing: 0.08em;
   font-weight: 700;
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   padding: 0.1rem 0.35rem;
   border-radius: 4px;
 }
@@ -1517,7 +1683,7 @@ body.is-bare {
   margin-top: 1rem;
   font-size: 0.82rem;
   font-weight: 600;
-  color: var(--seq-5);
+  color: var(--link);
   text-decoration: none;
 }
 
@@ -1575,11 +1741,11 @@ body.is-bare {
 }
 
 .search:focus-within {
-  border-color: var(--seq-4);
+  border-color: var(--select);
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.08),
     0 8px 24px -8px rgba(0, 0, 0, 0.22),
-    0 0 0 3px color-mix(in srgb, var(--seq-4) 25%, transparent);
+    0 0 0 3px color-mix(in srgb, var(--select) 25%, transparent);
 }
 
 .search input::-webkit-search-cancel-button {
@@ -1630,8 +1796,10 @@ table.labs {
   white-space: normal;
   border-collapse: collapse;
   width: 100%;
-  font-size: 0.84rem;
-  min-width: 62rem;
+  /* Stepped down from 0.84rem and given more track: mono sets every column
+     wider, and at the old size the prose columns wrapped to three lines each. */
+  font-size: 0.78rem;
+  min-width: 68rem;
 }
 
 table.labs th,
@@ -1722,10 +1890,11 @@ td.name a:hover {
 
 .lab-page h1 {
   color: var(--ink);
-  font-size: clamp(2.4rem, 5vw, 3.25rem);
-  font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -0.045em;
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 3rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
   overflow-wrap: anywhere;
   margin: 0.65rem 0 0;
 }
@@ -1898,8 +2067,11 @@ td.name a:hover {
     --island-h: 2.75rem;
     --header-pad: 0.5rem;
     --header-gap: 0.45rem;
-    /* Tightened so all five tabs fit a 390px screen without scrolling. */
-    --control-pad-x: 0.5rem;
+    /* Tightened so all five tabs fit a 390px screen without scrolling. Mono
+       sets the labels wider than the face this was measured against, so the
+       padding gives back what the glyphs took: at 0.38rem the strip measured
+       378px against the 374px a 390px screen leaves, and scrolled by four. */
+    --control-pad-x: 0.32rem;
   }
 
   .site-header .wordmark {
@@ -1987,8 +2159,8 @@ td.name a:hover {
   }
 
   .sheet-action-primary {
-    background: var(--seq-4);
-    color: #fff;
+    background: var(--select);
+    color: var(--on-select);
     font-weight: 600;
   }
 
@@ -2074,8 +2246,9 @@ td.name a:hover {
 
   .lab-card-name {
     color: var(--ink);
-    font-size: 1rem;
-    font-weight: 700;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 500;
   }
 
   .lab-card-valuation {

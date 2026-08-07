@@ -66,10 +66,24 @@ const ogImage = new URL('/og/cover.png', site).href;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100..900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&display=swap"
     />
 
     <link rel="sitemap" href="/sitemap-index.xml" />
+
+    {/*
+      Runs before the body renders, so a stored preference is on the element
+      by first paint. Deferring this to a module would flash the system theme
+      on every load for anyone whose choice disagrees with it. No stored value
+      means no attribute, which is what leaves `prefers-color-scheme` in charge.
+    */}
+    <script is:inline>
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark')
+          document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
     {
       jsonLd && (
         <script
@@ -87,5 +101,29 @@ const ogImage = new URL('/og/cover.png', site).href;
       <slot />
     </main>
 
+    {/*
+      Delegated from the document, so it covers both copies of the header: the
+      one Astro renders here and the one the explorer mounts from React. A
+      listener bound to the button itself would be dropped the first time React
+      re-rendered its header, and binding after hydration would leave the
+      static pages — which mount nothing — with a dead button.
+    */}
+    <script is:inline>
+      document.addEventListener('click', function (event) {
+        var target = event.target;
+        if (!(target instanceof Element)) return;
+        var button = target.closest('[data-theme-toggle]');
+        if (!button) return;
+        var root = document.documentElement;
+        var current =
+          root.dataset.theme ||
+          (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        var next = current === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = next;
+        try {
+          localStorage.setItem('theme', next);
+        } catch (e) {}
+      });
+    </script>
   </body>
 </html>

@@ -5,18 +5,26 @@ import type { DomainId } from '../../data/types';
 import type { AreaAtlas, AreaSector } from '../../lib/layout';
 import { stable } from '../../lib/precision';
 
+/*
+ * Categorical, so these are eleven hues rather than a ramp — but pulled toward
+ * the palette's earth-and-pond register (moss, midnight, ochre, terracotta)
+ * instead of the saturated screen colours they were. Each is mixed against the
+ * page at a low percentage, so they only ever appear as tints; the pairs that
+ * sit closest in hue (coding/safety, rsi/neuro) are the ones separated most in
+ * lightness.
+ */
 export const AREA_COLORS: Record<DomainId, string> = {
-  general: '#6e9fec',
-  coding: '#59b995',
-  rsi: '#9c82cc',
-  physical: '#d47d69',
-  world: '#c59c4c',
-  science: '#52aab7',
-  inference: '#c8759d',
-  compute: '#7f8fd2',
-  applied: '#cf8e55',
-  safety: '#78aa72',
-  neuro: '#ae79b9',
+  general: '#4b8b96',
+  coding: '#8d9e4e',
+  rsi: '#8a7fc0',
+  physical: '#c4795f',
+  world: '#c4a24f',
+  science: '#3c8c76',
+  inference: '#c17d95',
+  compute: '#7285ad',
+  applied: '#cf8f52',
+  safety: '#5f9268',
+  neuro: '#ab77ab',
 };
 
 const AREA_LABEL_LINES: Record<DomainId, string[]> = {

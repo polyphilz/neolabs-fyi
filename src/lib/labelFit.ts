@@ -76,8 +76,9 @@ function widthEm(line: string): number {
 
   if (!fontSpec) {
     const family =
-      getComputedStyle(document.documentElement).getPropertyValue('--font').trim() ||
-      'system-ui, sans-serif';
+      getComputedStyle(document.documentElement)
+        .getPropertyValue('--font-display')
+        .trim() || 'Georgia, serif';
     // Measured at 100px for precision, then normalised to ems.
     fontSpec = `${LABEL_WEIGHT} 100px ${family}`;
   }
