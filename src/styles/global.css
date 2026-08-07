@@ -551,10 +551,17 @@ body.is-bare {
      click smears a highlight across the nearest labels. */
   user-select: none;
   -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .canvas-svg:active {
   cursor: grabbing;
+}
+
+/* Touch-only help for the canvas views. It is deliberately not interactive:
+   the empty canvas beneath it remains available for panning and dismissal. */
+.mobile-gesture-legend {
+  display: none;
 }
 
 /* Islands ---------------------------------------------------------------- */
@@ -1228,6 +1235,17 @@ body.is-bare {
   stroke: var(--accent);
   stroke-width: var(--selection-stroke, 2);
   vector-effect: non-scaling-stroke;
+}
+
+.bubble.is-repositioning {
+  cursor: grabbing;
+}
+
+.bubble.is-repositioning .bubble-disc {
+  stroke: var(--accent);
+  stroke-width: var(--selection-stroke, 2);
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--accent) 55%, transparent));
 }
 
 .bubble.is-area-muted {
@@ -2341,6 +2359,55 @@ td.name a:hover {
 @media (max-width: 40rem) {
   body.has-sheet {
     overflow: hidden;
+  }
+
+  @media (pointer: coarse) {
+    .mobile-gesture-legend {
+      position: absolute;
+      left: 50%;
+      bottom: calc(0.75rem + env(safe-area-inset-bottom));
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      max-width: calc(100% - 1.5rem);
+      min-height: 2rem;
+      padding: 0.35rem 0.7rem;
+      color: var(--ink-2);
+      background: color-mix(in srgb, var(--raised) 82%, transparent);
+      backdrop-filter: blur(14px) saturate(150%);
+      -webkit-backdrop-filter: blur(14px) saturate(150%);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.08),
+        0 8px 24px -8px rgba(0, 0, 0, 0.22);
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.055em;
+      line-height: 1;
+      text-transform: uppercase;
+      white-space: nowrap;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: opacity 140ms ease;
+      transform: translateX(-50%);
+    }
+
+    .mobile-gesture-legend i {
+      width: 3px;
+      height: 3px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--muted);
+      opacity: 0.75;
+    }
+
+    body.has-sheet .mobile-gesture-legend {
+      opacity: 0;
+    }
   }
 
   :root {

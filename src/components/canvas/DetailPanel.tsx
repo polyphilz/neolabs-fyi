@@ -10,6 +10,7 @@ import {
 
 interface Props {
   lab: Lab | null;
+  openedAt: number;
   onClose: () => void;
 }
 
@@ -17,7 +18,7 @@ interface Props {
  * The drawer shows the same fields as /labs/[slug]; the static page is the
  * canonical, crawlable version and the drawer is the in-canvas preview of it.
  */
-export function DetailPanel({ lab, onClose }: Props) {
+export function DetailPanel({ lab, openedAt, onClose }: Props) {
   if (!lab) return null;
   const caveat = valuationCaveat(lab);
   const founders = foundersByLastName(lab);
@@ -28,7 +29,14 @@ export function DetailPanel({ lab, onClose }: Props) {
         type="button"
         className="drawer-backdrop"
         aria-label="Close details"
-        onClick={onClose}
+        onClick={(event) => {
+          // Opening happens during pointerup. Some touch browsers then target
+          // the compatibility click at the newly mounted backdrop; ignore only
+          // that same activation, while preserving genuine pointer and keyboard
+          // clicks (keyboard-generated clicks have detail === 0).
+          if (event.detail !== 0 && performance.now() - openedAt < 120) return;
+          onClose();
+        }}
       />
       <aside className="drawer" aria-label={`${lab.name} details`}>
         <button

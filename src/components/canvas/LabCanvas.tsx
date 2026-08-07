@@ -62,6 +62,7 @@ const MIN_SCREEN_FONT = 9.5;
  */
 const SLOP_MOUSE = 4;
 const SLOP_TOUCH = 10;
+const TOUCH_LONG_PRESS_MS = 450;
 const slopFor = (pointerType: string) => (pointerType === 'mouse' ? SLOP_MOUSE : SLOP_TOUCH);
 
 /** Minimum on-screen hit radius, so the smallest bubbles are still clickable. */
@@ -192,13 +193,16 @@ export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, o
   const [pinnedLineage, setPinnedLineage] = useState<LineageGroup | null>(null);
   const [hoveredArea, setHoveredArea] = useState<DomainId | null>(null);
   const [pinnedArea, setPinnedArea] = useState<DomainId | null>(null);
+  const [touchFocused, setTouchFocused] = useState<string | null>(null);
+  const [repositioning, setRepositioning] = useState<string | null>(null);
   const dragRef = useRef<{
     node: SimNode;
+    pointerId: number;
     startX: number;
     startY: number;
     pointerType: string;
-    /** True once the slop threshold is crossed — i.e. a real drag. */
-    dragging: boolean;
+    mode: 'pending' | 'pan' | 'node';
+    longPressTimer: number | null;
   } | null>(null);
   /** Same press-vs-drag question for the canvas background. */
   const panRef = useRef<{
@@ -208,6 +212,7 @@ export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, o
     moved: boolean;
     areaId: DomainId | null;
   } | null>(null);
+  const lastPointerDownRef = useRef<{ type: string; at: number }>({ type: 'mouse', at: 0 });
 
   const layout = useMemo(
     () => computeLayout(view, labs, basemap, allLabs, sizeScale),
@@ -217,7 +222,14 @@ export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, o
   useEffect(() => {
     if (view !== 'area') setPinnedArea(null);
     if (view !== 'lineage') setPinnedLineage(null);
+    setTouchFocused(null);
   }, [view]);
+
+  useEffect(() => {
+    setTouchFocused((current) =>
+      current && !labs.some((lab) => lab.slug === current) ? null : current
+    );
+  }, [labs]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -231,8 +243,45 @@ export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, o
   }, []);
 
   const { nodes, frame, reheat, cool } = useSimulation(labs, layout);
-  const vp = useViewport(svgRef, VIEW_W, VIEW_H);
-  const { transform } = vp;
+  const {
+    transform,
+    toCanvas,
+    fit,
+    startPan,
+    movePan,
+    endPan,
+    cancelPan,
+    activePointerCount,
+  } = useViewport(svgRef, VIEW_W, VIEW_H);
+
+  // A filter can remove a lab while a second finger is operating the header.
+  // Release any gesture that still owns that now-hidden node instead of
+  // leaving its timer, fixed coordinates, or repositioning treatment behind.
+  useEffect(() => {
+    const gesture = dragRef.current;
+    if (!gesture || labs.some((lab) => lab.slug === gesture.node.slug)) return;
+    if (gesture.longPressTimer !== null) window.clearTimeout(gesture.longPressTimer);
+    gesture.node.fx = null;
+    gesture.node.fy = null;
+    dragRef.current = null;
+    cancelPan(gesture.pointerId);
+    setRepositioning(null);
+    cool();
+  }, [labs, cancelPan, cool]);
+
+  useEffect(
+    () => () => {
+      const gesture = dragRef.current;
+      if (gesture?.longPressTimer !== null && gesture?.longPressTimer !== undefined) {
+        window.clearTimeout(gesture.longPressTimer);
+      }
+      if (gesture?.mode === 'node') {
+        gesture.node.fx = null;
+        gesture.node.fy = null;
+      }
+    },
+    []
+  );
 
   // How many screen pixels one canvas unit occupies at zoom 1. Needed to decide
   // legibility, and it changes with the viewport, so watch for resizes rather
@@ -267,67 +316,183 @@ export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, o
     return map;
   }, [nodes]);
 
-  const onNodePointerDown = useCallback((e: React.PointerEvent, node: SimNode) => {
-    e.stopPropagation();
-    (e.currentTarget as Element).setPointerCapture(e.pointerId);
-    // Deliberately does not pin the node or reheat the simulation yet: until
-    // the pointer proves it's a drag, this might be a click, and a click
-    // should leave the layout perfectly still.
-    dragRef.current = {
-      node,
-      startX: e.clientX,
-      startY: e.clientY,
-      pointerType: e.pointerType,
-      dragging: false,
-    };
-  }, []);
+  const onNodePointerDown = useCallback(
+    (e: React.PointerEvent, node: SimNode) => {
+      e.stopPropagation();
+      lastPointerDownRef.current = { type: e.pointerType, at: performance.now() };
+      if (e.pointerType === 'touch') setHovered(null);
+
+      const previous = dragRef.current;
+      if (previous?.longPressTimer !== null && previous?.longPressTimer !== undefined) {
+        window.clearTimeout(previous.longPressTimer);
+        previous.longPressTimer = null;
+      }
+
+      // A second touch always means viewport navigation, never a second node
+      // gesture. useViewport will turn the two active pointers into a pinch.
+      if (e.pointerType === 'touch' && previous && previous.pointerId !== e.pointerId) {
+        // Once a long press owns the first finger, ignore additional touches
+        // until that deliberate reposition gesture ends.
+        if (previous.mode === 'node') return;
+        previous.mode = 'pan';
+        previous.node.fx = null;
+        previous.node.fy = null;
+        setRepositioning(null);
+        startPan(e);
+        return;
+      }
+
+      const gesture: NonNullable<typeof dragRef.current> = {
+        node,
+        pointerId: e.pointerId,
+        startX: e.clientX,
+        startY: e.clientY,
+        pointerType: e.pointerType,
+        mode: 'pending',
+        longPressTimer: null,
+      };
+      dragRef.current = gesture;
+
+      if (e.pointerType === 'touch') {
+        // Touch begins as a viewport gesture. Only an unmoving long press can
+        // promote it to direct node manipulation.
+        startPan(e);
+        if (activePointerCount() > 1) {
+          gesture.mode = 'pan';
+          return;
+        }
+        gesture.longPressTimer = window.setTimeout(() => {
+          const current = dragRef.current;
+          if (current !== gesture || current.mode !== 'pending') return;
+          current.longPressTimer = null;
+          current.mode = 'node';
+          cancelPan(current.pointerId);
+          current.node.fx = current.node.x;
+          current.node.fy = current.node.y;
+          setRepositioning(current.node.slug);
+          reheat(0.25);
+        }, TOUCH_LONG_PRESS_MS);
+        return;
+      }
+
+      (e.currentTarget as Element).setPointerCapture(e.pointerId);
+    },
+    [activePointerCount, cancelPan, reheat, startPan]
+  );
 
   const onNodePointerMove = useCallback(
     (e: React.PointerEvent) => {
+      e.stopPropagation();
       const drag = dragRef.current;
-      if (!drag) return;
+      if (!drag || drag.pointerId !== e.pointerId) {
+        if (e.pointerType === 'touch') movePan(e);
+        return;
+      }
 
-      if (!drag.dragging) {
+      if (drag.mode === 'pending') {
         const travelled = Math.hypot(e.clientX - drag.startX, e.clientY - drag.startY);
         if (travelled < slopFor(drag.pointerType)) return;
-        drag.dragging = true;
+        if (drag.longPressTimer !== null) {
+          window.clearTimeout(drag.longPressTimer);
+          drag.longPressTimer = null;
+        }
+        if (drag.pointerType === 'touch') {
+          drag.mode = 'pan';
+          // Rebase at the slop boundary so the viewport does not visibly jump
+          // by the entire threshold when a potential tap becomes a pan.
+          startPan(e);
+          return;
+        }
+        drag.mode = 'node';
         reheat(0.35);
       }
 
-      const p = vp.toCanvas(e.clientX, e.clientY);
+      if (drag.mode === 'pan') {
+        movePan(e);
+        return;
+      }
+
+      const p = toCanvas(e.clientX, e.clientY);
       drag.node.fx = p.x;
       drag.node.fy = p.y;
     },
-    [vp.toCanvas, reheat]
+    [movePan, reheat, startPan, toCanvas]
   );
 
-  const onNodePointerUp = useCallback(
-    (e: React.PointerEvent, node: SimNode) => {
+  const finishNodePointer = useCallback(
+    (e: React.PointerEvent, node: SimNode, cancelled: boolean) => {
+      e.stopPropagation();
       const drag = dragRef.current;
+      if (!drag || drag.pointerId !== e.pointerId) {
+        if (e.pointerType === 'touch') endPan(e);
+        return;
+      }
       dragRef.current = null;
-      if (!drag) return;
+      if (drag.longPressTimer !== null) window.clearTimeout(drag.longPressTimer);
+      if (drag.pointerType === 'touch') endPan(e);
 
-      if (drag.dragging) {
-        // A drag manipulates; it never selects.
-        node.fx = null;
-        node.fy = null;
+      if (drag.mode === 'node') {
+        drag.node.fx = null;
+        drag.node.fy = null;
+        setRepositioning(null);
         cool();
         return;
       }
 
-      e.stopPropagation();
-      onSelect(node.slug === selected ? null : node.slug);
+      if (!cancelled && drag.mode === 'pending') {
+        if (drag.pointerType === 'touch') {
+          if (touchFocused === node.slug) {
+            onSelect(node.slug);
+          } else {
+            setTouchFocused(node.slug);
+          }
+        } else {
+          setTouchFocused(null);
+          onSelect(node.slug === selected ? null : node.slug);
+        }
+      }
     },
-    [cool, onSelect, selected]
+    [cool, endPan, onSelect, selected, touchFocused]
+  );
+
+  const onNodePointerUp = useCallback(
+    (e: React.PointerEvent, node: SimNode) => finishNodePointer(e, node, false),
+    [finishNodePointer]
+  );
+
+  const onNodePointerCancel = useCallback(
+    (e: React.PointerEvent, node: SimNode) => finishNodePointer(e, node, true),
+    [finishNodePointer]
+  );
+
+  const onDirectSelect = useCallback(
+    (slug: string | null) => {
+      setTouchFocused(null);
+      onSelect(slug);
+    },
+    [onSelect]
   );
 
   const onBackgroundDown = useCallback(
     (e: React.PointerEvent) => {
+      lastPointerDownRef.current = { type: e.pointerType, at: performance.now() };
+      const nodeGesture = dragRef.current;
+      if (e.pointerType === 'touch' && nodeGesture?.pointerType === 'touch') {
+        if (nodeGesture.mode === 'node') return;
+        if (nodeGesture.longPressTimer !== null) {
+          window.clearTimeout(nodeGesture.longPressTimer);
+          nodeGesture.longPressTimer = null;
+        }
+        nodeGesture.mode = 'pan';
+        nodeGesture.node.fx = null;
+        nodeGesture.node.fy = null;
+        setRepositioning(null);
+      }
       const rawAreaId =
         e.target instanceof Element
           ? e.target.closest<SVGGElement>('[data-area-id]')?.dataset.areaId
           : undefined;
-      panRef.current = {
+      const pan = {
         startX: e.clientX,
         startY: e.clientY,
         pointerType: e.pointerType,
@@ -337,9 +502,11 @@ export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, o
             ? (rawAreaId as DomainId)
             : null,
       };
-      vp.startPan(e);
+      panRef.current = pan;
+      startPan(e);
+      if (activePointerCount() > 1) pan.moved = true;
     },
-    [vp, view]
+    [activePointerCount, startPan, view]
   );
 
   const onBackgroundMove = useCallback(
@@ -349,20 +516,21 @@ export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, o
         const travelled = Math.hypot(e.clientX - pan.startX, e.clientY - pan.startY);
         if (travelled >= slopFor(pan.pointerType)) pan.moved = true;
       }
-      vp.movePan(e);
+      movePan(e);
     },
-    [vp]
+    [movePan]
   );
 
   const onBackgroundUp = useCallback(
     (e: React.PointerEvent) => {
       const pan = panRef.current;
       panRef.current = null;
-      vp.endPan(e);
+      endPan(e);
       // Only a genuine tap on empty canvas dismisses the panel. Panning used to
       // count as a click on the background and closed whatever you were reading.
       if (pan && !pan.moved) {
         onSelect(null);
+        setTouchFocused(null);
         setPinnedLineage(null);
         if (pan.areaId) {
           setPinnedArea((current) => (current === pan.areaId ? null : pan.areaId));
@@ -371,14 +539,14 @@ export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, o
         }
       }
     },
-    [vp, onSelect]
+    [endPan, onSelect]
   );
 
   /** Hit radius in canvas units that yields MIN_HIT_SCREEN pixels on screen. */
   const hitRadius = MIN_HIT_SCREEN / Math.max(screenScale, 0.0001);
 
   const dec = layout.decorations;
-  const active = hovered ?? selected;
+  const active = hovered ?? selected ?? touchFocused;
   const activeNode = active ? positions.get(active) : null;
   const hoveredNode = hovered ? positions.get(hovered) : null;
   const activeArea =
@@ -426,6 +594,21 @@ export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, o
     []
   );
 
+  const onCanvasContextMenu = useCallback((event: React.MouseEvent<SVGSVGElement>) => {
+    const nativePointerType =
+      'pointerType' in event.nativeEvent
+        ? (event.nativeEvent as PointerEvent).pointerType
+        : undefined;
+    const activeGestureIsTouch =
+      dragRef.current?.pointerType === 'touch' || panRef.current?.pointerType === 'touch';
+    const lastPointerDown = lastPointerDownRef.current;
+    const followsTouch =
+      lastPointerDown.type === 'touch' && performance.now() - lastPointerDown.at < 1500;
+    if (nativePointerType === 'touch' || activeGestureIsTouch || followsTouch) {
+      event.preventDefault();
+    }
+  }, []);
+
   return (
     <div className="canvas-shell">
       <svg
@@ -441,6 +624,7 @@ export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, o
         onPointerMove={onBackgroundMove}
         onPointerUp={onBackgroundUp}
         onPointerCancel={onBackgroundUp}
+        onContextMenu={onCanvasContextMenu}
       >
         {/* Hit surface so gestures over empty canvas still reach the SVG.
             Dismissal is handled by the pointer handlers above, which can tell
@@ -491,6 +675,8 @@ export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, o
             drawOrder={drawOrder}
             frame={frame}
             selected={selected}
+            touchFocused={touchFocused}
+            repositioning={repositioning}
             active={active}
             activeArea={activeArea}
             groupsBySlug={groupsBySlug}
@@ -499,8 +685,9 @@ export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, o
             onNodePointerDown={onNodePointerDown}
             onNodePointerMove={onNodePointerMove}
             onNodePointerUp={onNodePointerUp}
+            onNodePointerCancel={onNodePointerCancel}
             onHover={setHovered}
-            onSelect={onSelect}
+            onSelect={onDirectSelect}
           />
 
           {dec.areaAtlas && (
@@ -537,7 +724,27 @@ export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, o
       {/* Selection has its own full detail card. Keeping the hover summary on
           screen at the same time only duplicates and obscures that content. */}
       {!selected && hoveredNode && (
-        <Tooltip node={hoveredNode} transform={transform} fit={vp.fit} />
+        <Tooltip node={hoveredNode} transform={transform} fit={fit} />
+      )}
+
+      {!selected && (
+        <div className="mobile-gesture-legend" role="note">
+          {touchFocused ? (
+            <>
+              <span>Tap again for profile</span>
+              <i aria-hidden="true" />
+              <span>Tap outside to clear</span>
+            </>
+          ) : (
+            <>
+              <span>Drag to pan</span>
+              <i aria-hidden="true" />
+              <span>Tap to select</span>
+              <i aria-hidden="true" />
+              <span>Hold to move</span>
+            </>
+          )}
+        </div>
       )}
     </div>
   );
@@ -548,6 +755,8 @@ interface BubbleLayerProps {
   /** Mutable simulation nodes need an explicit revision to cross memo(). */
   frame: number;
   selected: string | null;
+  touchFocused: string | null;
+  repositioning: string | null;
   active: string | null;
   activeArea: DomainId | null;
   groupsBySlug: Map<string, LineageGroup[]>;
@@ -556,6 +765,7 @@ interface BubbleLayerProps {
   onNodePointerDown: (event: React.PointerEvent, node: SimNode) => void;
   onNodePointerMove: (event: React.PointerEvent) => void;
   onNodePointerUp: (event: React.PointerEvent, node: SimNode) => void;
+  onNodePointerCancel: (event: React.PointerEvent, node: SimNode) => void;
   onHover: React.Dispatch<React.SetStateAction<string | null>>;
   onSelect: (slug: string | null) => void;
 }
@@ -569,6 +779,8 @@ const BubbleLayer = memo(function BubbleLayer({
   drawOrder,
   frame,
   selected,
+  touchFocused,
+  repositioning,
   active,
   activeArea,
   groupsBySlug,
@@ -577,6 +789,7 @@ const BubbleLayer = memo(function BubbleLayer({
   onNodePointerDown,
   onNodePointerMove,
   onNodePointerUp,
+  onNodePointerCancel,
   onHover,
   onSelect,
 }: BubbleLayerProps) {
@@ -603,7 +816,8 @@ const BubbleLayer = memo(function BubbleLayer({
     <g className="bubbles">
       {drawOrder.map((n) => {
         const isActive = active === n.slug;
-        const isSelected = selected === n.slug;
+        const isSelected = selected === n.slug || touchFocused === n.slug;
+        const isRepositioning = repositioning === n.slug;
         const areaMuted = Boolean(activeArea && n.lab.domain !== activeArea);
         const areaHighlighted = activeArea === n.lab.domain;
         const unknown =
@@ -630,7 +844,7 @@ const BubbleLayer = memo(function BubbleLayer({
           <g
             key={n.slug}
             transform={`translate(${n.x},${n.y})`}
-            className={`bubble${isSelected ? ' is-selected' : ''}${isActive ? ' is-active' : ''}${areaMuted ? ' is-area-muted' : ''}${areaHighlighted ? ' is-area-highlighted' : ''}`}
+            className={`bubble${isSelected ? ' is-selected' : ''}${isActive ? ' is-active' : ''}${isRepositioning ? ' is-repositioning' : ''}${areaMuted ? ' is-area-muted' : ''}${areaHighlighted ? ' is-area-highlighted' : ''}`}
             data-lineages={groupsBySlug.get(n.slug)?.join(' ')}
             style={
               {
@@ -643,12 +857,23 @@ const BubbleLayer = memo(function BubbleLayer({
             onPointerDown={(event) => onNodePointerDown(event, n)}
             onPointerMove={onNodePointerMove}
             onPointerUp={(event) => onNodePointerUp(event, n)}
-            onPointerEnter={() => onHover(n.slug)}
-            onPointerLeave={() => onHover((hovered) => (hovered === n.slug ? null : hovered))}
+            onPointerCancel={(event) => onNodePointerCancel(event, n)}
+            onPointerEnter={(event) => {
+              if (event.pointerType !== 'touch') onHover(n.slug);
+            }}
+            onPointerLeave={(event) => {
+              if (event.pointerType !== 'touch') {
+                onHover((hovered) => (hovered === n.slug ? null : hovered));
+              }
+            }}
             tabIndex={0}
             role="button"
             aria-label={`${n.lab.name}, ${labValuationLabel(n.lab)}, ${spaceLabel(n.lab)}, founded ${n.lab.year}`}
-            onFocus={() => onHover(n.slug)}
+            onFocus={(event) => {
+              // Touch focus must not resurrect the desktop hover tooltip;
+              // keyboard focus remains discoverable through :focus-visible.
+              if (event.currentTarget.matches(':focus-visible')) onHover(n.slug);
+            }}
             onBlur={() => onHover((hovered) => (hovered === n.slug ? null : hovered))}
             onKeyDown={(event) => {
               if (event.key === 'Enter' || event.key === ' ') {

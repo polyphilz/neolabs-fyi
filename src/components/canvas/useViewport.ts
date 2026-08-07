@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export interface Transform {
   k: number;
@@ -144,10 +144,11 @@ export function useViewport(
         panRef.current = null;
         return;
       }
-      panRef.current = { x: e.clientX, y: e.clientY, tx: transform.x, ty: transform.y };
+      const t = tRef.current;
+      panRef.current = { x: e.clientX, y: e.clientY, tx: t.x, ty: t.y };
       (e.currentTarget as Element).setPointerCapture(e.pointerId);
     },
-    [transform]
+    []
   );
 
   const movePan = useCallback(
@@ -179,11 +180,39 @@ export function useViewport(
     [fit, zoomAt]
   );
 
-  const endPan = useCallback((e?: React.PointerEvent) => {
-    if (e) pointers.current.delete(e.pointerId);
+  const cancelPan = useCallback((pointerId?: number) => {
+    if (pointerId !== undefined) pointers.current.delete(pointerId);
     if (pointers.current.size < 2) pinch.current = null;
     panRef.current = null;
   }, []);
 
-  return { transform, toCanvas, fit, startPan, movePan, endPan };
+  const endPan = useCallback(
+    (e?: React.PointerEvent) => cancelPan(e?.pointerId),
+    [cancelPan]
+  );
+
+  const activePointerCount = useCallback(() => pointers.current.size, []);
+
+  return useMemo(
+    () => ({
+      transform,
+      toCanvas,
+      fit,
+      startPan,
+      movePan,
+      endPan,
+      cancelPan,
+      activePointerCount,
+    }),
+    [
+      transform,
+      toCanvas,
+      fit,
+      startPan,
+      movePan,
+      endPan,
+      cancelPan,
+      activePointerCount,
+    ]
+  );
 }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { LAB_BY_SLUG } from '../../data/labs';
 import { TAG_ORDER } from '../../data/taxonomy';
@@ -66,6 +66,7 @@ export function Explorer({ labs, basemap }: Props) {
   const [filters, setFilters] = useState<Filters>(() => defaultFilters(labs));
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<string | null>(null);
+  const selectedAtRef = useRef(0);
 
   const [hydrated, setHydrated] = useState(false);
 
@@ -77,6 +78,7 @@ export function Explorer({ labs, basemap }: Props) {
     // rendered on the server. Replacing it anyway rebuilds the layout and
     // reheats the force simulation immediately after its cold-start settle.
     setFilters((current) => (sameFilters(current, parsed.filters) ? current : parsed.filters));
+    if (parsed.selected) selectedAtRef.current = performance.now();
     setSelected(parsed.selected);
     setQuery(parsed.query);
     setHydrated(true);
@@ -128,7 +130,10 @@ export function Explorer({ labs, basemap }: Props) {
   }, [labs]);
 
   const selectedLab = selected ? LAB_BY_SLUG.get(selected) ?? null : null;
-  const selectLab = useCallback((slug: string | null) => setSelected(slug), []);
+  const selectLab = useCallback((slug: string | null) => {
+    if (slug) selectedAtRef.current = performance.now();
+    setSelected(slug);
+  }, []);
 
   const view = filters.view;
 
@@ -172,7 +177,11 @@ export function Explorer({ labs, basemap }: Props) {
         <LabTable labs={labs} visible={visibleSlugs} />
       </div>
 
-      <DetailPanel lab={selectedLab} onClose={() => setSelected(null)} />
+      <DetailPanel
+        lab={selectedLab}
+        openedAt={selectedAtRef.current}
+        onClose={() => setSelected(null)}
+      />
 
       <span className="sr-only" aria-live="polite">
         {visible.length === labs.length
