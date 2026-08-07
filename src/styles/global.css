@@ -30,6 +30,23 @@
   --grid: #e1e0d9;
   --rule: #c3c2b7;
   --border: rgba(11, 11, 11, 0.1);
+  /* Hover and press wash for controls sitting on a raised surface. Translucent
+     so it layers over the island, panel or card underneath rather than
+     assuming one. A page-surface token can't do this job: --plane is below
+     --raised in light and far below it in dark, so it read as a black hole on
+     the dark islands. */
+  --control-hover: rgba(11, 11, 11, 0.05);
+  /* Strength of the research bloom's tints, which are mixed against the page.
+     The same percentage does not read the same on both grounds: over the dark
+     surface a small amount of colour adds light and registers at once, while
+     over near-white 7% of a mid-tone computes to rgb(242,246,250) and vanishes.
+     Light needs a stronger mix — the palette itself is fine. */
+  --area-fill-mix: 20%;
+  --area-edge-mix: 44%;
+  --area-fill-mix-active: 38%;
+  --area-rim-mix: 80%;
+  --area-spine-mix: 48%;
+  --area-leader-mix: 72%;
   --accent: #eb6834;
   /* Sampled from the ".fyi" in the cover art. Stepped down for the light
      surface, where #5ca2ff only reaches ~2.6:1. */
@@ -86,6 +103,13 @@
     --grid: #2c2c2a;
     --rule: #383835;
     --border: rgba(255, 255, 255, 0.1);
+    --control-hover: rgba(255, 255, 255, 0.08);
+    --area-fill-mix: 7%;
+    --area-edge-mix: 24%;
+    --area-fill-mix-active: 18%;
+    --area-rim-mix: 70%;
+    --area-spine-mix: 36%;
+    --area-leader-mix: 62%;
     --accent: #d95926;
     --brand-blue: #5ca2ff;
 
@@ -123,6 +147,13 @@
   --grid: #2c2c2a;
   --rule: #383835;
   --border: rgba(255, 255, 255, 0.1);
+  --control-hover: rgba(255, 255, 255, 0.08);
+  --area-fill-mix: 7%;
+  --area-edge-mix: 24%;
+  --area-fill-mix-active: 18%;
+  --area-rim-mix: 70%;
+  --area-spine-mix: 36%;
+  --area-leader-mix: 62%;
   --accent: #d95926;
   --brand-blue: #5ca2ff;
 
@@ -502,7 +533,7 @@ body.is-bare {
 .island-btn:hover,
 .island-nav a:hover {
   color: var(--ink);
-  background: var(--plane);
+  background: var(--control-hover);
 }
 
 .island-wrap {
@@ -668,7 +699,7 @@ body.is-bare {
 
 .island-btn.is-active {
   color: var(--ink);
-  background: var(--plane);
+  background: var(--control-hover);
 }
 
 .island-btn-quiet {
@@ -727,7 +758,7 @@ body.is-bare {
 
 .island-zoom button:hover {
   color: var(--ink);
-  background: var(--plane);
+  background: var(--control-hover);
 }
 
 /* Filter panel ----------------------------------------------------------- */
@@ -993,8 +1024,8 @@ body.is-bare {
 }
 
 .area-sector-fill {
-  fill: color-mix(in srgb, var(--area-color) 7%, var(--surface));
-  stroke: color-mix(in srgb, var(--area-color) 24%, var(--grid));
+  fill: color-mix(in srgb, var(--area-color) var(--area-fill-mix), var(--surface));
+  stroke: color-mix(in srgb, var(--area-color) var(--area-edge-mix), var(--grid));
   stroke-width: 0.7;
   vector-effect: non-scaling-stroke;
   transition:
@@ -1013,23 +1044,23 @@ body.is-bare {
 }
 
 .area-sector-rim {
-  stroke: color-mix(in srgb, var(--area-color) 70%, var(--rule));
+  stroke: color-mix(in srgb, var(--area-color) var(--area-rim-mix), var(--rule));
   stroke-width: 1.45;
 }
 
 .area-sector-spine {
-  stroke: color-mix(in srgb, var(--area-color) 36%, var(--grid));
+  stroke: color-mix(in srgb, var(--area-color) var(--area-spine-mix), var(--grid));
   stroke-width: 0.7;
   stroke-dasharray: 1 6;
 }
 
 .area-label-leader {
-  stroke: color-mix(in srgb, var(--area-color) 62%, var(--rule));
+  stroke: color-mix(in srgb, var(--area-color) var(--area-leader-mix), var(--rule));
   stroke-width: 0.8;
 }
 
 .area-sector.is-active .area-sector-fill {
-  fill: color-mix(in srgb, var(--area-color) 18%, var(--surface));
+  fill: color-mix(in srgb, var(--area-color) var(--area-fill-mix-active), var(--surface));
   stroke: color-mix(in srgb, var(--area-color) 68%, var(--ink));
 }
 
@@ -1328,7 +1359,7 @@ body.is-bare {
 
 .drawer-close:hover {
   color: var(--ink);
-  background: var(--plane);
+  background: var(--control-hover);
 }
 
 .drawer-head {
@@ -1453,7 +1484,7 @@ body.is-bare {
 
 .lineage-labs button:hover,
 .lineage-labs button:focus-visible {
-  background: var(--plane);
+  background: var(--control-hover);
   outline: none;
 }
 
@@ -2025,7 +2056,7 @@ td.name a:hover {
   }
 
   .lab-card:active {
-    background: var(--plane);
+    background: var(--control-hover);
   }
 
   .lab-card-head {
