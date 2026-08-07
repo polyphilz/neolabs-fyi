@@ -1,7 +1,6 @@
 ---
 import '../styles/global.css';
-import { SiteNav } from '../components/SiteNav';
-import { Wordmark } from '../components/Wordmark';
+import { SiteHeader } from '../components/SiteHeader';
 
 interface Props {
   title: string;
@@ -11,8 +10,8 @@ interface Props {
   /** Optional JSON-LD object graph. */
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
   /**
-   * Drop the header and footer and let the page own the whole viewport.
-   * The map page draws its own floating nav over the canvas.
+   * Drop the header and let the page own the whole viewport. The explorer
+   * renders the same header itself, floating over its canvas.
   */
   bare?: boolean;
 }
@@ -24,12 +23,6 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 // Must be absolute — crawlers don't resolve relative URLs, and they don't run
 // JS, so this has to be a real static file.
 const ogImage = new URL('/og/cover.png', site).href;
-const views = [
-  { href: '/', label: 'Research' },
-  { href: '/?view=lineage', label: 'Lineage' },
-  { href: '/?view=geography', label: 'Geography' },
-  { href: '/?view=valuation', label: 'Valuation' },
-];
 ---
 
 <!doctype html>
@@ -88,20 +81,7 @@ const views = [
     }
   </head>
   <body class={bare ? 'is-bare' : undefined}>
-    {!bare && (
-    <header class="site-header">
-      <Wordmark />
-      <nav class="island island-views" aria-label="Map views">
-        {
-          views.map((item) => (
-            <a class="viewtab" href={item.href}>{item.label}</a>
-          ))
-        }
-      </nav>
-      <slot name="header-tools" />
-      <SiteNav currentPath={currentPath} />
-    </header>
-    )}
+    {!bare && <SiteHeader currentPath={currentPath} />}
 
     <main>
       <slot />

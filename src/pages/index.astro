@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { Explorer } from '../components/canvas/Explorer';
-import { LABS, TOTAL_VALUATION_USDM } from '../data/labs';
+import { LABS, LABS_BY_VALUATION, TOTAL_VALUATION_USDM } from '../data/labs';
 import { buildBasemap } from '../lib/basemap';
 import { money } from '../lib/format';
 
@@ -13,24 +13,39 @@ const description = `An interactive map of ${LABS.length} AI neolabs worth ~${mo
   TOTAL_VALUATION_USDM
 )} combined — sized by valuation and grouped by lineage, geography, and research area.`;
 
-// The homepage is a full-bleed canvas, so the crawlable inventory of all 63
-// labs lives on /table (linked from the floating nav and in the sitemap)
-// rather than as hidden markup here.
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Dataset',
-  name: 'AI Neolabs',
-  description,
-  url: 'https://neolabs.fyi/',
-  distribution: { '@type': 'DataDownload', contentUrl: 'https://neolabs.fyi/table' },
-  variableMeasured: [
-    'valuation',
-    'founding year',
-    'research area',
-    'founder lineage',
-    'headquarters',
-  ],
-};
+// The table is a view of this page rather than a page of its own, so the
+// crawlable inventory of every lab is rendered here — the explorer always
+// mounts the table and CSS hides it away from ?view=table. Both the dataset and
+// the list it contains are described for crawlers.
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Dataset',
+    name: 'AI Neolabs',
+    description,
+    url: 'https://neolabs.fyi/',
+    distribution: { '@type': 'DataDownload', contentUrl: 'https://neolabs.fyi/?view=table' },
+    variableMeasured: [
+      'valuation',
+      'founding year',
+      'research area',
+      'founder lineage',
+      'headquarters',
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'AI Neolabs by valuation',
+    numberOfItems: LABS.length,
+    itemListElement: LABS_BY_VALUATION.map((lab, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `https://neolabs.fyi/labs/${lab.slug}`,
+      name: lab.name,
+    })),
+  },
+];
 ---
 
 <Layout

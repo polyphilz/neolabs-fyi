@@ -6,7 +6,15 @@ import type { Basemap } from './basemap';
 export const VIEW_W = 1200;
 export const VIEW_H = 680;
 
-export type ViewId = 'valuation' | 'lineage' | 'geography' | 'area';
+/** Views the canvas knows how to draw — each one is a bubble layout. */
+export type CanvasViewId = 'valuation' | 'lineage' | 'geography' | 'area';
+
+/**
+ * Every view of the dataset. The table reads the same filter state as the
+ * canvas — that's the point of it being a view rather than a page — but it
+ * isn't a layout, so it stays out of `CanvasViewId`.
+ */
+export type ViewId = CanvasViewId | 'table';
 
 export const VIEWS: { id: ViewId; label: string; hint: string }[] = [
   {
@@ -17,7 +25,12 @@ export const VIEWS: { id: ViewId; label: string; hint: string }[] = [
   { id: 'lineage', label: 'Lineage', hint: 'Which lab each founding team came out of.' },
   { id: 'geography', label: 'Geography', hint: 'Where the labs actually are.' },
   { id: 'valuation', label: 'Valuation', hint: 'Bubble area is proportional to valuation.' },
+  { id: 'table', label: 'Table', hint: 'The same labs as a sortable table.' },
 ];
+
+export const VIEW_IDS = VIEWS.map((v) => v.id);
+
+export const isCanvasView = (view: ViewId): view is CanvasViewId => view !== 'table';
 
 /**
  * Area-proportional sizing: radius scales with the square root of valuation, so
@@ -398,7 +411,7 @@ function progressiveLanes(count: number): number[] {
 }
 
 export function computeLayout(
-  view: ViewId,
+  view: CanvasViewId,
   labs: Lab[],
   basemap: Basemap,
   referenceLabs: Lab[] = labs

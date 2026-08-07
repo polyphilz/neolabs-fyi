@@ -1,6 +1,6 @@
 import { DOMAIN_ORDER, LINEAGE_ORDER, TAG_ORDER } from '../data/taxonomy';
 import type { DomainId, Lab, LineageGroup, TagId } from '../data/types';
-import { lineageGroupsOf, type ViewId } from './layout';
+import { VIEW_IDS, lineageGroupsOf, type ViewId } from './layout';
 
 export interface Filters {
   view: ViewId;
@@ -60,10 +60,16 @@ export function isDefault(f: Filters, labs: Lab[]): boolean {
 // URL round-tripping — every filter state is a shareable, linkable page
 // ---------------------------------------------------------------------------
 
-export function toParams(f: Filters, labs: Lab[], selected: string | null): URLSearchParams {
+export function toParams(
+  f: Filters,
+  labs: Lab[],
+  selected: string | null,
+  query = ''
+): URLSearchParams {
   const b = bounds(labs);
   const p = new URLSearchParams();
   if (f.view !== 'area') p.set('view', f.view);
+  if (query.trim()) p.set('q', query);
   if (f.minUsdM !== b.minUsdM) p.set('vmin', String(f.minUsdM));
   if (f.maxUsdM !== b.maxUsdM) p.set('vmax', String(f.maxUsdM));
   if (f.minYear !== b.minYear) p.set('ymin', String(f.minYear));
@@ -75,12 +81,10 @@ export function toParams(f: Filters, labs: Lab[], selected: string | null): URLS
   return p;
 }
 
-const VIEW_IDS: ViewId[] = ['valuation', 'lineage', 'geography', 'area'];
-
 export function fromParams(
   p: URLSearchParams,
   labs: Lab[]
-): { filters: Filters; selected: string | null } {
+): { filters: Filters; selected: string | null; query: string } {
   const base = defaultFilters(labs);
   const num = (key: string, fallback: number) => {
     const raw = p.get(key);
@@ -106,5 +110,6 @@ export function fromParams(
       tags: list('tag', TAG_ORDER),
     },
     selected: p.get('lab'),
+    query: p.get('q') ?? '',
   };
 }

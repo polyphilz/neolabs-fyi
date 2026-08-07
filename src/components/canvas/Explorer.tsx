@@ -13,15 +13,15 @@ import {
   toParams,
   type Filters,
 } from '../../lib/filters';
+import { isCanvasView } from '../../lib/layout';
 import { matchesLabSearch } from '../../lib/search';
 import { SearchField } from '../SearchField';
-import { SiteNav } from '../SiteNav';
-import { Wordmark } from '../Wordmark';
+import { SiteHeader } from '../SiteHeader';
+import { LabTable } from '../table/LabTable';
 import { DetailPanel } from './DetailPanel';
 import { FilterIsland } from './FilterIsland';
 import { LabCanvas } from './LabCanvas';
 import { LineageDetailPanel } from './LineageDetailPanel';
-import { ViewIsland } from './ViewIsland';
 
 interface Props {
   labs: Lab[];
@@ -33,12 +33,17 @@ const VIEW_TITLES: Record<Filters['view'], string> = {
   lineage: 'Neolabs.fyi | Neolab founder lineages',
   geography: 'Neolabs.fyi | Neolab headquarters geography',
   valuation: 'Neolabs.fyi | Neolab valuations',
+  table: 'Neolabs.fyi | Every neolab in a sortable table',
 };
 
 /**
- * Full-bleed canvas with floating control islands over it. The islands are
- * pointer-transparent containers holding pointer-opaque children, so the canvas
- * stays draggable everywhere except directly on a control.
+ * Every view of the dataset over one piece of filter state.
+ *
+ * The canvas views draw a full-bleed map with the header floating over it; the
+ * table view puts the same header on a solid bar above a scrolling table. Both
+ * read the same filters, so switching between them never loses a search or a
+ * selection — which is the reason the table is a view here rather than a page
+ * of its own.
  */
 export function Explorer({ labs, basemap }: Props) {
   const bounds = useMemo(() => computeBounds(labs), [labs]);
@@ -55,6 +60,7 @@ export function Explorer({ labs, basemap }: Props) {
     const parsed = fromParams(new URLSearchParams(window.location.search), labs);
     setFilters(parsed.filters);
     setSelected(parsed.selected);
+    setQuery(parsed.query);
     setHydrated(true);
   }, [labs]);
 
@@ -66,11 +72,15 @@ export function Explorer({ labs, basemap }: Props) {
   // ?lab= and friends on a deep link.
   useEffect(() => {
     if (!hydrated) return;
-    const params = toParams(filters, labs, selected);
-    const query = params.toString();
-    window.history.replaceState(null, '', `${window.location.pathname}${query ? `?${query}` : ''}`);
+    const params = toParams(filters, labs, selected, query);
+    const search = params.toString();
+    window.history.replaceState(
+      null,
+      '',
+      `${window.location.pathname}${search ? `?${search}` : ''}`
+    );
     document.title = VIEW_TITLES[filters.view];
-  }, [hydrated, filters, labs, selected]);
+  }, [hydrated, filters, labs, selected, query]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -91,6 +101,7 @@ export function Explorer({ labs, basemap }: Props) {
     () => applyFilters(labs, filters).filter((lab) => matchesLabSearch(lab, query)),
     [labs, filters, query]
   );
+  const visibleSlugs = useMemo(() => new Set(visible.map((l) => l.slug)), [visible]);
   const tagsInUse = useMemo(
     () => TAG_ORDER.filter((t) => labs.some((l) => l.tags?.includes(t))),
     [labs]
@@ -115,22 +126,17 @@ export function Explorer({ labs, basemap }: Props) {
     setSelectedLineage(group);
   }, []);
 
-  return (
-    <div className="explorer">
-      <LabCanvas
-        labs={visible}
-        allLabs={labs}
-        basemap={basemap}
-        filters={filters}
-        selected={selected}
-        selectedLineage={selectedLineage}
-        onSelect={selectLab}
-        onLineageSelect={selectLineage}
-      />
+  const view = filters.view;
 
-      <div className="hud hud-top">
-        <Wordmark />
-        <ViewIsland view={filters.view} onChange={(view) => update({ view })} />
+  return (
+    <div className="explorer" data-view={view}>
+      {/* First in the DOM so it leads the tab order, and so the table view can
+          simply stack it above a scrolling body. */}
+      <SiteHeader
+        floating={isCanvasView(view)}
+        view={view}
+        onViewChange={(next) => update({ view: next })}
+      >
         <SearchField value={query} onChange={setQuery} />
         <FilterIsland
           filters={filters}
@@ -142,7 +148,25 @@ export function Explorer({ labs, basemap }: Props) {
           onChange={update}
           onReset={reset}
         />
-        <SiteNav />
+      </SiteHeader>
+
+      {isCanvasView(view) && (
+        <LabCanvas
+          labs={visible}
+          allLabs={labs}
+          basemap={basemap}
+          view={view}
+          selected={selected}
+          selectedLineage={selectedLineage}
+          onSelect={selectLab}
+          onLineageSelect={selectLineage}
+        />
+      )}
+
+      {/* Always mounted, so the full inventory is in the static HTML whichever
+          view the page loads in. CSS hides it away from the table view. */}
+      <div className="table-view">
+        <LabTable labs={labs} visible={visibleSlugs} />
       </div>
 
       <DetailPanel lab={selectedLab} onClose={() => setSelected(null)} />
@@ -152,6 +176,12 @@ export function Explorer({ labs, basemap }: Props) {
         onSelectLab={selectLab}
         onClose={() => setSelectedLineage(null)}
       />
+
+      <span className="sr-only" aria-live="polite">
+        {visible.length === labs.length
+          ? `${labs.length} labs`
+          : `${visible.length} of ${labs.length} labs`}
+      </span>
     </div>
   );
 }

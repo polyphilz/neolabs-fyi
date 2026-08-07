@@ -3,8 +3,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import type { DomainId, Lab, LineageGroup } from '../../data/types';
 import type { Basemap } from '../../lib/basemap';
 import { UNKNOWN_FILL, UNKNOWN_INK, fillFor, valuationStep } from '../../lib/color';
-import type { Filters } from '../../lib/filters';
-import { VIEW_H, VIEW_W, computeLayout } from '../../lib/layout';
+import { VIEW_H, VIEW_W, computeLayout, type CanvasViewId } from '../../lib/layout';
 import { canvasName, spaceLabel, valuationLabel } from '../../lib/format';
 import { LINE_SPACING, fitLabel, refreshLabelMetrics } from '../../lib/labelFit';
 import { AREA_COLORS, BloomCore, ResearchBloom } from './ResearchBloom';
@@ -15,7 +14,7 @@ interface Props {
   labs: Lab[];
   allLabs: Lab[];
   basemap: Basemap;
-  filters: Filters;
+  view: CanvasViewId;
   selected: string | null;
   selectedLineage: LineageGroup | null;
   onSelect: (slug: string | null) => void;
@@ -56,7 +55,7 @@ export function LabCanvas({
   labs,
   allLabs,
   basemap,
-  filters,
+  view,
   selected,
   selectedLineage,
   onSelect,
@@ -85,13 +84,13 @@ export function LabCanvas({
   } | null>(null);
 
   const layout = useMemo(
-    () => computeLayout(filters.view, labs, basemap, allLabs),
-    [filters.view, labs, basemap, allLabs]
+    () => computeLayout(view, labs, basemap, allLabs),
+    [view, labs, basemap, allLabs]
   );
 
   useEffect(() => {
-    if (filters.view !== 'area') setPinnedArea(null);
-  }, [filters.view]);
+    if (view !== 'area') setPinnedArea(null);
+  }, [view]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -217,13 +216,13 @@ export function LabCanvas({
         pointerType: e.pointerType,
         moved: false,
         areaId:
-          filters.view === 'area' && rawAreaId && rawAreaId in AREA_COLORS
+          view === 'area' && rawAreaId && rawAreaId in AREA_COLORS
             ? (rawAreaId as DomainId)
             : null,
       };
       vp.startPan(e);
     },
-    [vp, filters.view]
+    [vp, view]
   );
 
   const onBackgroundMove = useCallback(
@@ -265,7 +264,7 @@ export function LabCanvas({
   const activeLineage = hoveredLineage ?? selectedLineage;
   const activeNode = active ? positions.get(active) : null;
   const activeArea =
-    filters.view === 'area' ? (hoveredArea ?? activeNode?.lab.domain ?? pinnedArea) : null;
+    view === 'area' ? (hoveredArea ?? activeNode?.lab.domain ?? pinnedArea) : null;
 
   return (
     <div className="canvas-shell">
@@ -275,7 +274,7 @@ export function LabCanvas({
         preserveAspectRatio="xMidYMid meet"
         className="canvas-svg"
         role="application"
-        aria-label={`Neolab map, ${filters.view} view. ${labs.length} labs shown. A sortable table of the same data is available at /table.`}
+        aria-label={`Neolab map, ${view} view. ${labs.length} labs shown. The same labs are available as a sortable table from the Table view.`}
         onPointerDown={onBackgroundDown}
         onPointerMove={onBackgroundMove}
         onPointerUp={onBackgroundUp}
