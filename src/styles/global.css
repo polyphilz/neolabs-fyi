@@ -1542,6 +1542,14 @@ body.is-bare {
   font-style: italic;
 }
 
+.rail-hint {
+  fill: var(--muted);
+  font-size: 7.5px;
+  font-style: italic;
+  letter-spacing: 0.03em;
+  opacity: 0.82;
+}
+
 .rail-divider line {
   stroke: var(--rule);
   stroke-width: 1;
@@ -1673,17 +1681,7 @@ body.is-bare {
   pointer-events: none;
 }
 
-.rail-caption-lead {
-  fill: var(--ink-2);
-  font-size: 10px;
-}
-
-.rail-caption-em {
-  fill: var(--ink);
-  font-weight: 600;
-}
-
-.rail-caption-fine {
+.rail-caption-copy {
   fill: var(--muted);
   font-size: 8.5px;
 }

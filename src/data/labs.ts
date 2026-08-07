@@ -42,8 +42,8 @@ export const LABS: Lab[] = [
     year: 2026,
     domain: 'rsi',
     founders: [
-      { person: 'jeff-dean', prior: ['google', 'deepmind'] },
-      { person: 'sanjay-ghemawat', prior: ['google'] },
+      { person: 'jeff-dean', prior: ['google', 'deepmind', 'washington'] },
+      { person: 'sanjay-ghemawat', prior: ['google', 'mit'] },
       { person: 'quoc-le', prior: ['google'] },
       { person: 'oriol-vinyals', prior: ['deepmind', 'google'] },
     ],
@@ -117,7 +117,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 14_000, qualifier: 'gt' },
     year: 2023,
     domain: 'physical',
-    tags: ['humanoid', 'academic-spinout'],
+    tags: ['robot-foundation-models', 'academic-spinout'],
     founders: [
       { person: 'deepak-pathak', prior: ['cmu', 'berkeley'] },
       { person: 'abhinav-gupta', prior: ['cmu', 'meta'] },
@@ -145,7 +145,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 11_000, qualifier: 'gt', rumored: true },
     year: 2024,
     domain: 'physical',
-    tags: ['humanoid'],
+    tags: ['robot-foundation-models'],
     founders: [
       { person: 'sergey-levine', prior: ['berkeley', 'google', 'deepmind'] },
       { person: 'karol-hausman', prior: ['google', 'deepmind', 'stanford'] },
@@ -203,6 +203,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 5_000, qualifier: 'approx', rumored: true },
     year: 2024,
     domain: 'world',
+    tags: ['multimodal'],
     founders: [
       { person: 'fei-fei-li', prior: ['google', 'stanford', 'princeton', 'uiuc'] },
       { person: 'justin-johnson', prior: ['stanford', 'meta', 'michigan'] },
@@ -341,7 +342,7 @@ export const LABS: Lab[] = [
     name: 'Luma AI',
     valuation: { usdM: 4_000, qualifier: 'approx' },
     year: 2021,
-    domain: 'world',
+    domain: 'media',
     tags: ['video'],
     founders: [
       { person: 'amit-jain', prior: ['apple', 'circlemedical'] },
@@ -438,6 +439,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 2_300, qualifier: 'exact' },
     year: 2025,
     domain: 'world',
+    tags: ['video'],
     founders: [
       { person: 'pim-de-witte', prior: ['medal'] },
       { person: 'eloi-alonso', prior: ['geneva', 'ubisoft', 'microsoft'] },
@@ -487,7 +489,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 1_700, qualifier: 'exact' },
     year: 2024,
     domain: 'physical',
-    tags: ['humanoid'],
+    tags: ['robot-foundation-models', 'humanoid'],
     founders: [{ person: 'jagdeep-singh', prior: ['startup'] }],
     knownFor:
       "Serial founder Jagdeep Singh's robotics startup; FutureVision, a video-pretrained foundation model ('Direct Video Action') for humanoid robot control.",
@@ -571,6 +573,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 1_300, qualifier: 'gt' },
     year: 2023,
     domain: 'science',
+    tags: ['agents'],
     founders: [
       { person: 'geoffrey-von-maltzahn', prior: ['mit', 'startup'] },
       { person: 'noubar-afeyan', prior: ['mit', 'startup'] },
@@ -854,6 +857,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 800, qualifier: 'exact' },
     year: 2026,
     domain: 'inference',
+    tags: ['open-source'],
     founders: [
       { person: 'simon-mo', prior: ['berkeley', 'anyscale', 'characterai'] },
       { person: 'woosuk-kwon', prior: ['berkeley', 'seoulnational', 'deepmind', 'thinking-machines'] },
@@ -882,7 +886,7 @@ export const LABS: Lab[] = [
     name: 'Inception Labs',
     valuation: { usdM: 500, qualifier: 'approx' },
     year: 2025,
-    domain: 'coding',
+    domain: 'general',
     founders: [
       { person: 'stefano-ermon', prior: ['stanford'] },
       { person: 'aditya-grover', prior: ['ucla'] },
@@ -910,7 +914,8 @@ export const LABS: Lab[] = [
     name: 'Standard Intelligence',
     valuation: { usdM: 500, qualifier: 'exact' },
     year: 2024,
-    domain: 'general',
+    domain: 'applied',
+    tags: ['agents', 'video'],
     founders: [
       { person: 'galen-mead', prior: ['startup'] },
       { person: 'devansh-pandey', prior: ['startup'] },
@@ -952,7 +957,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 3_000, qualifier: 'approx', rumored: true },
     year: 2025,
     domain: 'physical',
-    tags: ['humanoid'],
+    tags: ['robot-foundation-models'],
     founders: [
       { person: 'zhou-xian', prior: ['cmu'] },
       { person: 'theophile-gervet', prior: ['mistral', 'cmu', 'skild'] },
@@ -980,6 +985,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 400, qualifier: 'exact' },
     year: 2026,
     domain: 'inference',
+    tags: ['open-source'],
     founders: [
       {
         person: 'ying-sheng',
@@ -1045,7 +1051,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 3_000, qualifier: 'gt' },
     year: 2023,
     domain: 'physical',
-    tags: ['humanoid'],
+    tags: ['robot-foundation-models', 'humanoid'],
     founders: [
       { person: 'wang-he', prior: ['peking', 'stanford'] },
       { person: 'yao-tengzhou' },
@@ -1230,7 +1236,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 10, qualifier: 'undisclosed' },
     year: 2025,
     domain: 'applied',
-    tags: ['open-weights', 'multimodal', 'efficient', 'agents'],
+    tags: ['open-weights', 'open-source', 'multimodal', 'agents'],
     structure: 'public-benefit',
     founders: [
       {
@@ -1281,7 +1287,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 1_130, qualifier: 'approx' },
     year: 2025,
     domain: 'rsi',
-    tags: ['continual-learning', 'agents', 'efficient'],
+    tags: ['continual-learning', 'agents'],
     founders: [
       { person: 'talfan-evans', prior: ['deepmind', 'imperial', 'ucl', 'oxford'] },
       { person: 'olivier-henaff', prior: ['deepmind', 'nyu', 'polytechnique'] },

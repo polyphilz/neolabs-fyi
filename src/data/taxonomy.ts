@@ -78,6 +78,7 @@ export const DOMAIN_ORDER: DomainId[] = [
  */
 export const TAGS: Record<TagId, string> = {
   'open-weights': 'Open weights',
+  'open-source': 'Open source',
   multimodal: 'Multimodal',
   efficient: 'Efficient / on-device',
   'continual-learning': 'Continual learning',
@@ -88,6 +89,7 @@ export const TAGS: Record<TagId, string> = {
   voice: 'Voice',
   sovereign: 'Sovereign AI',
   'academic-spinout': 'Academic spinout',
+  'robot-foundation-models': 'Robot foundation models',
   humanoid: 'Humanoid',
   'drug-discovery': 'Drug discovery',
   materials: 'Materials',
@@ -95,6 +97,7 @@ export const TAGS: Record<TagId, string> = {
 
 export const TAG_ORDER: TagId[] = [
   'open-weights',
+  'open-source',
   'multimodal',
   'efficient',
   'continual-learning',
@@ -103,6 +106,7 @@ export const TAG_ORDER: TagId[] = [
   'agents',
   'video',
   'voice',
+  'robot-foundation-models',
   'humanoid',
   'drug-discovery',
   'materials',
@@ -235,12 +239,14 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   petribio: { label: 'Petri Bio', group: 'startup' },
   openphilanthropy: { label: 'Open Philanthropy', group: 'startup' },
 
-  // The four schools that clear the same bar the labs do — every other
-  // institution appears in three or fewer neolabs and stays in `academia`.
+  // The five schools currently broken out as dedicated lineage rows. Other
+  // institutions remain grouped in `academia` until that editorial taxonomy
+  // is deliberately revisited rather than changing implicitly with each lab.
   stanford: { label: 'Stanford', group: 'stanford' },
   mit: { label: 'MIT', group: 'mit' },
   cmu: { label: 'Carnegie Mellon', group: 'cmu' },
   berkeley: { label: 'UC Berkeley', group: 'berkeley' },
+  washington: { label: 'U. Washington', group: 'washington' },
   caltech: { label: 'Caltech', group: 'academia' },
   princeton: { label: 'Princeton', group: 'academia' },
   technion: { label: 'Technion', group: 'academia' },
@@ -274,7 +280,6 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   utah: { label: 'University of Utah', group: 'academia' },
   ucirvine: { label: 'UC Irvine', group: 'academia' },
   fau: { label: 'FAU Erlangen–Nürnberg', group: 'academia' },
-  washington: { label: 'U. Washington', group: 'academia' },
   amsterdam: { label: 'U. Amsterdam', group: 'academia' },
   toronto: { label: 'U. Toronto', group: 'academia' },
   uiuc: { label: 'University of Illinois Urbana-Champaign', group: 'academia' },
@@ -335,6 +340,7 @@ export const LINEAGE_GROUPS: Record<
   mit: { label: 'MIT', short: 'MIT' },
   cmu: { label: 'Carnegie Mellon', short: 'CMU' },
   berkeley: { label: 'UC Berkeley', short: 'Berkeley' },
+  washington: { label: 'U. Washington', short: 'U. Washington' },
   government: { label: 'Government / military', short: 'Gov' },
   bigtech: { label: 'Other big tech', short: 'Big tech', residual: true },
   academia: { label: 'Other academia', short: 'Other academia', residual: true },
@@ -354,6 +360,7 @@ export const LINEAGE_ORDER: LineageGroup[] = [
   'mit',
   'cmu',
   'berkeley',
+  'washington',
   'government',
   'bigtech',
   'academia',

@@ -450,6 +450,10 @@ const RAIL_BOTTOM = 540;
 /** Space for the rule dividing named origins from the residual buckets, and
  * for the note that sits above it. */
 const RAIL_DIVIDER_GAP = 26;
+/** Bias the divider toward the residual rows: the note needs breathing room
+ * after the final named-origin bar while still reading as a heading for the
+ * long-tail section below it. */
+const RAIL_DIVIDER_BIAS = 6;
 const RAIL_CAPTION_Y = 566;
 
 const FIELD_X0 = 300;
@@ -570,7 +574,9 @@ function lineageLayout(
         anchorX: RAIL_ANCHOR_X,
         rowPitch,
         maxTotal: Math.max(1, ...rows.map((row) => row.total)),
-        dividerY: stable(RAIL_TOP + rowPitch * firstResidual + RAIL_DIVIDER_GAP / 2),
+        dividerY: stable(
+          RAIL_TOP + rowPitch * firstResidual + RAIL_DIVIDER_GAP / 2 + RAIL_DIVIDER_BIAS
+        ),
         rows,
         caption: { x: RAIL_X, y: RAIL_CAPTION_Y, total: referenceLabs.length },
       },

@@ -256,6 +256,7 @@ export type LineageGroup =
   | 'mit'
   | 'cmu'
   | 'berkeley'
+  | 'washington'
   | 'government'
   // Residual buckets — a long tail, not a single origin.
   | 'bigtech'
@@ -287,6 +288,7 @@ export type DomainId =
  */
 export type TagId =
   | 'open-weights'
+  | 'open-source'
   | 'multimodal'
   | 'efficient'
   | 'continual-learning'
@@ -297,6 +299,7 @@ export type TagId =
   | 'voice'
   | 'sovereign'
   | 'academic-spinout'
+  | 'robot-foundation-models'
   | 'humanoid'
   | 'drug-discovery'
   | 'materials';

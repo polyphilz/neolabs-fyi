@@ -72,6 +72,9 @@ export const LineageRail = memo(function LineageRail({
       <text className="rail-kicker" x={rail.x} y={RAIL_KICKER_Y}>
         NEOLABS BY ORIGIN
       </text>
+      <text className="rail-hint" x={rail.x} y={RAIL_HINT_Y}>
+        Click to pin
+      </text>
 
       {rail.rows.map((row) => (
         <RailRow
@@ -106,7 +109,8 @@ export const LineageRail = memo(function LineageRail({
 });
 
 /** Above the first row but below the floating header, which covers y < ~60. */
-const RAIL_KICKER_Y = 68;
+const RAIL_KICKER_Y = 62.5;
+const RAIL_HINT_Y = 73.5;
 const BAR_H = 7;
 
 function RailRow({
@@ -270,38 +274,18 @@ function RailRow({
   );
 }
 
-/**
- * A worked example rather than a definition. "Lineage" is not a word that
- * survives being defined in a caption — one real founder moving from one real
- * place to another explains it in a sentence, and the fine print underneath
- * only has to cover the rules that would otherwise read as bugs.
- */
 function Caption({ rail }: { rail: Rail }) {
   const { x, y, total } = rail.caption;
-  const fine = [
-    'Origin is a founder’s affiliation when the lab was',
-    'founded. Investors and corporate parents are excluded.',
-    'Most founding teams come from several places, so a lab',
-    'appears under each — which is why the counts above',
-    `add up to more than the ${total} labs on the map.`,
+  const lines = [
+    'Origins are founders’ affiliations at launch —',
+    'not investors or corporate parents. A lab may',
+    `have several, so totals exceed the ${total} shown.`,
   ];
 
   return (
     <g className="rail-caption" aria-hidden="true">
-      <text className="rail-caption-lead" x={x} y={y}>
-        <tspan x={x} dy={0}>
-          <tspan className="rail-caption-em">Mira Murati</tspan> was CTO of{' '}
-          <tspan className="rail-caption-em">OpenAI</tspan>. In 2025
-        </tspan>
-        <tspan x={x} dy={13}>
-          she founded <tspan className="rail-caption-em">Thinking Machines Lab</tspan>.
-        </tspan>
-        <tspan x={x} dy={13}>
-          That’s one line on this map.
-        </tspan>
-      </text>
-      <text className="rail-caption-fine" x={x} y={y + 44}>
-        {fine.map((line, index) => (
+      <text className="rail-caption-copy" x={x} y={y}>
+        {lines.map((line, index) => (
           <tspan key={line} x={x} dy={index === 0 ? 0 : 11}>
             {line}
           </tspan>
