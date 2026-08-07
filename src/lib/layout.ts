@@ -46,8 +46,12 @@ export const isCanvasView = (view: ViewId): view is CanvasViewId => view !== 'ta
 const RADIUS_K = 0.33;
 const MIN_RADIUS = 5;
 
-/** Bubble scale for the lineage view, shared by the layout and the sim. */
-export const LINEAGE_RADIUS_SCALE = 0.58;
+/**
+ * Bubble scale for the lineage view, shared by the layout and the sim. Smaller
+ * than it was: the field is now a set of year columns roughly 124 units wide,
+ * and a bubble wider than its column would break the axis it sits on.
+ */
+export const LINEAGE_RADIUS_SCALE = 0.45;
 
 export function radiusFor(usdM: number, scale = 1): number {
   return Math.max(MIN_RADIUS * Math.max(scale, 0.7), RADIUS_K * scale * Math.sqrt(usdM));
@@ -58,13 +62,56 @@ export interface Vec {
   y: number;
 }
 
-/** Non-node furniture a layout needs to draw: the area atlas, hubs, or basemap. */
+/** Non-node furniture a layout needs to draw: the area atlas, rail, or basemap. */
 export interface Decorations {
   areaAtlas?: AreaAtlas;
-  hubs?: { id: LineageGroup; label: string; x: number; y: number; count: number }[];
-  edges?: { from: string; toHub: LineageGroup }[];
+  lineageRail?: LineageRail;
+  edges?: { from: string; toGroup: LineageGroup }[];
+  yearAxis?: YearAxis;
   basemap?: { land: string; graticule: string; transform: string };
   valuationBands?: ValuationBandAxis;
+}
+
+export interface LineageRailRow {
+  id: LineageGroup;
+  label: string;
+  /** Labs currently shown that came out of here. */
+  count: number;
+  /** Labs in the whole dataset. Fixes the row order and sizes the bar track. */
+  total: number;
+  y: number;
+  residual: boolean;
+}
+
+/**
+ * The ranked origin column.
+ *
+ * Bar length is the number of neolabs a place has produced, which is the whole
+ * point of the view: it is the only thing on the canvas sorted by the quantity
+ * a reader came here to compare. Everything else — the field, the edges — hangs
+ * off it.
+ */
+export interface LineageRail {
+  /** Left edge of the labels and bar tracks. */
+  x: number;
+  /** Width of the largest bar, i.e. the full scale. */
+  barWidth: number;
+  /** Where edges leave the rail. Fixed, so the departures line up. */
+  anchorX: number;
+  rowPitch: number;
+  maxTotal: number;
+  /** Midpoint of the gap between the named origins and the residual buckets. */
+  dividerY: number;
+  rows: LineageRailRow[];
+  caption: { x: number; y: number; total: number };
+}
+
+/** Year columns for the lineage field. Categorical, not a continuous scale. */
+export interface YearAxis {
+  columns: { year: number; x0: number; x1: number; cx: number; count: number }[];
+  labelY: number;
+  top: number;
+  bottom: number;
 }
 
 /** One column of the valuation view: a magnitude range and the space it owns. */
@@ -314,79 +361,147 @@ function valuationLayout(labs: Lab[]): LayoutResult {
 }
 
 // ---------------------------------------------------------------------------
-// Lineage — hubs on an ellipse, labs pulled toward their parents
+// Lineage — a ranked origin rail on the left, labs in year columns to the right
 // ---------------------------------------------------------------------------
 
-function lineageLayout(labs: Lab[]): LayoutResult {
-  const cx = VIEW_W / 2;
-  const cy = VIEW_H / 2;
-  const rx = VIEW_W * 0.3;
-  const ry = VIEW_H * 0.29;
-  /** How far past its hub a single-parent lab sits, forming a visible satellite. */
-  const ORBIT = 78;
+/** Left edge of the rail's labels and bar tracks. */
+const RAIL_X = 26;
+const RAIL_BAR_W = 194;
+/** Where every edge leaves the rail. Fixed, so the departures read as a column
+ * rather than a ragged set of tangents off the ends of the bars. */
+const RAIL_ANCHOR_X = 248;
+/** Clear of the floating header, which overlaps the top of the canvas. */
+const RAIL_TOP = 86;
+/** Rows stop here; the caption owns the rest of the column. */
+const RAIL_BOTTOM = 540;
+/** Space for the rule dividing named origins from the residual buckets, and
+ * for the note that sits above it. */
+const RAIL_DIVIDER_GAP = 26;
+const RAIL_CAPTION_Y = 566;
 
-  const present = LINEAGE_ORDER.filter((g) => labs.some((l) => lineageGroupsOf(l).includes(g)));
-  const hubPos = new Map<LineageGroup, Vec>();
-  present.forEach((g, i) => {
-    // Start at -90deg so OpenAI sits at the top; the order is fixed so the
-    // graph doesn't reshuffle itself every time a filter changes.
-    const t = (i / present.length) * Math.PI * 2 - Math.PI / 2;
-    hubPos.set(g, {
-      x: stable(cx + Math.cos(t) * rx),
-      y: stable(cy + Math.sin(t) * ry),
-    });
+const FIELD_X0 = 300;
+const FIELD_X1 = 1168;
+const FIELD_TOP = 58;
+const FIELD_BOTTOM = 596;
+const YEAR_LABEL_Y = 622;
+
+/**
+ * Lineage.
+ *
+ * Two encodings, and neither is bubble position in the old sense. The rail on
+ * the left ranks origins by how many neolabs came out of them — the question
+ * the view exists to answer. The field on the right is a categorical year axis,
+ * so the acceleration is visible as the columns getting fuller to the right.
+ *
+ * A lab is deliberately NOT assigned to one origin. Most founding teams (56 of
+ * 71) came out of several places at once, so every lab keeps an edge to each of
+ * its origins and its vertical position is only a weak pull toward their mean.
+ * Any rule that picked a single "primary" origin would be inventing a fact the
+ * dataset does not contain.
+ */
+function lineageLayout(labs: Lab[], referenceLabs: Lab[]): LayoutResult {
+  // Row order follows the full dataset, so filtering thins the bars without
+  // resorting the rail underneath the reader's cursor.
+  const totals = new Map<LineageGroup, number>();
+  const counts = new Map<LineageGroup, number>();
+  for (const lab of referenceLabs) {
+    for (const g of lineageGroupsOf(lab)) totals.set(g, (totals.get(g) ?? 0) + 1);
+  }
+  for (const lab of labs) {
+    for (const g of lineageGroupsOf(lab)) counts.set(g, (counts.get(g) ?? 0) + 1);
+  }
+
+  // Residual buckets are forced below the rule however large they are. They
+  // hold more labs than any single origin does, and ranking a 59-company
+  // catch-all above Google would answer the reader's question with a shrug.
+  const ordered = [...LINEAGE_ORDER].sort((a, b) => {
+    const residual = Number(LINEAGE_GROUPS[a].residual ?? false) - Number(LINEAGE_GROUPS[b].residual ?? false);
+    if (residual) return residual;
+    return (totals.get(b) ?? 0) - (totals.get(a) ?? 0) || a.localeCompare(b);
   });
 
+  const firstResidual = ordered.findIndex((g) => LINEAGE_GROUPS[g].residual);
+  const rowPitch = (RAIL_BOTTOM - RAIL_TOP - RAIL_DIVIDER_GAP) / ordered.length;
+  const rowY = (index: number) =>
+    stable(RAIL_TOP + rowPitch * (index + 0.5) + (index >= firstResidual ? RAIL_DIVIDER_GAP : 0));
+
+  const rows: LineageRailRow[] = ordered.map((g, index) => ({
+    id: g,
+    label: LINEAGE_GROUPS[g].label,
+    count: counts.get(g) ?? 0,
+    total: totals.get(g) ?? 0,
+    y: rowY(index),
+    residual: Boolean(LINEAGE_GROUPS[g].residual),
+  }));
+  const rowById = new Map(rows.map((row) => [row.id, row]));
+
+  // Year columns, from the full dataset so the axis holds still under the
+  // timeline filter. Categorical rather than linear: the gap between 2017 and
+  // 2021 is real, but spending a third of the canvas on it buys nothing.
+  const presentYears = [...new Set(referenceLabs.map((lab) => lab.year))].sort((a, b) => a - b);
+  const columnW = presentYears.length ? (FIELD_X1 - FIELD_X0) / presentYears.length : 0;
+  const columns = presentYears.map((year, index) => {
+    const x0 = stable(FIELD_X0 + columnW * index);
+    return {
+      year,
+      x0,
+      x1: stable(x0 + columnW),
+      cx: stable(x0 + columnW / 2),
+      count: labs.filter((lab) => lab.year === year).length,
+    };
+  });
+  const columnByYear = new Map(columns.map((column) => [column.year, column]));
+
   const targets = new Map<string, Vec>();
-  const edges: { from: string; toHub: LineageGroup }[] = [];
-  const counts = new Map<LineageGroup, number>();
+  const nodeBounds = new Map<string, Box>();
+  const edges: { from: string; toGroup: LineageGroup }[] = [];
 
   for (const lab of labs) {
-    const groups = lineageGroupsOf(lab).filter((g) => hubPos.has(g));
-    if (!groups.length) continue;
-    let sx = 0;
-    let sy = 0;
-    for (const g of groups) {
-      const p = hubPos.get(g)!;
-      sx += p.x;
-      sy += p.y;
-      edges.push({ from: lab.slug, toHub: g });
-      counts.set(g, (counts.get(g) ?? 0) + 1);
-    }
-    const mx = sx / groups.length;
-    const my = sy / groups.length;
+    const groups = lineageGroupsOf(lab);
+    for (const g of groups) edges.push({ from: lab.slug, toGroup: g });
 
-    // Single-parent labs orbit just outside their hub, so each hub reads as a
-    // labelled constellation. Multi-parent labs stay at the midpoint of their
-    // hubs, which lands them in the interior where their several edges are
-    // visible — being between two lineages is the interesting thing about them.
-    const dx = mx - cx;
-    const dy = my - cy;
-    const dist = Math.hypot(dx, dy) || 1;
-    // Offset by the lab's own radius too, or a $100B satellite lands on top of
-    // the hub it's supposed to be orbiting.
+    const column = columnByYear.get(lab.year);
+    if (!column) continue;
+
+    // Weak vertical pull toward the mean of the rows this lab reaches. It is a
+    // hint, not a claim — because the rail is sorted by count, vertically
+    // adjacent rows are similarly-sized origins rather than related ones, so a
+    // lab's mean y is not a meaningful category. The edges carry the truth;
+    // this only stops the field from being arbitrary.
+    const ys = groups.map((g) => rowById.get(g)?.y).filter((y): y is number => y !== undefined);
+    const meanY = ys.length ? ys.reduce((sum, y) => sum + y, 0) / ys.length : (FIELD_TOP + FIELD_BOTTOM) / 2;
     const own = radiusFor(lab.valuation.usdM, LINEAGE_RADIUS_SCALE);
-    const push = groups.length === 1 ? ORBIT + own : own * 0.5;
+
     targets.set(lab.slug, {
-      x: mx + (dx / dist) * push,
-      y: my + (dy / dist) * push,
+      x: column.cx,
+      y: stable(Math.max(FIELD_TOP + own, Math.min(FIELD_BOTTOM - own, meanY))),
     });
+    // Hard cell per year, the same device the valuation bands use. Collision in
+    // a crowded column would otherwise push labs into the neighbouring year and
+    // quietly falsify the axis.
+    nodeBounds.set(lab.slug, { x0: column.x0, y0: FIELD_TOP, x1: column.x1, y1: FIELD_BOTTOM });
   }
 
   return {
     targets,
+    nodeBounds,
     decorations: {
-      hubs: present.map((g) => ({
-        id: g,
-        label: LINEAGE_GROUPS[g].short,
-        x: hubPos.get(g)!.x,
-        y: hubPos.get(g)!.y,
-        count: counts.get(g) ?? 0,
-      })),
+      lineageRail: {
+        x: RAIL_X,
+        barWidth: RAIL_BAR_W,
+        anchorX: RAIL_ANCHOR_X,
+        rowPitch,
+        maxTotal: Math.max(1, ...rows.map((row) => row.total)),
+        dividerY: stable(RAIL_TOP + rowPitch * firstResidual + RAIL_DIVIDER_GAP / 2),
+        rows,
+        caption: { x: RAIL_X, y: RAIL_CAPTION_Y, total: referenceLabs.length },
+      },
+      yearAxis: { columns, labelY: YEAR_LABEL_Y, top: FIELD_TOP, bottom: FIELD_BOTTOM },
       edges,
     },
-    collideStrength: 0.85,
+    collideStrength: 0.9,
     radiusScale: LINEAGE_RADIUS_SCALE,
+    targetStrength: 0.22,
     bounded: true,
   };
 }
@@ -571,7 +686,7 @@ export function computeLayout(
     case 'valuation':
       return valuationLayout(labs);
     case 'lineage':
-      return lineageLayout(labs);
+      return lineageLayout(labs, referenceLabs);
     case 'geography':
       return geographyLayout(labs, basemap);
     case 'area':

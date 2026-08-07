@@ -3,10 +3,32 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import type { DomainId, Lab, LineageGroup } from '../../data/types';
 import type { Basemap } from '../../lib/basemap';
 import { UNKNOWN_FILL, UNKNOWN_INK, fillFor, valuationStep } from '../../lib/color';
-import { VIEW_H, VIEW_W, computeLayout, type CanvasViewId } from '../../lib/layout';
-import { canvasName, spaceLabel, valuationLabel } from '../../lib/format';
-import { LINE_SPACING, fitLabel, refreshLabelMetrics } from '../../lib/labelFit';
+import { hexJitter, hexPath } from '../../lib/hex';
+import {
+  VIEW_H,
+  VIEW_W,
+  computeLayout,
+  lineageGroupsOf,
+  type CanvasViewId,
+} from '../../lib/layout';
+import {
+  canvasNames,
+  spaceLabel,
+  valuationLabel,
+  type CanvasLabel,
+  type CanvasMark,
+} from '../../lib/format';
+import { stable } from '../../lib/precision';
+import {
+  LINE_SPACING,
+  fitLabel,
+  fitMark,
+  refreshLabelMetrics,
+  type FittedLabel,
+  type FittedMark,
+} from '../../lib/labelFit';
 import { AREA_COLORS, BloomCore, ResearchBloom } from './ResearchBloom';
+import { LineageRail, LineageYearAxis } from './LineageRail';
 import { useSimulation, type SimNode } from './useSimulation';
 import { useViewport } from './useViewport';
 import { ValuationBands } from './ValuationBands';
@@ -17,9 +39,7 @@ interface Props {
   basemap: Basemap;
   view: CanvasViewId;
   selected: string | null;
-  selectedLineage: LineageGroup | null;
   onSelect: (slug: string | null) => void;
-  onLineageSelect: (group: LineageGroup | null) => void;
 }
 
 /**
@@ -52,19 +72,77 @@ const MIN_HIT_SCREEN = 12;
  */
 const NOMINAL_FONT = 12;
 
-export function LabCanvas({
-  labs,
-  allLabs,
-  basemap,
-  view,
-  selected,
-  selectedLineage,
-  onSelect,
-  onLineageSelect,
-}: Props) {
+/**
+ * How much better than the bare legibility floor a name has to be before it
+ * takes over from the one already on screen. Without it, a bubble sitting on
+ * the exact zoom where the longer name starts to fit would flip between the two
+ * on a pixel of scroll. With it, promoting needs 12% of headroom while demoting
+ * only happens once the current name is genuinely too small — a deadband, not a
+ * moved threshold.
+ */
+const PROMOTE = 1.12;
+
+/** What chooseLabel settled on: a fitted line of type, or a fitted mark. */
+type ChosenLabel =
+  | { kind: 'text'; fitted: FittedLabel }
+  | { kind: 'mark'; mark: CanvasMark; fitted: FittedMark };
+
+/**
+ * Longest rung that's legible at this zoom, out of the ladder in canvasNames().
+ * `memory` holds which rung each lab is on, which is what makes the hysteresis
+ * above possible; it's keyed by slug and self-correcting, so it survives view
+ * changes without needing to be cleared.
+ *
+ * A mark is measured by its drawn height where type is measured by its font
+ * size — near enough the same quantity for deciding whether either can be made
+ * out, so both rungs answer to the one threshold.
+ */
+function chooseLabel(
+  slug: string,
+  rungs: CanvasLabel[],
+  r: number,
+  rot: number,
+  screenScale: number,
+  memory: Map<string, number>
+): ChosenLabel | null {
+  const current = memory.get(slug);
+  for (let i = 0; i < rungs.length; i++) {
+    const rung = rungs[i];
+    const chosen: ChosenLabel | null =
+      typeof rung === 'string'
+        ? (() => {
+            const fitted = fitLabel(rung, r, rot);
+            return fitted ? { kind: 'text' as const, fitted } : null;
+          })()
+        : (() => {
+            const fitted = fitMark(rung.width, rung.height, r, rot, rung.inset);
+            return fitted ? { kind: 'mark' as const, mark: rung, fitted } : null;
+          })();
+    if (!chosen) continue;
+
+    const size = chosen.kind === 'text' ? chosen.fitted.fontSize : chosen.fitted.height;
+    // The margin governs switching, not first paint: on a fresh render there's
+    // nothing on screen to flicker against, and charging it would demote a name
+    // that was reading perfectly well before the ladder existed.
+    const settled = current === undefined || i === current;
+    const floor = settled ? MIN_SCREEN_FONT : MIN_SCREEN_FONT * PROMOTE;
+    if (size * screenScale >= floor) {
+      memory.set(slug, i);
+      return chosen;
+    }
+  }
+  // Nothing fits: forget the rung, so the lab starts clean when it next has room.
+  memory.delete(slug);
+  return null;
+}
+
+export function LabCanvas({ labs, allLabs, basemap, view, selected, onSelect }: Props) {
+  /** Which rung of the name ladder each lab is currently showing. */
+  const labelRung = useRef(new Map<string, number>());
   const svgRef = useRef<SVGSVGElement>(null);
   const [hovered, setHovered] = useState<string | null>(null);
   const [hoveredLineage, setHoveredLineage] = useState<LineageGroup | null>(null);
+  const [pinnedLineage, setPinnedLineage] = useState<LineageGroup | null>(null);
   const [hoveredArea, setHoveredArea] = useState<DomainId | null>(null);
   const [pinnedArea, setPinnedArea] = useState<DomainId | null>(null);
   const dragRef = useRef<{
@@ -91,11 +169,15 @@ export function LabCanvas({
 
   useEffect(() => {
     if (view !== 'area') setPinnedArea(null);
+    if (view !== 'lineage') setPinnedLineage(null);
   }, [view]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setPinnedArea(null);
+      if (event.key === 'Escape') {
+        setPinnedArea(null);
+        setPinnedLineage(null);
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -132,6 +214,11 @@ export function LabCanvas({
   useEffect(() => {
     const apply = () => {
       refreshLabelMetrics();
+      // Rungs chosen against the fallback face are worthless, and worse than
+      // worthless once the hysteresis is holding one in place: the first paint
+      // measures type generously, drops a lab to its short name, and then the
+      // promotion margin keeps it there even though the real font fits.
+      labelRung.current.clear();
       remeasure((n) => n + 1);
     };
     apply();
@@ -247,6 +334,7 @@ export function LabCanvas({
       // count as a click on the background and closed whatever you were reading.
       if (pan && !pan.moved) {
         onSelect(null);
+        setPinnedLineage(null);
         if (pan.areaId) {
           setPinnedArea((current) => (current === pan.areaId ? null : pan.areaId));
         } else {
@@ -262,10 +350,52 @@ export function LabCanvas({
 
   const dec = layout.decorations;
   const active = hovered ?? selected;
-  const activeLineage = hoveredLineage ?? selectedLineage;
   const activeNode = active ? positions.get(active) : null;
   const activeArea =
     view === 'area' ? (hoveredArea ?? activeNode?.lab.domain ?? pinnedArea) : null;
+  // Hover beats pin while it lasts, the same contract the research bloom uses:
+  // a pin is a frame you keep, not a lock on what you can look at next.
+  const activeLineage = view === 'lineage' ? (hoveredLineage ?? pinnedLineage) : null;
+
+  const groupsBySlug = useMemo(() => {
+    const map = new Map<string, LineageGroup[]>();
+    for (const lab of labs) map.set(lab.slug, lineageGroupsOf(lab));
+    return map;
+  }, [labs]);
+
+  /**
+   * With an origin active, how many of its labs each other origin also claims.
+   * This is the reading the view is really for: pin Google and the overlap
+   * segment on the DeepMind row says 13 of those 27 came out of both.
+   */
+  const lineageOverlap = useMemo(() => {
+    const map = new Map<LineageGroup, number>();
+    if (!activeLineage) return map;
+    for (const groups of groupsBySlug.values()) {
+      if (!groups.includes(activeLineage)) continue;
+      for (const g of groups) {
+        if (g !== activeLineage) map.set(g, (map.get(g) ?? 0) + 1);
+      }
+    }
+    return map;
+  }, [activeLineage, groupsBySlug]);
+
+  /**
+   * Four states, and the one that matters is `secondary`: a lab tied to the
+   * active origin keeps visible dotted lines back to its *other* origins. That
+   * is what stops "pinned on Google" from implying these labs are only Google.
+   */
+  const edgeState = useCallback(
+    (from: string, toGroup: LineageGroup) => {
+      if (active === from) return 'live';
+      if (activeLineage) {
+        if (toGroup === activeLineage) return 'live';
+        return groupsBySlug.get(from)?.includes(activeLineage) ? 'secondary' : 'dim';
+      }
+      return active ? 'dim' : 'ghost';
+    },
+    [active, activeLineage, groupsBySlug]
+  );
 
   return (
     <div className="canvas-shell">
@@ -312,58 +442,22 @@ export function LabCanvas({
             />
           )}
 
-          {dec.edges && (
+          {dec.yearAxis && <LineageYearAxis axis={dec.yearAxis} />}
+
+          {dec.edges && dec.lineageRail && (
             <g className="lineage-edges" aria-hidden="true">
               {dec.edges.map((e) => {
-                const from = positions.get(e.from);
-                const hub = dec.hubs?.find((h) => h.id === e.toHub);
-                if (!from || !hub) return null;
-                const isActive = active === e.from || activeLineage === e.toHub;
+                const node = positions.get(e.from);
+                const row = dec.lineageRail!.rows.find((r) => r.id === e.toGroup);
+                if (!node || !row) return null;
+                const state = edgeState(e.from, e.toGroup);
                 return (
-                  <line
-                    key={`${e.from}-${e.toHub}`}
-                    x1={from.x}
-                    y1={from.y}
-                    x2={hub.x}
-                    y2={hub.y}
-                    className={isActive ? 'edge edge-active' : 'edge'}
+                  <path
+                    key={`${e.from}-${e.toGroup}`}
+                    d={edgePath(dec.lineageRail!.anchorX, row.y, node.x - node.r - 3, node.y)}
+                    className={`edge is-${state}`}
+                    markerEnd={state === 'live' ? 'url(#lineage-arrow)' : undefined}
                   />
-                );
-              })}
-            </g>
-          )}
-
-          {dec.hubs && (
-            <g className="lineage-hubs">
-              {dec.hubs.map((h) => {
-                const isActive = activeLineage === h.id;
-                const isSelected = selectedLineage === h.id;
-                return (
-                <g
-                  key={h.id}
-                  transform={`translate(${h.x},${h.y})`}
-                  className={`lineage-hub${isActive ? ' is-active' : ''}${isSelected ? ' is-selected' : ''}`}
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`${h.label} lineage, ${h.count} ${h.count === 1 ? 'lab' : 'labs'}`}
-                  onPointerDown={(e) => e.stopPropagation()}
-                  onPointerUp={(e) => {
-                    e.stopPropagation();
-                    onLineageSelect(isSelected ? null : h.id);
-                  }}
-                  onPointerEnter={() => setHoveredLineage(h.id)}
-                  onPointerLeave={() => setHoveredLineage((group) => (group === h.id ? null : group))}
-                  onFocus={() => setHoveredLineage(h.id)}
-                  onBlur={() => setHoveredLineage((group) => (group === h.id ? null : group))}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      onLineageSelect(isSelected ? null : h.id);
-                    }
-                  }}
-                >
-                  <circle r={30} className="hub-disc" />
-                </g>
                 );
               })}
             </g>
@@ -375,16 +469,30 @@ export function LabCanvas({
               const isSelected = selected === n.slug;
               const areaMuted = Boolean(activeArea && n.lab.domain !== activeArea);
               const areaHighlighted = activeArea === n.lab.domain;
+              const inLineage = activeLineage
+                ? Boolean(groupsBySlug.get(n.slug)?.includes(activeLineage))
+                : false;
+              const lineageMuted = Boolean(activeLineage) && !inLineage;
               const unknown = n.lab.valuation.qualifier === 'undisclosed' || Boolean(n.lab.structure);
               const step = valuationStep(n.lab.valuation.usdM);
-              const fitted = fitLabel(canvasName(n.lab), n.r);
-              // Drawn only once the fitted type would actually be readable.
-              const label = fitted && fitted.fontSize * screenScale >= MIN_SCREEN_FONT ? fitted : null;
+              // Rotation and scale are per-lab and stable; the label has to be
+              // fitted to the hexagon as actually drawn, not the packing circle.
+              const jitter = hexJitter(n.slug);
+              const shapeR = n.r * jitter.scale;
+              // Longest name that's actually readable at this zoom, or nothing.
+              const label = chooseLabel(
+                n.slug,
+                canvasNames(n.lab),
+                shapeR,
+                jitter.rot,
+                screenScale,
+                labelRung.current
+              );
               return (
                 <g
                   key={n.slug}
                   transform={`translate(${n.x},${n.y})`}
-                  className={`bubble${isSelected ? ' is-selected' : ''}${isActive ? ' is-active' : ''}${areaMuted ? ' is-area-muted' : ''}${areaHighlighted ? ' is-area-highlighted' : ''}`}
+                  className={`bubble${isSelected ? ' is-selected' : ''}${isActive ? ' is-active' : ''}${areaMuted ? ' is-area-muted' : ''}${areaHighlighted ? ' is-area-highlighted' : ''}${lineageMuted ? ' is-lineage-muted' : ''}${inLineage ? ' is-lineage-lit' : ''}`}
                   style={{ '--area-color': AREA_COLORS[n.lab.domain] } as React.CSSProperties}
                   onPointerDown={(e) => onNodePointerDown(e, n)}
                   onPointerMove={onNodePointerMove}
@@ -403,8 +511,8 @@ export function LabCanvas({
                     }
                   }}
                 >
-                  <circle
-                    r={n.r}
+                  <path
+                    d={hexPath(shapeR, jitter.corner, jitter.rot)}
                     fill={unknown ? UNKNOWN_FILL : fillFor(n.lab.valuation.usdM)}
                     strokeWidth={Math.min(2, n.r * 0.12)}
                     className="bubble-disc"
@@ -413,8 +521,8 @@ export function LabCanvas({
                       This pads it out to a usable size without changing what's
                       drawn. Sized in screen pixels, so it holds at any zoom. */}
                   {hitRadius > n.r && <circle r={hitRadius} className="bubble-hit" />}
-                  {label && (
-                    <g transform={`scale(${label.fontSize / NOMINAL_FONT})`}>
+                  {label?.kind === 'text' && (
+                    <g transform={`scale(${label.fitted.fontSize / NOMINAL_FONT})`}>
                       <text
                         className="bubble-label"
                         textAnchor="middle"
@@ -423,12 +531,14 @@ export function LabCanvas({
                           fill: unknown ? UNKNOWN_INK : `var(--on-seq-${step})`,
                         }}
                       >
-                        {label.lines.map((line, i) => (
+                        {label.fitted.lines.map((line, i) => (
                           <tspan
                             key={line + i}
                             x={0}
                             y={
-                              (i - (label.lines.length - 1) / 2) * NOMINAL_FONT * LINE_SPACING +
+                              (i - (label.fitted.lines.length - 1) / 2) *
+                                NOMINAL_FONT *
+                                LINE_SPACING +
                               NOMINAL_FONT * 0.34
                             }
                           >
@@ -436,6 +546,31 @@ export function LabCanvas({
                           </tspan>
                         ))}
                       </text>
+                    </g>
+                  )}
+                  {/* Same ink as the type it stands in for — the mark carries no
+                      colour of its own, so it reads as a label rather than as a
+                      second thing sitting on the hexagon. */}
+                  {label?.kind === 'mark' && (
+                    <g
+                      className="bubble-mark"
+                      // Ink is set once, as `color`, so fills and strokes in the
+                      // artwork both follow it via currentColor.
+                      style={{ color: unknown ? UNKNOWN_INK : `var(--on-seq-${step})` }}
+                      transform={`scale(${label.fitted.scale}) translate(${-(label.mark.x + label.mark.width / 2)},${-(label.mark.y + label.mark.height / 2)})`}
+                    >
+                      {label.mark.shapes.map((shape) => (
+                        <path
+                          key={shape.d}
+                          d={shape.d}
+                          fill={shape.strokeWidth ? 'none' : 'currentColor'}
+                          fillRule={shape.fillRule}
+                          stroke={shape.strokeWidth ? 'currentColor' : 'none'}
+                          strokeWidth={shape.strokeWidth}
+                          strokeLinecap={shape.linecap}
+                          strokeLinejoin={shape.linecap}
+                        />
+                      ))}
                     </g>
                   )}
                 </g>
@@ -454,36 +589,54 @@ export function LabCanvas({
             />
           )}
 
-          {/* Counts stay legible above overlapping bubbles, but never capture
-              pointer events from a bubble underneath. */}
-          {dec.hubs && (
-            <g className="lineage-hub-counts" aria-hidden="true">
-              {dec.hubs.map((h) => (
-                <text key={h.id} className="hub-count" textAnchor="middle" x={h.x} y={h.y} dy={5}>
-                  {h.count}
-                </text>
-              ))}
-            </g>
-          )}
-
-          {/* Hub names ride above the bubbles — a hub the labs cover up can't
-              do its job of naming what the cluster is. */}
-          {dec.hubs && (
-            <g className="lineage-hub-labels" aria-hidden="true">
-              {dec.hubs.map((h) => (
-                <text key={h.id} className="hub-label" textAnchor="middle" x={h.x} y={h.y - 38}>
-                  {h.label}
-                </text>
-              ))}
-            </g>
+          {/* Drawn after the bubbles: the rail is the anchor of the whole view,
+              and a lab drifting over it would cover the ranking. Nothing in the
+              field reaches x=248, but zoom and drag both can. */}
+          {dec.lineageRail && (
+            <LineageRail
+              rail={dec.lineageRail}
+              activeGroup={activeLineage}
+              pinnedGroup={pinnedLineage}
+              overlap={lineageOverlap}
+              onHover={setHoveredLineage}
+              onToggle={(group) =>
+                setPinnedLineage((current) => (current === group ? null : group))
+              }
+            />
           )}
         </g>
 
+        <defs>
+          <marker
+            id="lineage-arrow"
+            viewBox="0 0 8 8"
+            refX="7"
+            refY="4"
+            markerWidth="5"
+            markerHeight="5"
+            orient="auto-start-reverse"
+          >
+            <path d="M 0 1 L 7 4 L 0 7 z" className="lineage-arrowhead" />
+          </marker>
+        </defs>
       </svg>
 
       {activeNode && <Tooltip node={activeNode} transform={transform} fit={vp.fit} />}
     </div>
   );
+}
+
+/**
+ * Rail row to lab, as a curve that leaves and arrives horizontally.
+ *
+ * Straight segments at this density read as a hairball because every line
+ * crosses the field at its own angle. Forcing a horizontal departure makes the
+ * whole bundle travel the same way — which is what turns 193 lines into a
+ * legible flow, and what makes direction readable before the arrowhead is.
+ */
+function edgePath(x1: number, y1: number, x2: number, y2: number): string {
+  const bend = Math.max(40, (x2 - x1) * 0.42);
+  return `M ${stable(x1)} ${stable(y1)} C ${stable(x1 + bend)} ${stable(y1)}, ${stable(x2 - bend)} ${stable(y2)}, ${stable(x2)} ${stable(y2)}`;
 }
 
 interface TipProps {

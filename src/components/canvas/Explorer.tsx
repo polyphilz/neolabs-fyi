@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { LAB_BY_SLUG } from '../../data/labs';
 import { TAG_ORDER } from '../../data/taxonomy';
-import type { Lab, LineageGroup } from '../../data/types';
+import type { Lab } from '../../data/types';
 import type { Basemap } from '../../lib/basemap';
 import {
   applyFilters,
@@ -21,7 +21,6 @@ import { LabTable } from '../table/LabTable';
 import { DetailPanel } from './DetailPanel';
 import { FilterIsland } from './FilterIsland';
 import { LabCanvas } from './LabCanvas';
-import { LineageDetailPanel } from './LineageDetailPanel';
 
 interface Props {
   labs: Lab[];
@@ -50,7 +49,6 @@ export function Explorer({ labs, basemap }: Props) {
   const [filters, setFilters] = useState<Filters>(() => defaultFilters(labs));
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<string | null>(null);
-  const [selectedLineage, setSelectedLineage] = useState<LineageGroup | null>(null);
 
   const [hydrated, setHydrated] = useState(false);
 
@@ -84,18 +82,11 @@ export function Explorer({ labs, basemap }: Props) {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setSelected(null);
-        setSelectedLineage(null);
-      }
+      if (e.key === 'Escape') setSelected(null);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, []);
-
-  useEffect(() => {
-    if (filters.view !== 'lineage') setSelectedLineage(null);
-  }, [filters.view]);
 
   const visible = useMemo(
     () => applyFilters(labs, filters).filter((lab) => matchesLabSearch(lab, query)),
@@ -117,14 +108,7 @@ export function Explorer({ labs, basemap }: Props) {
   }, [labs]);
 
   const selectedLab = selected ? LAB_BY_SLUG.get(selected) ?? null : null;
-  const selectLab = useCallback((slug: string | null) => {
-    setSelected(slug);
-    setSelectedLineage(null);
-  }, []);
-  const selectLineage = useCallback((group: LineageGroup | null) => {
-    setSelected(null);
-    setSelectedLineage(group);
-  }, []);
+  const selectLab = useCallback((slug: string | null) => setSelected(slug), []);
 
   const view = filters.view;
 
@@ -157,9 +141,7 @@ export function Explorer({ labs, basemap }: Props) {
           basemap={basemap}
           view={view}
           selected={selected}
-          selectedLineage={selectedLineage}
           onSelect={selectLab}
-          onLineageSelect={selectLineage}
         />
       )}
 
@@ -170,12 +152,6 @@ export function Explorer({ labs, basemap }: Props) {
       </div>
 
       <DetailPanel lab={selectedLab} onClose={() => setSelected(null)} />
-      <LineageDetailPanel
-        group={selectedLineage}
-        labs={visible}
-        onSelectLab={selectLab}
-        onClose={() => setSelectedLineage(null)}
-      />
 
       <span className="sr-only" aria-live="polite">
         {visible.length === labs.length

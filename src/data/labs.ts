@@ -14,6 +14,23 @@ import type { Lab } from './types';
  */
 export const LABS: Lab[] = [
   {
+    slug: 'trajectory',
+    name: 'Trajectory',
+    // Set by the $15M seed announced in May 2026, led by Conviction.
+    valuation: { usdM: 115, qualifier: 'exact' },
+    year: 2026,
+    domain: 'rsi',
+    tags: ['continual-learning', 'agents'],
+    founders: [
+      { person: 'ronak-malde', prior: ['windsurf', 'deepmind', 'stanford'] },
+      { person: 'michael-elabd', prior: ['deepmind', 'google', 'stanford'] },
+      { person: 'arjun-karanam', prior: ['apple', 'stanford'] },
+    ],
+    knownFor:
+      'A continual-learning layer that turns user feedback on agent trajectories into post-training data, helping deployed models improve from real-world use.',
+    location: CITIES.sf,
+  },
+  {
     slug: 'discovery-loop',
     name: 'Discovery Loop',
     // Announced 5 Aug 2026 co-led by Radical Ventures and Khosla, with
@@ -271,7 +288,7 @@ export const LABS: Lab[] = [
   },
   {
     slug: 'humans-and',
-    name: 'Humans&',
+    name: 'humans&',
     valuation: { usdM: 4_480, qualifier: 'exact' },
     year: 2026,
     domain: 'general',
@@ -848,7 +865,7 @@ export const LABS: Lab[] = [
   },
   {
     slug: 'isara',
-    name: 'Isara',
+    name: 'Isara Laboratories',
     valuation: { usdM: 650, qualifier: 'exact' },
     year: 2025,
     domain: 'world',
@@ -876,7 +893,7 @@ export const LABS: Lab[] = [
   },
   {
     slug: 'elorian',
-    name: 'Elorian',
+    name: 'Elorian AI',
     valuation: { usdM: 300, qualifier: 'exact' },
     year: 2025,
     domain: 'general',
@@ -978,7 +995,7 @@ export const LABS: Lab[] = [
   },
   {
     slug: 'qutwo',
-    name: 'QuTwo',
+    name: 'QUTWO',
     valuation: { usdM: 380, qualifier: 'exact' },
     year: 2026,
     domain: 'compute',

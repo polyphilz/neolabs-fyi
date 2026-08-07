@@ -113,7 +113,7 @@ export const TAG_ORDER: TagId[] = [
  */
 export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   openai: { label: 'OpenAI', group: 'openai' },
-  deepmind: { label: 'Google DeepMind', group: 'deepmind' },
+  deepmind: { label: 'DeepMind', group: 'deepmind' },
   google: { label: 'Google', group: 'google' },
   meta: { label: 'Meta (FAIR)', group: 'meta' },
   anthropic: { label: 'Anthropic', group: 'anthropic' },
@@ -158,8 +158,10 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   sogou: { label: 'Sogou', group: 'startup' },
   sinovation: { label: 'Sinovation Ventures', group: 'startup' },
   keen: { label: 'Keen Technologies', group: 'startup' },
-  mistral: { label: 'Mistral', group: 'mistral' },
-  cohere: { label: 'Cohere', group: 'cohere' },
+  // Neolabs in their own right, but each has seeded exactly one other lab so
+  // far — not enough to earn a row of their own.
+  mistral: { label: 'Mistral', group: 'startup' },
+  cohere: { label: 'Cohere', group: 'startup' },
   databricks: { label: 'Databricks', group: 'startup' },
   mosaicml: { label: 'MosaicML', group: 'startup' },
   huggingface: { label: 'Hugging Face', group: 'startup' },
@@ -198,6 +200,7 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   ubisoft: { label: 'Ubisoft', group: 'startup' },
   dataiku: { label: 'Dataiku', group: 'startup' },
   wayve: { label: 'Wayve', group: 'startup' },
+  windsurf: { label: 'Windsurf', group: 'startup' },
   sendyne: { label: 'Sendyne', group: 'startup' },
   aarno: { label: 'Aarno Labs', group: 'startup' },
   toggl: { label: 'Toggl', group: 'startup' },
@@ -219,10 +222,12 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   loopt: { label: 'Loopt', group: 'startup' },
   ycombinator: { label: 'Y Combinator', group: 'startup' },
 
-  stanford: { label: 'Stanford', group: 'academia' },
-  mit: { label: 'MIT', group: 'academia' },
-  cmu: { label: 'Carnegie Mellon', group: 'academia' },
-  berkeley: { label: 'UC Berkeley', group: 'academia' },
+  // The four schools that clear the same bar the labs do — every other
+  // institution appears in three or fewer neolabs and stays in `academia`.
+  stanford: { label: 'Stanford', group: 'stanford' },
+  mit: { label: 'MIT', group: 'mit' },
+  cmu: { label: 'Carnegie Mellon', group: 'cmu' },
+  berkeley: { label: 'UC Berkeley', group: 'berkeley' },
   caltech: { label: 'Caltech', group: 'academia' },
   princeton: { label: 'Princeton', group: 'academia' },
   technion: { label: 'Technion', group: 'academia' },
@@ -275,22 +280,37 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   ista: { label: 'ISTA (Austria)', group: 'academia' },
 };
 
-/** Lineage hubs, in the order they're laid out around the graph. */
-export const LINEAGE_GROUPS: Record<LineageGroup, { label: string; short: string }> = {
+/**
+ * Lineage origins.
+ *
+ * `residual: true` marks a bucket that is a long tail rather than a place —
+ * "Startups" is 59 companies, "Other academia" 49 institutions. They hold more
+ * labs than any single origin does, so ranking them inline would put a shrug at
+ * the top of the chart. The lineage rail sorts them below a rule instead, which
+ * is the one piece of editorial ordering in this file.
+ */
+export const LINEAGE_GROUPS: Record<
+  LineageGroup,
+  { label: string; short: string; residual?: true }
+> = {
   openai: { label: 'OpenAI', short: 'OpenAI' },
-  deepmind: { label: 'Google DeepMind', short: 'DeepMind' },
+  deepmind: { label: 'DeepMind', short: 'DeepMind' },
   google: { label: 'Google', short: 'Google' },
   meta: { label: 'Meta / FAIR', short: 'Meta' },
   anthropic: { label: 'Anthropic', short: 'Anthropic' },
   xai: { label: 'xAI', short: 'xAI' },
-  mistral: { label: 'Mistral', short: 'Mistral' },
-  cohere: { label: 'Cohere', short: 'Cohere' },
-  bigtech: { label: 'Other big tech', short: 'Big tech' },
+  stanford: { label: 'Stanford', short: 'Stanford' },
+  mit: { label: 'MIT', short: 'MIT' },
+  cmu: { label: 'Carnegie Mellon', short: 'CMU' },
+  berkeley: { label: 'UC Berkeley', short: 'Berkeley' },
   government: { label: 'Government / military', short: 'Gov' },
-  academia: { label: 'Academia', short: 'Academia' },
-  startup: { label: 'Other startups', short: 'Startups' },
+  bigtech: { label: 'Other big tech', short: 'Big tech', residual: true },
+  academia: { label: 'Other academia', short: 'Other academia', residual: true },
+  startup: { label: 'Startups', short: 'Startups', residual: true },
 };
 
+/** Fixed vocabulary order — filter chips and URL params. The lineage rail
+ * orders itself by count instead, so this is display order only. */
 export const LINEAGE_ORDER: LineageGroup[] = [
   'openai',
   'deepmind',
@@ -298,13 +318,18 @@ export const LINEAGE_ORDER: LineageGroup[] = [
   'meta',
   'anthropic',
   'xai',
-  'mistral',
-  'cohere',
-  'bigtech',
+  'stanford',
+  'mit',
+  'cmu',
+  'berkeley',
   'government',
+  'bigtech',
   'academia',
   'startup',
 ];
+
+/** Origins that are a single institution, in rail order above the rule. */
+export const LINEAGE_NAMED = LINEAGE_ORDER.filter((g) => !LINEAGE_GROUPS[g].residual);
 
 /**
  * Colour tokens.

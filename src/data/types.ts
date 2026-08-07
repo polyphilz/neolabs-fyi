@@ -141,6 +141,7 @@ export type OrgId =
   | 'vantai'
   | 'verizon'
   | 'wayve'
+  | 'windsurf'
   | 'aarno'
   | 'xtr'
   | 'zapier'
@@ -205,7 +206,16 @@ export type OrgId =
   | 'ycombinator'
   | 'startup';
 
-/** Lineage hubs. Individual orgs collapse into these for the graph view. */
+/**
+ * Lineage origins. Individual orgs collapse into these for the lineage view.
+ *
+ * The grain is deliberately uneven. An origin earns its own row by how many
+ * neolabs actually came out of it, not by what kind of institution it is — so
+ * Stanford (18 labs) stands beside OpenAI (9) while Mistral and Cohere (1 each)
+ * fall into `startup`. The three residual buckets at the end are the leftovers
+ * that rule produces, and they are marked as such rather than being ranked as
+ * if they were institutions; see LINEAGE_GROUPS.
+ */
 export type LineageGroup =
   | 'openai'
   | 'deepmind'
@@ -213,10 +223,13 @@ export type LineageGroup =
   | 'meta'
   | 'anthropic'
   | 'xai'
-  | 'mistral'
-  | 'cohere'
-  | 'bigtech'
+  | 'stanford'
+  | 'mit'
+  | 'cmu'
+  | 'berkeley'
   | 'government'
+  // Residual buckets — a long tail, not a single origin.
+  | 'bigtech'
   | 'academia'
   | 'startup';
 

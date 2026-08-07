@@ -1086,6 +1086,9 @@ body.is-bare {
 
 .bubble-disc {
   stroke: var(--surface);
+  /* The hexagon's corners are already rounded in the path; rounding the join
+     as well keeps the stroke from re-introducing a point at each vertex. */
+  stroke-linejoin: round;
   /* Width is set per node: a fixed value is a rounding error on a large bubble
      but eats a third of a small one's radius, shrinking the visible disc well
      inside the geometry its label was fitted to. */
@@ -1115,13 +1118,33 @@ body.is-bare {
   stroke: color-mix(in srgb, var(--area-color) 78%, var(--ink));
 }
 
+/* Lineage focus. Lighter than the area mute: these labs stay legible because
+   reading which ones belong to a pinned origin is the task, not a side effect
+   of it. */
+.bubble.is-lineage-muted {
+  opacity: 0.2;
+  filter: saturate(0.4);
+}
+
+.bubble.is-lineage-lit:not(.is-active):not(.is-selected) .bubble-disc {
+  stroke: var(--accent);
+  stroke-width: 1.6;
+}
+
 /* Label inside a large bubble. Fill comes from the per-step ink token, set
    inline, because it depends on which ramp step the bubble landed on. */
+/* A logo standing in for a label on a small hex. Fill is set inline, from the
+   same ramp-step ink the text labels use. */
+.bubble-mark {
+  pointer-events: none;
+}
+
 .bubble-label {
   font-weight: 600;
-  /* Mono here would blow past the width labelFit measured for; the display face
-     is narrower and reads better at bubble scale. */
-  font-family: var(--font-display);
+  /* Mono, matching the rest of the interface. labelFit measures this same
+     family — if one changes, the other has to. */
+  font-family: var(--font);
+  letter-spacing: -0.02em;
   pointer-events: none;
 }
 
@@ -1361,59 +1384,213 @@ body.is-bare {
   font-variant-numeric: tabular-nums;
 }
 
+/* Lineage — ranked origin rail, year columns, directed edges ---------------- */
+
+/*
+ * Every edge is drawn at rest, all 193 of them. That faint layer IS the
+ * subject: founders leaving somewhere and landing somewhere else, and most
+ * teams leaving several places at once. Hiding it until hover would make
+ * multi-origin founding — which is 56 of the 71 labs — an easter egg.
+ */
 .edge {
+  fill: none;
+  stroke: var(--rule);
+  stroke-width: 0.7;
+  transition:
+    opacity 0.18s ease,
+    stroke 0.18s ease;
+}
+
+/* Low enough that 193 curves read as a texture rather than a haze. Any heavier
+   and the bundle competes with the bars for attention, which inverts the
+   hierarchy this view is built on. */
+.edge.is-ghost {
+  opacity: 0.14;
+}
+
+.edge.is-dim {
+  opacity: 0.07;
+}
+
+.edge.is-live {
+  stroke: var(--accent);
+  stroke-width: 1.7;
+  opacity: 0.95;
+}
+
+/*
+ * The reason a pinned origin doesn't lie. These are the *other* origins of the
+ * labs you just pinned — dotted so they read as a different kind of statement
+ * from the solid ones, present so no lab looks like it came from one place.
+ */
+.edge.is-secondary {
+  stroke: var(--ink-2);
+  stroke-width: 1;
+  stroke-dasharray: 2 3.5;
+  opacity: 0.42;
+}
+
+.lineage-arrowhead {
+  fill: var(--accent);
+}
+
+.rail-kicker,
+.rail-divider-note {
+  fill: var(--muted);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.rail-divider-note {
+  letter-spacing: 0.06em;
+  text-transform: none;
+  font-weight: 400;
+  font-size: 8px;
+  font-style: italic;
+}
+
+.rail-divider line {
   stroke: var(--rule);
   stroke-width: 1;
-  opacity: 0.55;
+  stroke-dasharray: 3 3;
 }
 
-.edge-active {
-  stroke: var(--accent);
-  stroke-width: 2;
-  opacity: 1;
-}
-
-.hub-disc {
-  fill: var(--plane);
-  stroke: var(--rule);
-  stroke-width: 1.5;
-}
-
-.lineage-hub {
+.rail-row {
   cursor: pointer;
   outline: none;
 }
 
-.lineage-hub.is-active .hub-disc {
-  stroke: var(--ink);
-  stroke-width: 2;
+.rail-row-hit {
+  fill: transparent;
 }
 
-.lineage-hub.is-selected .hub-disc,
-.lineage-hub:focus-visible .hub-disc {
-  stroke: var(--accent);
-  stroke-width: 3;
-}
-
-.hub-label {
+.rail-label {
   fill: var(--ink);
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
-  paint-order: stroke;
-  stroke: var(--surface);
-  stroke-width: 3px;
 }
 
-.hub-count {
+.rail-count {
   fill: var(--ink-2);
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
 
-.lineage-hub-counts {
+.rail-track {
+  fill: var(--grid);
+}
+
+.rail-bar {
+  fill: var(--ink-2);
+}
+
+/* Residual buckets are quieter than the named origins even before anything is
+   hovered — they sit below the rule because they are a long tail, and the fill
+   should say the same thing the position does. */
+.rail-row.is-residual .rail-label,
+.rail-row.is-residual .rail-count {
+  fill: var(--muted);
+}
+
+.rail-row.is-residual .rail-bar {
+  fill: var(--muted);
+  opacity: 0.55;
+}
+
+.rail-row.is-muted {
+  opacity: 0.45;
+}
+
+.rail-row.is-active .rail-bar,
+.rail-row.is-pinned .rail-bar {
+  fill: var(--accent);
+  opacity: 1;
+}
+
+.rail-row.is-active,
+.rail-row.is-pinned {
+  opacity: 1;
+}
+
+/* Only the row you are actually looking at goes bold. A pinned row keeps its
+   accent bar and full opacity so the frame is still legible, but weighting both
+   reads as two active rows at once. */
+.rail-row.is-active .rail-label,
+.rail-row.is-pinned:not(.is-muted) .rail-label {
+  fill: var(--ink);
+  font-weight: 600;
+}
+
+.rail-row:focus-visible .rail-row-hit {
+  fill: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+/* The overlap segment: with Google active, this is the share of each other
+   origin's bar that Google also claims. */
+.rail-overlap {
+  fill: var(--accent);
+  opacity: 0.55;
+}
+
+.rail-count-shared {
+  fill: var(--accent);
+  font-weight: 700;
+}
+
+.rail-count-of {
+  fill: var(--muted);
+  font-weight: 400;
+}
+
+.rail-caption {
   pointer-events: none;
+}
+
+.rail-caption-lead {
+  fill: var(--ink-2);
+  font-size: 10px;
+}
+
+.rail-caption-em {
+  fill: var(--ink);
+  font-weight: 600;
+}
+
+.rail-caption-fine {
+  fill: var(--muted);
+  font-size: 8.5px;
+}
+
+.year-axis {
+  pointer-events: none;
+}
+
+.year-rule {
+  stroke: var(--grid);
+  stroke-width: 1;
+  stroke-dasharray: 2 5;
+}
+
+.year-label {
+  fill: var(--ink-2);
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.year-count {
+  fill: var(--muted);
+  font-size: 8.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.year-column.is-empty .year-label,
+.year-column.is-empty .year-count {
+  opacity: 0.4;
 }
 
 .basemap-land {
@@ -1625,44 +1802,6 @@ body.is-bare {
 .founder-prior {
   color: var(--muted);
   font-size: 0.74rem;
-}
-
-.lineage-labs {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 0.35rem;
-}
-
-.lineage-labs button {
-  width: 100%;
-  display: grid;
-  gap: 0.1rem;
-  padding: 0.45rem 0.5rem;
-  border: 0;
-  border-radius: 7px;
-  background: transparent;
-  color: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-
-.lineage-labs button:hover,
-.lineage-labs button:focus-visible {
-  background: var(--control-hover);
-  outline: none;
-}
-
-.lineage-lab-name {
-  color: var(--ink);
-  font-size: 0.83rem;
-  font-weight: 600;
-}
-
-.lineage-lab-meta {
-  color: var(--muted);
-  font-size: 0.7rem;
 }
 
 .drawer-known {
