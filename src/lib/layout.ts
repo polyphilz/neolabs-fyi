@@ -25,7 +25,11 @@ export const VIEWS: { id: ViewId; label: string; hint: string }[] = [
   },
   { id: 'lineage', label: 'Lineage', hint: 'Which lab each founding team came out of.' },
   { id: 'geography', label: 'Geography', hint: 'Where the labs actually are.' },
-  { id: 'valuation', label: 'Valuation', hint: 'Bubble area is proportional to valuation.' },
+  {
+    id: 'valuation',
+    label: 'Valuation',
+    hint: 'Bubble area is proportional to valuation, banded smallest to largest.',
+  },
   { id: 'table', label: 'Table', hint: 'The same labs as a sortable table.' },
 ];
 
@@ -60,6 +64,26 @@ export interface Decorations {
   hubs?: { id: LineageGroup; label: string; x: number; y: number; count: number }[];
   edges?: { from: string; toHub: LineageGroup }[];
   basemap?: { land: string; graticule: string; transform: string };
+  valuationBands?: ValuationBandAxis;
+}
+
+/** One column of the valuation view: a magnitude range and the space it owns. */
+export interface ValuationBand {
+  id: string;
+  label: string;
+  count: number;
+  x0: number;
+  x1: number;
+  cx: number;
+}
+
+export interface ValuationBandAxis {
+  bands: ValuationBand[];
+  /** Vertical extent of the dividers. */
+  top: number;
+  bottom: number;
+  titleY: number;
+  countY: number;
 }
 
 export interface AreaSector {
@@ -146,22 +170,145 @@ export function isDefunct(lab: Lab): boolean {
 }
 
 // ---------------------------------------------------------------------------
-// Valuation — a single centred pack, size carrying the whole story
+// Valuation — magnitude bands, smallest to largest, left to right
 // ---------------------------------------------------------------------------
 
+/**
+ * Fixed bands, low to high. Round thresholds rather than quantiles, so a band
+ * means the same thing whatever the filters are doing — and on this dataset
+ * they happen to split cleanly into four comparable groups (18/25/20/8), with
+ * the handful of genuine giants isolated in their own column.
+ */
+const VALUATION_BANDS: { id: string; label: string; min: number }[] = [
+  { id: 'under-1b', label: 'Under $1B', min: 0 },
+  { id: '1-3b', label: '$1B–$3B', min: 1_000 },
+  { id: '3-10b', label: '$3B–$10B', min: 3_000 },
+  { id: 'over-10b', label: 'Over $10B', min: 10_000 },
+];
+
+/**
+ * Vertical extent of the band dividers. Kept close around the clumps: rules
+ * running the full height of the canvas would be mostly empty, since even the
+ * heaviest band packs into well under half of it.
+ */
+const BAND_TOP = 196;
+const BAND_BOTTOM = 580;
+/** Canvas edge to the outermost column. */
+const BAND_MARGIN = 44;
+/** Breathing room between a clump and the dotted rules on either side of it. */
+const BAND_GUTTER = 54;
+/** Enough width for the heading of a band holding only tiny bubbles. */
+const BAND_MIN_WIDTH = 116;
+/**
+ * Fraction of a square a force-packed clump of circles actually fills. Used to
+ * turn a band's total bubble area into the width its column needs.
+ */
+const BAND_PACKING = 0.68;
+/**
+ * How much of its own width a clump uses to spread targets left to right.
+ * Well under 1: collision then widens the clump on its own, and a wider spread
+ * than this pulls the pack apart into a row of separate dots.
+ */
+const BAND_SPREAD = 0.6;
+/**
+ * Firmer than the default pull. Every target in a band sits on one short line,
+ * so the pull is what packs the clump — and the small bubbles, which barely
+ * touch anything, otherwise stall wherever the previous view left them before
+ * the simulation cools.
+ */
+const BAND_TARGET_STRENGTH = 0.4;
+
 function valuationLayout(labs: Lab[]): LayoutResult {
-  // Everything targets the centre; collision does the packing. Year is handled
-  // by the timeline filter rather than by position, so the view stays about
-  // one thing: how absurdly different these numbers are.
-  const centre = { x: VIEW_W / 2, y: VIEW_H / 2 };
+  // Sorting inside each band and spreading targets across the column gives a
+  // left-to-right size gradient; collision then packs the column vertically.
+  // The sort is deliberately soft — the band a lab lands in is the claim, its
+  // exact neighbour order is not.
+  const present = VALUATION_BANDS.map((band, index) => {
+    const max = VALUATION_BANDS[index + 1]?.min ?? Infinity;
+    return {
+      band,
+      members: labs
+        .filter((lab) => lab.valuation.usdM >= band.min && lab.valuation.usdM < max)
+        .sort((a, b) => a.valuation.usdM - b.valuation.usdM || a.slug.localeCompare(b.slug)),
+    };
+  }).filter((entry) => entry.members.length > 0);
+
   const targets = new Map<string, Vec>();
-  for (const lab of labs) targets.set(lab.slug, centre);
+  const nodeBounds = new Map<string, Box>();
+  if (!present.length) {
+    return { targets, decorations: {}, collideStrength: 0.92, radiusScale: 1, bounded: true };
+  }
+
+  // A column is sized from the area of the bubbles it holds, not their count —
+  // the same encoding as the bubbles themselves, one level up. That is what
+  // makes the columns widen from left to right instead of fighting the sort.
+  const sides = present.map(({ members }) => {
+    const area = members.reduce((sum, lab) => sum + Math.PI * radiusFor(lab.valuation.usdM) ** 2, 0);
+    const widest = Math.max(...members.map((lab) => radiusFor(lab.valuation.usdM))) * 2;
+    const packed = Math.max(Math.sqrt(area / BAND_PACKING), widest);
+    // A clump also has to hold the spread of its own targets plus the bubble on
+    // each end. In the top band, where one lab is a third of the column wide,
+    // that is the binding constraint and the square estimate alone is too tight.
+    return Math.max(packed, packed * BAND_SPREAD + widest);
+  });
+
+  const usable = VIEW_W - BAND_MARGIN * 2;
+  const natural = sides.map((side) => Math.max(side + BAND_GUTTER, BAND_MIN_WIDTH));
+  const naturalTotal = natural.reduce((sum, width) => sum + width, 0);
+  // Slack is shared out evenly rather than proportionally: extra room is
+  // margin, and margin should look the same in every column.
+  const widths =
+    naturalTotal <= usable
+      ? natural.map((width) => width + (usable - naturalTotal) / natural.length)
+      : natural.map((width) => (width * usable) / naturalTotal);
+
+  const centreY = (BAND_TOP + BAND_BOTTOM) / 2;
+  const bands: ValuationBand[] = [];
+  let cursor = BAND_MARGIN;
+
+  present.forEach(({ band, members }, index) => {
+    const x0 = stable(cursor);
+    const x1 = stable(cursor + widths[index]);
+    cursor += widths[index];
+    const cx = stable((x0 + x1) / 2);
+    const spread = Math.max(0, Math.min(sides[index] * BAND_SPREAD, x1 - x0 - 24));
+
+    // Rank-spaced targets put the band's biggest bubbles — which need the most
+    // room — on the right, so collision presses the whole clump against the
+    // right-hand rule. Rebalancing the line about its centre of area cancels
+    // that lean without touching the order.
+    const offsets = members.map((_, position) =>
+      members.length === 1 ? 0 : (position / (members.length - 1) - 0.5) * spread
+    );
+    const weights = members.map((lab) => radiusFor(lab.valuation.usdM) ** 2);
+    const weightTotal = weights.reduce((sum, weight) => sum + weight, 0);
+    const lean = offsets.reduce((sum, offset, i) => sum + offset * weights[i], 0) / weightTotal;
+
+    members.forEach((lab, position) => {
+      targets.set(lab.slug, { x: stable(cx + offsets[position] - lean), y: centreY });
+      // Hard cell per band: without it, collision pressure in a crowded column
+      // shoves bubbles across a divider and the bands stop being true.
+      nodeBounds.set(lab.slug, { x0, y0: BAND_TOP, x1, y1: BAND_BOTTOM });
+    });
+
+    bands.push({ id: band.id, label: band.label, count: members.length, x0, x1, cx });
+  });
 
   return {
     targets,
-    decorations: {},
-    collideStrength: 0.95,
+    nodeBounds,
+    decorations: {
+      valuationBands: {
+        bands,
+        top: BAND_TOP,
+        bottom: BAND_BOTTOM,
+        titleY: BAND_TOP - 36,
+        countY: BAND_TOP - 21,
+      },
+    },
+    collideStrength: 0.92,
     radiusScale: 1,
+    targetStrength: BAND_TARGET_STRENGTH,
     bounded: true,
   };
 }

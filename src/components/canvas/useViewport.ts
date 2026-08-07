@@ -185,16 +185,5 @@ export function useViewport(
     panRef.current = null;
   }, []);
 
-  const reset = useCallback(() => setTransform({ k: 1, x: 0, y: 0 }), []);
-
-  const zoomBy = useCallback(
-    (factor: number) => {
-      const f = fit();
-      if (!f) return;
-      zoomAt(factor, f.rect.left + f.rect.width / 2, f.rect.top + f.rect.height / 2);
-    },
-    [fit, zoomAt]
-  );
-
-  return { transform, toCanvas, fit, startPan, movePan, endPan, reset, zoomBy };
+  return { transform, toCanvas, fit, startPan, movePan, endPan };
 }

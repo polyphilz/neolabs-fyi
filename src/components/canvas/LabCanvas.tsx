@@ -9,6 +9,7 @@ import { LINE_SPACING, fitLabel, refreshLabelMetrics } from '../../lib/labelFit'
 import { AREA_COLORS, BloomCore, ResearchBloom } from './ResearchBloom';
 import { useSimulation, type SimNode } from './useSimulation';
 import { useViewport } from './useViewport';
+import { ValuationBands } from './ValuationBands';
 
 interface Props {
   labs: Lab[];
@@ -299,6 +300,8 @@ export function LabCanvas({
             </g>
           )}
 
+          {dec.valuationBands && <ValuationBands axis={dec.valuationBands} />}
+
           {dec.areaAtlas && (
             <ResearchBloom
               atlas={dec.areaAtlas}
@@ -479,20 +482,6 @@ export function LabCanvas({
       </svg>
 
       {activeNode && <Tooltip node={activeNode} transform={transform} fit={vp.fit} />}
-
-      <div className="hud hud-bottom-right">
-        <div className="island island-zoom">
-          <button type="button" onClick={() => vp.zoomBy(1.4)} aria-label="Zoom in">
-            +
-          </button>
-          <button type="button" onClick={() => vp.zoomBy(1 / 1.4)} aria-label="Zoom out">
-            −
-          </button>
-          <button type="button" onClick={vp.reset} aria-label="Reset zoom">
-            ⤢
-          </button>
-        </div>
-      </div>
     </div>
   );
 }
