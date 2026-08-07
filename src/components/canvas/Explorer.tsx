@@ -28,11 +28,11 @@ interface Props {
 }
 
 const VIEW_TITLES: Record<Filters['view'], string> = {
-  area: 'Neolabs.fyi | Neolab research areas',
-  lineage: 'Neolabs.fyi | Neolab founder lineages',
-  geography: 'Neolabs.fyi | Neolab headquarters geography',
-  valuation: 'Neolabs.fyi | Neolab valuations',
-  table: 'Neolabs.fyi | Every neolab in a sortable table',
+  area: 'neolabs.fyi | Neolab research areas',
+  lineage: 'neolabs.fyi | Neolab founder lineages',
+  geography: 'neolabs.fyi | Neolab headquarters geography',
+  valuation: 'neolabs.fyi | Neolab valuations',
+  table: 'neolabs.fyi | Every neolab in a sortable table',
 };
 
 /**
