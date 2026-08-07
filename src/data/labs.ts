@@ -1049,13 +1049,25 @@ export const LABS: Lab[] = [
   {
     slug: '01-ai',
     name: '01.AI',
-    // Last widely reported figure was ~$1B in 2024; no current number has been
-    // published since it stepped back from frontier pretraining.
+    // Last widely reported valuation was >$1B in November 2023; no current
+    // figure has been disclosed since it stepped back from frontier pretraining.
     valuation: { usdM: 1_000, qualifier: 'undisclosed' },
     year: 2023,
     domain: 'applied',
     tags: ['open-weights'],
-    founders: [{ person: 'kai-fu-lee', prior: ['google', 'microsoft', 'startup'] }],
+    founders: [
+      {
+        person: 'kai-fu-lee',
+        prior: ['sinovation', 'google', 'microsoft', 'apple', 'sgi'],
+      },
+      { person: 'ma-jie', prior: ['baidu', 'startup'] },
+      { person: 'anita-huang', prior: ['sinovation', 'google', 'startup'] },
+      { person: 'shen-pengfei', prior: ['baidu', 'startup'] },
+      { person: 'qi-ruifeng', prior: ['sap', 'microsoft', 'cisco'] },
+      { person: 'gu-xuemei', prior: ['google', 'alibaba'], departed: true },
+      { person: 'dai-zonghong', prior: ['huawei', 'startup'], departed: true },
+      { person: 'li-xiangang', prior: ['baidu', 'didi', 'startup', 'peking'], departed: true },
+    ],
     knownFor: 'The Yi model family; stopped pretraining in March 2025 and now builds enterprise applications on DeepSeek\'s models.',
     location: CITIES.beijing,
   },
