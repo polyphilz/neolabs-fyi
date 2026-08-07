@@ -162,6 +162,7 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   skild: { label: 'Skild AI', group: 'startup' },
   stabilityai: { label: 'Stability AI', group: 'startup' },
   neuralink: { label: 'Neuralink', group: 'startup' },
+  nexusflow: { label: 'Nexusflow AI', group: 'startup' },
   archer: { label: 'Archer Aviation', group: 'startup' },
   figureai: { label: 'Figure AI', group: 'startup' },
   anduril: { label: 'Anduril', group: 'startup' },

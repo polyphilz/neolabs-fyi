@@ -964,8 +964,14 @@ export const LABS: Lab[] = [
     year: 2026,
     domain: 'inference',
     founders: [
-      { person: 'ying-sheng', prior: ['stanford', 'berkeley'] },
-      { person: 'banghua-zhu', prior: ['berkeley', 'xai', 'washington'] },
+      {
+        person: 'ying-sheng',
+        prior: ['xai', 'databricks', 'stanford'],
+      },
+      {
+        person: 'banghua-zhu',
+        prior: ['washington', 'nvidia', 'nexusflow'],
+      },
     ],
     knownFor: 'Commercialising SGLang; out of the LMSYS and xAI orbit.',
     location: CITIES.berkeley,

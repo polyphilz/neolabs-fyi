@@ -113,6 +113,7 @@ export type OrgId =
   | 'mosaicml'
   | 'neuralink'
   | 'nervana'
+  | 'nexusflow'
   | 'nyu'
   | 'nus'
   | 'qualcomm'
