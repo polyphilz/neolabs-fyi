@@ -183,7 +183,8 @@ export const LABS: Lab[] = [
     name: "Ineffable Intelligence",
     valuation: { usdM: 5_100, qualifier: "exact" },
     year: 2026,
-    domain: "general",
+    domain: "rsi",
+    tags: ["continual-learning"],
     founders: [
       {
         person: "heather-gorham",
@@ -553,10 +554,10 @@ export const LABS: Lab[] = [
     valuation: { usdM: 1_700, qualifier: "exact" },
     year: 2024,
     domain: "physical",
-    tags: ["robot-foundation-models", "humanoid"],
+    tags: ["robot-foundation-models"],
     founders: [{ person: "jagdeep-singh", prior: ["startup"] }],
     knownFor:
-      "Serial founder Jagdeep Singh's robotics startup; FutureVision, a video-pretrained foundation model ('Direct Video Action') for humanoid robot control.",
+      "Serial founder Jagdeep Singh's robotics startup; FutureVision, a video-pretrained foundation model ('Direct Video-Action') that predicts the next frames of a scene and converts them into motor commands, driving a bimanual manipulation platform on factory lines.",
     location: CITIES.sf,
   },
   {
@@ -768,7 +769,7 @@ export const LABS: Lab[] = [
     name: "Ndea",
     valuation: { usdM: 1_000, qualifier: "undisclosed" },
     year: 2025,
-    domain: "general",
+    domain: "rsi",
     founders: [
       { person: "francois-chollet", prior: ["google"] },
       { person: "mike-knoop", prior: ["startup"] },
@@ -817,7 +818,7 @@ export const LABS: Lab[] = [
     name: "Reka",
     valuation: { usdM: 1_000, qualifier: "exact" },
     year: 2022,
-    domain: "general",
+    domain: "physical",
     tags: ["multimodal"],
     founders: [
       { person: "dani-yogatama", prior: ["deepmind", "baidu", "cmu"] },
@@ -1005,7 +1006,7 @@ export const LABS: Lab[] = [
     name: "Isara Laboratories",
     valuation: { usdM: 650, qualifier: "exact" },
     year: 2025,
-    domain: "world",
+    domain: "applied",
     tags: ["agents"],
     founders: [
       { person: "eddie-zhang", prior: ["openai", "mit", "harvard"] },
@@ -1071,7 +1072,7 @@ export const LABS: Lab[] = [
     name: "Standard Intelligence",
     valuation: { usdM: 500, qualifier: "exact" },
     year: 2024,
-    domain: "applied",
+    domain: "general",
     tags: ["agents", "video"],
     founders: [
       { person: "galen-mead", prior: ["startup"] },
@@ -1228,7 +1229,7 @@ export const LABS: Lab[] = [
     name: "Baichuan AI",
     valuation: { usdM: 2_900, qualifier: "approx" },
     year: 2023,
-    domain: "science",
+    domain: "applied",
     founders: [{ person: "wang-xiaochuan", prior: ["sogou"] }],
     knownFor:
       "Sogou's founder; shifted strategic focus from the general-purpose LLM race toward AI-for-healthcare, while continuing to develop its base model series.",
@@ -1344,7 +1345,7 @@ export const LABS: Lab[] = [
     // usdM is a non-semantic layout placeholder only.
     valuation: { usdM: 100, qualifier: "undisclosed" },
     year: 2025,
-    domain: "general",
+    domain: "science",
     tags: ["math", "agents"],
     founders: [
       { person: "eve-bodnia", prior: ["ucsb", "berkeley", "lbnl", "spbsu"] },
@@ -1415,7 +1416,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 10, qualifier: "undisclosed" },
     year: 2025,
     domain: "applied",
-    tags: ["open-weights", "open-source", "multimodal", "agents"],
+    tags: ["open-weights", "open-source", "multimodal"],
     structure: "public-benefit",
     founders: [
       {
@@ -1478,11 +1479,14 @@ export const LABS: Lab[] = [
   {
     slug: "cursive",
     name: "Cursive",
-    // Approximate post-money value derived from the March 2026 Companies House
-    // allotment price across all economically participating shares: about
-    // £840–852M, or $1.12–1.14B at the allotment-date exchange rate.
-    valuation: { usdM: 1_130, qualifier: "approx" },
-    year: 2025,
+    // Seed-backed by SuperSeed; neither a round amount nor a valuation has ever
+    // been disclosed, and PitchBook lists total VC raised as "Undisclosed". The
+    // single confirmed Companies House allotment (10 Jul 2025) states only
+    // aggregate nominal capital, not the premium, so no figure is derivable
+    // from the register. usdM is a non-semantic layout placeholder only.
+    valuation: { usdM: 100, qualifier: "undisclosed" },
+    // Talfan Evans dates his Cursive co-founder/CEO role to January 2026.
+    year: 2026,
     domain: "rsi",
     tags: ["continual-learning", "agents"],
     founders: [
