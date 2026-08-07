@@ -766,14 +766,20 @@ body.is-bare {
 .panel {
   position: absolute;
   top: calc(100% + 0.4rem);
-  left: 0;
+  /* Anchored to the right edge of its button so it opens inward. Its trigger is
+     always in the right half of the header, so hanging it off the left edge
+     sent it off-screen at any width where the header wasn't especially wide —
+     it only fitted on a large viewport by coincidence. */
+  right: 0;
+  left: auto;
   width: 23rem;
   max-width: calc(100vw - 1.5rem);
   max-height: min(70vh, 34rem);
   overflow-y: auto;
-  background: color-mix(in srgb, var(--raised) 92%, transparent);
-  backdrop-filter: blur(18px) saturate(150%);
-  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  /* Fully opaque. This one sits over dense content — the table especially —
+     where a blurred 92% tint let rows read straight through the controls. The
+     islands stay translucent; a reading surface shouldn't be. */
+  background: var(--raised);
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 0.9rem 1rem 1rem;
