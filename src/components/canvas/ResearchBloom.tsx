@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import { DOMAINS } from '../../data/taxonomy';
 import type { DomainId } from '../../data/types';
 import type { AreaAtlas, AreaSector } from '../../lib/layout';
+import { stable } from '../../lib/precision';
 
 export const AREA_COLORS: Record<DomainId, string> = {
   general: '#6e9fec',
@@ -205,9 +206,11 @@ interface Point {
 }
 
 function areaPoint(atlas: AreaAtlas, radius: number, angle: number): Point {
+  // Rounded here rather than at each call site, so every path, spine, leader and
+  // label built from this point is identical on the server and the client.
   return {
-    x: atlas.cx + Math.cos(angle) * radius * atlas.xScale,
-    y: atlas.cy + Math.sin(angle) * radius,
+    x: stable(atlas.cx + Math.cos(angle) * radius * atlas.xScale),
+    y: stable(atlas.cy + Math.sin(angle) * radius),
   };
 }
 
@@ -220,9 +223,9 @@ function areaSectorPath(atlas: AreaAtlas, sector: AreaSector): string {
   return [
     `M ${innerStart.x} ${innerStart.y}`,
     `L ${outerStart.x} ${outerStart.y}`,
-    `A ${atlas.outerRadius * atlas.xScale} ${atlas.outerRadius} 0 ${largeArc} 1 ${outerEnd.x} ${outerEnd.y}`,
+    `A ${stable(atlas.outerRadius * atlas.xScale)} ${atlas.outerRadius} 0 ${largeArc} 1 ${outerEnd.x} ${outerEnd.y}`,
     `L ${innerEnd.x} ${innerEnd.y}`,
-    `A ${atlas.innerRadius * atlas.xScale} ${atlas.innerRadius} 0 ${largeArc} 0 ${innerStart.x} ${innerStart.y}`,
+    `A ${stable(atlas.innerRadius * atlas.xScale)} ${atlas.innerRadius} 0 ${largeArc} 0 ${innerStart.x} ${innerStart.y}`,
     'Z',
   ].join(' ');
 }
@@ -231,7 +234,7 @@ function areaArcPath(atlas: AreaAtlas, sector: AreaSector, radius: number): stri
   const start = areaPoint(atlas, radius, sector.startAngle);
   const end = areaPoint(atlas, radius, sector.endAngle);
   const largeArc = sector.endAngle - sector.startAngle > Math.PI ? 1 : 0;
-  return `M ${start.x} ${start.y} A ${radius * atlas.xScale} ${radius} 0 ${largeArc} 1 ${end.x} ${end.y}`;
+  return `M ${start.x} ${start.y} A ${stable(radius * atlas.xScale)} ${radius} 0 ${largeArc} 1 ${end.x} ${end.y}`;
 }
 
 function areaSpinePath(atlas: AreaAtlas, sector: AreaSector): string {
@@ -248,8 +251,10 @@ function areaLeaderPath(atlas: AreaAtlas, sector: AreaSector): string {
 
 function areaLabelPlacement(atlas: AreaAtlas, sector: AreaSector) {
   const point = areaPoint(atlas, atlas.labelRadius, sector.midAngle);
-  const cosine = Math.cos(sector.midAngle);
-  const sine = Math.sin(sector.midAngle);
+  // Rounded before the comparisons below, so the chosen text anchor can't differ
+  // between the server and the client either.
+  const cosine = stable(Math.cos(sector.midAngle), 6);
+  const sine = stable(Math.sin(sector.midAngle), 6);
   const anchor: 'start' | 'middle' | 'end' =
     cosine > 0.22 ? 'start' : cosine < -0.22 ? 'end' : 'middle';
   const lines = AREA_LABEL_LINES[sector.id].length;

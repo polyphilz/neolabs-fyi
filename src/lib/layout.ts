@@ -1,6 +1,7 @@
 import { DOMAINS, DOMAIN_ORDER, LINEAGE_GROUPS, LINEAGE_ORDER, ORGS } from '../data/taxonomy';
 import type { DomainId, Lab, LineageGroup } from '../data/types';
 import type { Basemap } from './basemap';
+import { stable } from './precision';
 
 /** Logical canvas space. Zoom/pan is a transform on top of this. */
 export const VIEW_W = 1200;
@@ -183,7 +184,10 @@ function lineageLayout(labs: Lab[]): LayoutResult {
     // Start at -90deg so OpenAI sits at the top; the order is fixed so the
     // graph doesn't reshuffle itself every time a filter changes.
     const t = (i / present.length) * Math.PI * 2 - Math.PI / 2;
-    hubPos.set(g, { x: cx + Math.cos(t) * rx, y: cy + Math.sin(t) * ry });
+    hubPos.set(g, {
+      x: stable(cx + Math.cos(t) * rx),
+      y: stable(cy + Math.sin(t) * ry),
+    });
   });
 
   const targets = new Map<string, Vec>();
@@ -355,8 +359,8 @@ function areaLayout(labs: Lab[], referenceLabs: Lab[]): LayoutResult {
       const angle = usableStart + lane * (usableEnd - usableStart);
       const radius = radiusForYear(lab.year);
       targets.set(lab.slug, {
-        x: cx + Math.cos(angle) * radius * xScale,
-        y: cy + Math.sin(angle) * radius,
+        x: stable(cx + Math.cos(angle) * radius * xScale),
+        y: stable(cy + Math.sin(angle) * radius),
       });
     }
   }

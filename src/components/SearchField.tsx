@@ -19,6 +19,7 @@ export function SearchField({
       </svg>
       <input
         type="search"
+        name="q"
         value={value}
         placeholder={placeholder}
         autoComplete="off"
