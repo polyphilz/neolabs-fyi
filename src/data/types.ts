@@ -204,6 +204,35 @@ export type OrgId =
   | 'ucirvine'
   | 'utah'
   | 'ycombinator'
+  | 'whitehouse'
+  | 'reka'
+  | 'lse'
+  | 'queenmary'
+  | 'hpi'
+  | 'ucsb'
+  | 'lbnl'
+  | 'spbsu'
+  | 'dkfz'
+  | 'kit'
+  | 'umontreal'
+  | 'belllabs'
+  | 'ivado'
+  | 'cifar'
+  | 'elementai'
+  | 'twitter'
+  | 'snap'
+  | 'steelperlot'
+  | 'cincinnati'
+  | 'franciscrick'
+  | 'petribio'
+  | 'haverford'
+  | 'rochester'
+  | 'uchicago'
+  | 'rosehulman'
+  | 'openphilanthropy'
+  | 'baylor'
+  | 'uthealth'
+  | 'rice'
   | 'startup';
 
 /**
@@ -243,6 +272,7 @@ export type DomainId =
   | 'rsi'
   | 'physical'
   | 'world'
+  | 'media'
   | 'science'
   | 'inference'
   | 'compute'
@@ -304,12 +334,8 @@ export interface Exit {
   year: number;
 }
 
-/**
- * Labs that were never independent. Their "valuation" is a structurally
- * different claim from a private round, so they are held off the magnitude
- * ramp the same way `undisclosed` is.
- */
-export type Structure = 'subsidiary' | 'nonprofit';
+/** Legal or ownership structure worth surfacing alongside the lab record. */
+export type Structure = 'subsidiary' | 'nonprofit' | 'public-benefit';
 
 export interface Location {
   city: string;
@@ -336,7 +362,7 @@ export interface Lab {
   /** How the lab is owned. Absent = private. `public` = now listed, so its
    * "valuation" is a market cap that moves daily. */
   status?: 'private' | 'public';
-  /** Never-independent labs — see Structure. */
+  /** Non-standard legal or ownership structure — see Structure. */
   structure?: Structure;
   /** An acquisition, absorption, or shutdown. */
   exit?: Exit;

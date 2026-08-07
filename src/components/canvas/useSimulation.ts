@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { forceCollide, forceSimulation, forceX, forceY, type Simulation } from 'd3-force';
 
 import type { Lab } from '../../data/types';
-import { VIEW_H, VIEW_W, radiusFor, type Box, type LayoutResult } from '../../lib/layout';
+import { VIEW_H, VIEW_W, radiusForLab, type Box, type LayoutResult } from '../../lib/layout';
 
 export interface SimNode {
   slug: string;
@@ -60,6 +60,57 @@ function forceTargetTether(nodes: SimNode[], maxDisplacement: number) {
       if (distance <= maxDisplacement || distance === 0) continue;
       node.x = node.tx + (dx / distance) * maxDisplacement;
       node.y = node.ty + (dy / distance) * maxDisplacement;
+      node.vx = (node.vx ?? 0) * 0.35;
+      node.vy = (node.vy ?? 0) * 0.35;
+    }
+  };
+}
+
+/** Keep each research mark's complete collision circle inside its petal. */
+function forceSectorBounds(
+  nodes: SimNode[],
+  boundsBySlug: NonNullable<LayoutResult['sectorBounds']>
+) {
+  return () => {
+    for (const node of nodes) {
+      const bounds = boundsBySlug.get(node.slug);
+      if (!bounds) continue;
+
+      let px = node.x - bounds.cx;
+      let py = node.y - bounds.cy;
+      const startX = Math.cos(bounds.startAngle) * bounds.xScale;
+      const startY = Math.sin(bounds.startAngle);
+      const endX = Math.cos(bounds.endAngle) * bounds.xScale;
+      const endY = Math.sin(bounds.endAngle);
+      const startLength = Math.hypot(startX, startY);
+      const endLength = Math.hypot(endX, endY);
+      const minimum = node.r + bounds.padding;
+      let moved = false;
+
+      // Angles increase clockwise in SVG space. The interior lies to the left
+      // of the start ray and to the right of the end ray. Two passes settle the
+      // corner where correcting one edge can bring a circle closer to the other.
+      for (let pass = 0; pass < 2; pass++) {
+        const startDistance = (startX * py - startY * px) / startLength;
+        if (startDistance < minimum) {
+          const correction = minimum - startDistance;
+          px += (-startY / startLength) * correction;
+          py += (startX / startLength) * correction;
+          moved = true;
+        }
+
+        const endDistance = (px * endY - py * endX) / endLength;
+        if (endDistance < minimum) {
+          const correction = minimum - endDistance;
+          px += (endY / endLength) * correction;
+          py += (-endX / endLength) * correction;
+          moved = true;
+        }
+      }
+
+      if (!moved) continue;
+      node.x = bounds.cx + px;
+      node.y = bounds.cy + py;
       node.vx = (node.vx ?? 0) * 0.35;
       node.vy = (node.vy ?? 0) * 0.35;
     }
@@ -139,14 +190,14 @@ export function useSimulation(labs: Lab[], layout: LayoutResult) {
           y: target.y + (Math.random() - 0.5) * 60,
           tx: target.x,
           ty: target.y,
-          r: radiusFor(lab.valuation.usdM, layout.radiusScale),
+          r: radiusForLab(lab, layout.sizing),
         };
         store.set(lab.slug, node);
       }
       node.lab = lab;
       node.tx = target.x;
       node.ty = target.y;
-      node.r = radiusFor(lab.valuation.usdM, layout.radiusScale);
+      node.r = radiusForLab(lab, layout.sizing);
       active.push(node);
     }
 
@@ -167,6 +218,10 @@ export function useSimulation(labs: Lab[], layout: LayoutResult) {
       layout.maxTargetDisplacement
         ? forceTargetTether(active, layout.maxTargetDisplacement)
         : null
+    );
+    sim.force(
+      'sector-bounds',
+      layout.sectorBounds ? forceSectorBounds(active, layout.sectorBounds) : null
     );
     sim.force(
       'radial-bounds',

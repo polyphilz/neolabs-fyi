@@ -9,12 +9,13 @@ import {
   VIEW_W,
   computeLayout,
   lineageGroupsOf,
+  type CategoricalSizeScale,
   type CanvasViewId,
 } from '../../lib/layout';
 import {
   canvasNames,
+  labValuationLabel,
   spaceLabel,
-  valuationLabel,
   type CanvasLabel,
   type CanvasMark,
 } from '../../lib/format';
@@ -38,6 +39,7 @@ interface Props {
   allLabs: Lab[];
   basemap: Basemap;
   view: CanvasViewId;
+  sizeScale: CategoricalSizeScale;
   selected: string | null;
   onSelect: (slug: string | null) => void;
 }
@@ -136,7 +138,7 @@ function chooseLabel(
   return null;
 }
 
-export function LabCanvas({ labs, allLabs, basemap, view, selected, onSelect }: Props) {
+export function LabCanvas({ labs, allLabs, basemap, view, sizeScale, selected, onSelect }: Props) {
   /** Which rung of the name ladder each lab is currently showing. */
   const labelRung = useRef(new Map<string, number>());
   const svgRef = useRef<SVGSVGElement>(null);
@@ -163,8 +165,8 @@ export function LabCanvas({ labs, allLabs, basemap, view, selected, onSelect }: 
   } | null>(null);
 
   const layout = useMemo(
-    () => computeLayout(view, labs, basemap, allLabs),
-    [view, labs, basemap, allLabs]
+    () => computeLayout(view, labs, basemap, allLabs, sizeScale),
+    [view, labs, basemap, allLabs, sizeScale]
   );
 
   useEffect(() => {
@@ -473,7 +475,10 @@ export function LabCanvas({ labs, allLabs, basemap, view, selected, onSelect }: 
                 ? Boolean(groupsBySlug.get(n.slug)?.includes(activeLineage))
                 : false;
               const lineageMuted = Boolean(activeLineage) && !inLineage;
-              const unknown = n.lab.valuation.qualifier === 'undisclosed' || Boolean(n.lab.structure);
+              const unknown =
+                n.lab.valuation.qualifier === 'undisclosed' ||
+                n.lab.structure === 'subsidiary' ||
+                n.lab.structure === 'nonprofit';
               const step = valuationStep(n.lab.valuation.usdM);
               // Rotation and scale are per-lab and stable; the label has to be
               // fitted to the hexagon as actually drawn, not the packing circle.
@@ -501,7 +506,7 @@ export function LabCanvas({ labs, allLabs, basemap, view, selected, onSelect }: 
                   onPointerLeave={() => setHovered((h) => (h === n.slug ? null : h))}
                   tabIndex={0}
                   role="button"
-                  aria-label={`${n.lab.name}, ${valuationLabel(n.lab.valuation)}, ${spaceLabel(n.lab)}, founded ${n.lab.year}`}
+                  aria-label={`${n.lab.name}, ${labValuationLabel(n.lab)}, ${spaceLabel(n.lab)}, founded ${n.lab.year}`}
                   onFocus={() => setHovered(n.slug)}
                   onBlur={() => setHovered((h) => (h === n.slug ? null : h))}
                   onKeyDown={(e) => {
@@ -693,7 +698,7 @@ function Tooltip({ node, transform, fit }: TipProps) {
   return (
     <div ref={ref} className="tooltip" role="tooltip">
       <p className="tooltip-title">{lab.name}</p>
-      <p className="tooltip-value">{valuationLabel(lab.valuation)}</p>
+      <p className="tooltip-value">{labValuationLabel(lab)}</p>
       <p className="tooltip-line">{spaceLabel(lab)}</p>
       <p className="tooltip-line">
         {lab.location.city} · founded {lab.year}

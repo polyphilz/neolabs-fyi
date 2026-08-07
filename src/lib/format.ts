@@ -33,9 +33,22 @@ export function valuationLabel(v: Valuation): string {
   }
 }
 
+/** A lab-aware label for entities that cannot have a standalone equity value. */
+export function labValuationLabel(lab: Lab): string {
+  if (lab.structure === 'nonprofit') return 'Not applicable';
+  if (lab.structure === 'subsidiary' && lab.valuation.qualifier === 'undisclosed') {
+    return 'Not independently valued';
+  }
+  return valuationLabel(lab.valuation);
+}
+
 /** Short human note on how firm the number is, for tooltips and detail panes. */
 export function valuationCaveat(lab: Lab): string | null {
   const v = lab.valuation;
+  if (lab.structure === 'nonprofit') return 'Nonprofit; equity valuation is not applicable';
+  if (lab.structure === 'subsidiary' && v.qualifier === 'undisclosed') {
+    return 'Corporate subsidiary; no standalone valuation disclosed';
+  }
   if (lab.status === 'public') {
     return v.asOf ? `Market cap as of ${v.asOf} — moves daily` : 'Market cap — moves daily';
   }

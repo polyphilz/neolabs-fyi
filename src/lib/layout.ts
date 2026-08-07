@@ -46,15 +46,72 @@ export const isCanvasView = (view: ViewId): view is CanvasViewId => view !== 'ta
 const RADIUS_K = 0.33;
 const MIN_RADIUS = 5;
 
-/**
- * Bubble scale for the lineage view, shared by the layout and the sim. Smaller
- * than it was: the field is now a set of year columns roughly 124 units wide,
- * and a bubble wider than its column would break the axis it sits on.
- */
-export const LINEAGE_RADIUS_SCALE = 0.45;
-
 export function radiusFor(usdM: number, scale = 1): number {
   return Math.max(MIN_RADIUS * Math.max(scale, 0.7), RADIUS_K * scale * Math.sqrt(usdM));
+}
+
+/**
+ * Bubble sizing is part of a view's argument, not merely its packing. The
+ * valuation view preserves literal area ratios; categorical views compress
+ * valuation into a bounded log-area scale so small labs remain legible without
+ * allowing the largest labs to consume their geography, year, or field.
+ */
+export type BubbleSizing =
+  | { kind: 'valuation'; scale: number }
+  | {
+      kind: 'log-area';
+      minUsdM: number;
+      maxUsdM: number;
+      minRadius: number;
+      maxRadius: number;
+      unknownRadius: number;
+    };
+
+export type CategoricalSizeScale = 'log' | 'valuation';
+
+const VALUATION_SIZING: BubbleSizing = { kind: 'valuation', scale: 1 };
+const COMPACT_RADII = { minRadius: 6, maxRadius: 12, unknownRadius: 9 };
+const ROOMY_COMPACT_RADII = { minRadius: 8, maxRadius: 16, unknownRadius: 12 };
+
+/** A fixed full-dataset domain keeps filtering from resizing every survivor. */
+function categoricalSizing(
+  referenceLabs: Lab[],
+  sizeScale: CategoricalSizeScale,
+  radii: Pick<
+    Extract<BubbleSizing, { kind: 'log-area' }>,
+    'minRadius' | 'maxRadius' | 'unknownRadius'
+  >
+): BubbleSizing {
+  if (sizeScale === 'valuation') return VALUATION_SIZING;
+  const disclosed = referenceLabs
+    .filter((lab) => lab.valuation.qualifier !== 'undisclosed' && !lab.structure)
+    .map((lab) => lab.valuation.usdM);
+  const minUsdM = disclosed.length ? Math.min(...disclosed) : 1;
+  const maxUsdM = disclosed.length ? Math.max(...disclosed) : minUsdM;
+  return {
+    kind: 'log-area',
+    minUsdM,
+    maxUsdM,
+    ...radii,
+  };
+}
+
+export function radiusForLab(lab: Lab, sizing: BubbleSizing): number {
+  if (sizing.kind === 'valuation') return radiusFor(lab.valuation.usdM, sizing.scale);
+  if (lab.valuation.qualifier === 'undisclosed' || lab.structure) {
+    return sizing.unknownRadius;
+  }
+
+  const logMin = Math.log(Math.max(sizing.minUsdM, Number.EPSILON));
+  const logMax = Math.log(Math.max(sizing.maxUsdM, Number.EPSILON));
+  const span = logMax - logMin;
+  const position = span
+    ? (Math.log(Math.max(lab.valuation.usdM, Number.EPSILON)) - logMin) / span
+    : 0.5;
+  const t = Math.max(0, Math.min(1, position));
+  const minArea = sizing.minRadius ** 2;
+  const maxArea = sizing.maxRadius ** 2;
+  return Math.sqrt(minArea + t * (maxArea - minArea));
 }
 
 export interface Vec {
@@ -177,12 +234,8 @@ export interface LayoutResult {
   decorations: Decorations;
   /** Some layouts want collision relaxation; the map view mostly doesn't. */
   collideStrength: number;
-  /**
-   * Per-view bubble scale. On the world map the bubbles have to compete with
-   * real geography — at full size the Bay Area cluster swallows North America
-   * and the position encoding stops meaning anything.
-   */
-  radiusScale: number;
+  /** How this view turns a lab's valuation into a collision/drawing radius. */
+  sizing: BubbleSizing;
   /** Pull toward the data position. Area view is firmer so year remains legible. */
   targetStrength?: number;
   /** Maximum collision displacement from a data position, in canvas units. */
@@ -196,6 +249,18 @@ export interface LayoutResult {
     outerRadius: number;
     padding: number;
   };
+  /** Per-node wedge edges for the research bloom. */
+  sectorBounds?: Map<
+    string,
+    {
+      cx: number;
+      cy: number;
+      xScale: number;
+      startAngle: number;
+      endAngle: number;
+      padding: number;
+    }
+  >;
   /** Whether to keep nodes inside the frame. Off for nothing, currently. */
   bounded: boolean;
 }
@@ -283,7 +348,13 @@ function valuationLayout(labs: Lab[]): LayoutResult {
   const targets = new Map<string, Vec>();
   const nodeBounds = new Map<string, Box>();
   if (!present.length) {
-    return { targets, decorations: {}, collideStrength: 0.92, radiusScale: 1, bounded: true };
+    return {
+      targets,
+      decorations: {},
+      collideStrength: 0.92,
+      sizing: VALUATION_SIZING,
+      bounded: true,
+    };
   }
 
   // A column is sized from the area of the bubbles it holds, not their count —
@@ -354,7 +425,7 @@ function valuationLayout(labs: Lab[]): LayoutResult {
       },
     },
     collideStrength: 0.92,
-    radiusScale: 1,
+    sizing: VALUATION_SIZING,
     targetStrength: BAND_TARGET_STRENGTH,
     bounded: true,
   };
@@ -399,7 +470,12 @@ const YEAR_LABEL_Y = 622;
  * Any rule that picked a single "primary" origin would be inventing a fact the
  * dataset does not contain.
  */
-function lineageLayout(labs: Lab[], referenceLabs: Lab[]): LayoutResult {
+function lineageLayout(
+  labs: Lab[],
+  referenceLabs: Lab[],
+  sizeScale: CategoricalSizeScale
+): LayoutResult {
+  const sizing = categoricalSizing(referenceLabs, sizeScale, ROOMY_COMPACT_RADII);
   // Row order follows the full dataset, so filtering thins the bars without
   // resorting the rail underneath the reader's cursor.
   const totals = new Map<LineageGroup, number>();
@@ -470,7 +546,7 @@ function lineageLayout(labs: Lab[], referenceLabs: Lab[]): LayoutResult {
     // this only stops the field from being arbitrary.
     const ys = groups.map((g) => rowById.get(g)?.y).filter((y): y is number => y !== undefined);
     const meanY = ys.length ? ys.reduce((sum, y) => sum + y, 0) / ys.length : (FIELD_TOP + FIELD_BOTTOM) / 2;
-    const own = radiusFor(lab.valuation.usdM, LINEAGE_RADIUS_SCALE);
+    const own = radiusForLab(lab, sizing);
 
     targets.set(lab.slug, {
       x: column.cx,
@@ -500,7 +576,7 @@ function lineageLayout(labs: Lab[], referenceLabs: Lab[]): LayoutResult {
       edges,
     },
     collideStrength: 0.9,
-    radiusScale: LINEAGE_RADIUS_SCALE,
+    sizing,
     targetStrength: 0.22,
     bounded: true,
   };
@@ -510,7 +586,12 @@ function lineageLayout(labs: Lab[], referenceLabs: Lab[]): LayoutResult {
 // Geography — projected coordinates over the build-time basemap
 // ---------------------------------------------------------------------------
 
-function geographyLayout(labs: Lab[], basemap: Basemap): LayoutResult {
+function geographyLayout(
+  labs: Lab[],
+  basemap: Basemap,
+  referenceLabs: Lab[],
+  sizeScale: CategoricalSizeScale
+): LayoutResult {
   const scale = Math.min(VIEW_W / basemap.width, (VIEW_H - 40) / basemap.height);
   const offsetX = (VIEW_W - basemap.width * scale) / 2;
   const offsetY = (VIEW_H - basemap.height * scale) / 2;
@@ -533,7 +614,7 @@ function geographyLayout(labs: Lab[], basemap: Basemap): LayoutResult {
     },
     // Weak collision: nudge overlapping labs apart without lying about location.
     collideStrength: 0.4,
-    radiusScale: 0.5,
+    sizing: categoricalSizing(referenceLabs, sizeScale, COMPACT_RADII),
     bounded: true,
   };
 }
@@ -542,7 +623,12 @@ function geographyLayout(labs: Lab[], basemap: Basemap): LayoutResult {
 // Research area — a chronological bloom
 // ---------------------------------------------------------------------------
 
-function areaLayout(labs: Lab[], referenceLabs: Lab[]): LayoutResult {
+function areaLayout(
+  labs: Lab[],
+  referenceLabs: Lab[],
+  sizeScale: CategoricalSizeScale
+): LayoutResult {
+  const sizing = categoricalSizing(referenceLabs, sizeScale, ROOMY_COMPACT_RADII);
   const cx = VIEW_W / 2;
   const cy = VIEW_H * 0.53;
   const xScale = 1.45;
@@ -603,6 +689,7 @@ function areaLayout(labs: Lab[], referenceLabs: Lab[]): LayoutResult {
   };
 
   const targets = new Map<string, Vec>();
+  const sectorBounds: NonNullable<LayoutResult['sectorBounds']> = new Map();
   for (const sector of sectors) {
     const referenceMembers = referenceLabs
       .filter((lab) => lab.domain === sector.id)
@@ -615,6 +702,14 @@ function areaLayout(labs: Lab[], referenceLabs: Lab[]): LayoutResult {
     // largest marks get the central lanes, where there is the most room.
     const slots = progressiveLanes(referenceMembers.length);
     const laneBySlug = new Map(referenceMembers.map((lab, index) => [lab.slug, slots[index]]));
+    const bounds = {
+      cx,
+      cy,
+      xScale,
+      startAngle: sector.startAngle,
+      endAngle: sector.endAngle,
+      padding: 3,
+    };
 
     for (const lab of labs.filter((candidate) => candidate.domain === sector.id)) {
       const lane = laneBySlug.get(lab.slug) ?? 0.5;
@@ -624,6 +719,7 @@ function areaLayout(labs: Lab[], referenceLabs: Lab[]): LayoutResult {
         x: stable(cx + Math.cos(angle) * radius * xScale),
         y: stable(cy + Math.sin(angle) * radius),
       });
+      sectorBounds.set(lab.slug, bounds);
     }
   }
 
@@ -652,10 +748,11 @@ function areaLayout(labs: Lab[], referenceLabs: Lab[]): LayoutResult {
       },
     },
     collideStrength: 1,
-    radiusScale: 0.32,
+    sizing,
     targetStrength: 0.38,
     maxTargetDisplacement: 18,
     radialBounds: { cx, cy, xScale, innerRadius, outerRadius, padding: 3 },
+    sectorBounds,
     bounded: true,
   };
 }
@@ -680,16 +777,17 @@ export function computeLayout(
   view: CanvasViewId,
   labs: Lab[],
   basemap: Basemap,
-  referenceLabs: Lab[] = labs
+  referenceLabs: Lab[] = labs,
+  sizeScale: CategoricalSizeScale = 'log'
 ): LayoutResult {
   switch (view) {
     case 'valuation':
       return valuationLayout(labs);
     case 'lineage':
-      return lineageLayout(labs, referenceLabs);
+      return lineageLayout(labs, referenceLabs, sizeScale);
     case 'geography':
-      return geographyLayout(labs, basemap);
+      return geographyLayout(labs, basemap, referenceLabs, sizeScale);
     case 'area':
-      return areaLayout(labs, referenceLabs);
+      return areaLayout(labs, referenceLabs, sizeScale);
   }
 }

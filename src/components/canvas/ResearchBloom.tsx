@@ -6,7 +6,7 @@ import type { AreaAtlas, AreaSector } from '../../lib/layout';
 import { stable } from '../../lib/precision';
 
 /*
- * Categorical, so these are eleven hues rather than a ramp — but pulled toward
+ * Categorical, so these are twelve hues rather than a ramp — but pulled toward
  * the palette's earth-and-pond register (moss, midnight, ochre, terracotta)
  * instead of the saturated screen colours they were. Each is mixed against the
  * page at a low percentage, so they only ever appear as tints; the pairs that
@@ -19,6 +19,7 @@ export const AREA_COLORS: Record<DomainId, string> = {
   rsi: '#8a7fc0',
   physical: '#c4795f',
   world: '#c4a24f',
+  media: '#a56f87',
   science: '#3c8c76',
   inference: '#c17d95',
   compute: '#7285ad',
@@ -32,7 +33,8 @@ const AREA_LABEL_LINES: Record<DomainId, string[]> = {
   coding: ['Coding'],
   rsi: ['Recursive', 'self-improvement'],
   physical: ['Physical AI', '& robotics'],
-  world: ['World models'],
+  world: ['World models', '& simulation'],
+  media: ['Generative', 'media'],
   science: ['AI for science'],
   inference: ['Inference'],
   compute: ['Compute & chips'],
@@ -152,6 +154,9 @@ export function BloomCore({
 }) {
   const color = activeSector ? AREA_COLORS[activeSector.id] : AREA_COLORS.general;
   const titleLines = activeSector ? AREA_LABEL_LINES[activeSector.id] : [];
+  const blurbLines = activeSector ? balancedBlurbLines(DOMAINS[activeSector.id].blurb) : [];
+  const titleFirstY = titleLines.length > 1 ? -30 : -23;
+  const blurbFirstY = titleFirstY + titleLines.length * 14 - 1;
   const count = activeSector
     ? activeSector.count === activeSector.total
       ? `${activeSector.total} ${activeSector.total === 1 ? 'LAB' : 'LABS'}`
@@ -166,26 +171,41 @@ export function BloomCore({
       aria-hidden="true"
     >
       <ellipse rx={atlas.innerRadius * atlas.xScale * 0.9} ry={atlas.innerRadius * 0.9} />
+      {!activeSector && (
+        <g className="bloom-core-legend">
+          <g className="bloom-core-legend-rings" transform="translate(0,-18)">
+            <ellipse rx={14} ry={6} />
+            <ellipse rx={23} ry={10} />
+            <ellipse className="is-outer" rx={32} ry={14} />
+          </g>
+          <text className="bloom-core-legend-copy" textAnchor="middle" y={13}>
+            EACH RING MARKS ONE YEAR
+          </text>
+          <text className="bloom-core-legend-direction" textAnchor="middle" y={24}>
+            OLDER INWARD · NEWER OUTWARD
+          </text>
+        </g>
+      )}
       {activeSector && (
         <>
-          <text className="bloom-core-kicker" textAnchor="middle" y={-28}>
-            PRIMARY FIELD
-          </text>
           <text className="bloom-core-title" textAnchor="middle">
             {titleLines.map((line, index) => (
-              <tspan key={line} x={0} y={-10 + index * 14}>
+              <tspan key={line} x={0} y={titleFirstY + index * 14}>
                 {line.toUpperCase()}
               </tspan>
             ))}
           </text>
-          <text
-            className="bloom-core-count"
-            textAnchor="middle"
-            y={titleLines.length > 1 ? 25 : 18}
-          >
+          <text className="bloom-core-blurb" textAnchor="middle">
+            {blurbLines.map((line, index) => (
+              <tspan key={line} x={0} y={blurbFirstY + index * 7}>
+                {line}
+              </tspan>
+            ))}
+          </text>
+          <text className="bloom-core-count" textAnchor="middle" y={21}>
             {count}
           </text>
-          <text className="bloom-core-key" textAnchor="middle" y={43}>
+          <text className="bloom-core-key" textAnchor="middle" y={39}>
             CLICK TO PIN
           </text>
         </>
@@ -194,7 +214,45 @@ export function BloomCore({
   );
 }
 
-function YearRingLabel({ atlas, year, radius }: { atlas: AreaAtlas; year: number; radius: number }) {
+/**
+ * The core is deliberately compact, so keep descriptions to two balanced
+ * lines. IBM Plex Mono has a fixed advance, making character count a stable
+ * proxy for rendered width without measuring text in the browser.
+ */
+function balancedBlurbLines(blurb: string): string[] {
+  const maxLineLength = 54;
+  if (blurb.length <= maxLineLength) return [blurb];
+
+  const words = blurb.split(' ');
+  let best = [blurb];
+  let bestScore = Number.POSITIVE_INFINITY;
+
+  for (let index = 1; index < words.length; index += 1) {
+    const first = words.slice(0, index).join(' ');
+    const second = words.slice(index).join(' ');
+    const overflow =
+      Math.max(0, first.length - maxLineLength) +
+      Math.max(0, second.length - maxLineLength);
+    const score = overflow * 100 + Math.abs(first.length - second.length);
+
+    if (score < bestScore) {
+      best = [first, second];
+      bestScore = score;
+    }
+  }
+
+  return best;
+}
+
+function YearRingLabel({
+  atlas,
+  year,
+  radius,
+}: {
+  atlas: AreaAtlas;
+  year: number;
+  radius: number;
+}) {
   const angle = Math.PI * 0.86;
   const point = areaPoint(atlas, radius, angle);
   const tick = areaPoint(atlas, radius + 6, angle);

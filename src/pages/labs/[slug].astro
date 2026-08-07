@@ -7,9 +7,9 @@ import type { Lab } from '../../data/types';
 import {
   founderNames,
   foundersByLastName,
+  labValuationLabel,
   spaceLabel,
   valuationCaveat,
-  valuationLabel,
 } from '../../lib/format';
 
 export function getStaticPaths() {
@@ -27,7 +27,11 @@ const caveat = valuationCaveat(lab);
 
 // The long-tail query is "<lab> valuation" / "who founded <lab>", so the
 // description answers exactly that in the first sentence.
-const description = `${lab.name} is valued at ${valuationLabel(lab.valuation)}. Founded in ${
+const valuationDescription =
+  lab.structure === 'nonprofit'
+    ? 'is a nonprofit without an applicable equity valuation'
+    : `is valued at ${labValuationLabel(lab)}`;
+const description = `${lab.name} ${valuationDescription}. Founded in ${
   lab.year
 } by ${founderNames(lab)}, based in ${lab.location.city}. ${lab.knownFor}`;
 
@@ -62,7 +66,7 @@ const jsonLd = {
     {lab.priorNames?.length && <p class="muted">Formerly {lab.priorNames.join(', ')}</p>}
 
     <div class="lab-valuation-block">
-      <p class="lab-hero">{valuationLabel(lab.valuation)}</p>
+      <p class="lab-hero">{labValuationLabel(lab)}</p>
       <p class="lab-caveat">{caveat ?? 'Reported valuation'}</p>
     </div>
 

@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { LINEAGE_GROUPS, ORGS } from '../../data/taxonomy';
 import type { Lab } from '../../data/types';
 import { valuationStep } from '../../lib/color';
-import { founderNames, spaceLabel, valuationLabel } from '../../lib/format';
+import { founderNames, labValuationLabel, spaceLabel } from '../../lib/format';
 import { lineageGroupsOf } from '../../lib/layout';
 
 interface Props {
@@ -38,7 +38,9 @@ const COLUMNS: { label: string; sort?: SortKey; numeric?: boolean }[] = [
 
 /** Undisclosed valuations and non-companies sit off the ramp entirely. */
 const swatchFill = (row: Row) =>
-  row.lab.valuation.qualifier === 'undisclosed' || row.lab.structure
+  row.lab.valuation.qualifier === 'undisclosed' ||
+  row.lab.structure === 'subsidiary' ||
+  row.lab.structure === 'nonprofit'
     ? 'var(--unknown-fill)'
     : `var(--seq-${row.step})`;
 
@@ -148,7 +150,7 @@ export function LabTable({ labs, visible }: Props) {
                   <a href={`/labs/${r.lab.slug}`}>{r.lab.name}</a>
                 </td>
                 <td className="num">
-                  {valuationLabel(r.lab.valuation)}
+                  {labValuationLabel(r.lab)}
                   {r.lab.valuation.rumored && (
                     <span className="muted" title="Rumored">
                       {' '}
@@ -185,7 +187,7 @@ export function LabTable({ labs, visible }: Props) {
                 {r.lab.name}
               </span>
               <span className="lab-card-valuation">
-                {valuationLabel(r.lab.valuation)}
+                {labValuationLabel(r.lab)}
                 {r.lab.valuation.rumored && (
                   <span className="muted" title="Rumored">
                     {' '}

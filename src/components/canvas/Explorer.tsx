@@ -140,6 +140,7 @@ export function Explorer({ labs, basemap }: Props) {
           allLabs={labs}
           basemap={basemap}
           view={view}
+          sizeScale={filters.sizeScale}
           selected={selected}
           onSelect={selectLab}
         />

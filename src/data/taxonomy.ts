@@ -20,13 +20,15 @@ export const DOMAINS: Record<DomainId, { label: string; blurb: string }> = {
   },
   physical: {
     label: 'Physical AI & robotics',
-    blurb:
-      'Robot foundation models, embodied intelligence, and AI for real-world ' +
-      'automation — manufacturing, supply chain, and physical engineering.',
+    blurb: 'Robot foundation models, embodied intelligence, and real-world automation.',
   },
   world: {
-    label: 'World models',
-    blurb: 'Learned simulators, video models, and agent simulation.',
+    label: 'World models & simulation',
+    blurb: 'Learned models and simulations of physical, virtual, and social systems.',
+  },
+  media: {
+    label: 'Generative media',
+    blurb: 'Models built to create images, video, audio, and other creative media.',
   },
   science: {
     label: 'AI for science',
@@ -45,8 +47,8 @@ export const DOMAINS: Record<DomainId, { label: string; blurb: string }> = {
     blurb: 'Enterprise models, agent platforms, voice.',
   },
   safety: {
-    label: 'Interpretability',
-    blurb: 'Understanding and steering model internals.',
+    label: 'AI safety & interpretability',
+    blurb: 'Understanding, evaluating, overseeing, and safely designing advanced AI.',
   },
   neuro: {
     label: 'Neurotech',
@@ -61,6 +63,7 @@ export const DOMAIN_ORDER: DomainId[] = [
   'rsi',
   'physical',
   'world',
+  'media',
   'science',
   'inference',
   'compute',
@@ -151,9 +154,14 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   onsemi: { label: 'onsemi', group: 'bigtech' },
   jpmorgan: { label: 'J.P. Morgan', group: 'bigtech' },
   pixar: { label: 'Pixar Research', group: 'bigtech' },
+  belllabs: { label: 'Bell Labs', group: 'bigtech' },
+  twitter: { label: 'Twitter', group: 'bigtech' },
+  snap: { label: 'Snap', group: 'bigtech' },
 
   unit8200: { label: 'Unit 8200', group: 'government' },
   uidai: { label: 'UIDAI / Aadhaar', group: 'government' },
+  whitehouse: { label: 'White House / NSC', group: 'government' },
+  lbnl: { label: 'Lawrence Berkeley National Laboratory', group: 'government' },
 
   sogou: { label: 'Sogou', group: 'startup' },
   sinovation: { label: 'Sinovation Ventures', group: 'startup' },
@@ -221,6 +229,11 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   toolsforhumanity: { label: 'Tools for Humanity / World', group: 'startup' },
   loopt: { label: 'Loopt', group: 'startup' },
   ycombinator: { label: 'Y Combinator', group: 'startup' },
+  reka: { label: 'Reka', group: 'startup' },
+  elementai: { label: 'Element AI', group: 'startup' },
+  steelperlot: { label: 'Steel Perlot', group: 'startup' },
+  petribio: { label: 'Petri Bio', group: 'startup' },
+  openphilanthropy: { label: 'Open Philanthropy', group: 'startup' },
 
   // The four schools that clear the same bar the labs do — every other
   // institution appears in three or fewer neolabs and stays in `academia`.
@@ -278,6 +291,25 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   mcgill: { label: 'McGill', group: 'academia' },
   georgiatech: { label: 'Georgia Tech', group: 'academia' },
   ista: { label: 'ISTA (Austria)', group: 'academia' },
+  lse: { label: 'London School of Economics', group: 'academia' },
+  queenmary: { label: 'Queen Mary University of London', group: 'academia' },
+  hpi: { label: 'Hasso Plattner Institute', group: 'academia' },
+  ucsb: { label: 'UC Santa Barbara', group: 'academia' },
+  spbsu: { label: 'Saint Petersburg State University', group: 'academia' },
+  dkfz: { label: 'German Cancer Research Center', group: 'academia' },
+  kit: { label: 'Karlsruhe Institute of Technology', group: 'academia' },
+  umontreal: { label: 'Université de Montréal', group: 'academia' },
+  ivado: { label: 'IVADO', group: 'academia' },
+  cifar: { label: 'CIFAR', group: 'academia' },
+  cincinnati: { label: 'University of Cincinnati', group: 'academia' },
+  franciscrick: { label: 'Francis Crick Institute', group: 'academia' },
+  haverford: { label: 'Haverford College', group: 'academia' },
+  rochester: { label: 'University of Rochester', group: 'academia' },
+  uchicago: { label: 'University of Chicago', group: 'academia' },
+  rosehulman: { label: 'Rose-Hulman Institute of Technology', group: 'academia' },
+  baylor: { label: 'Baylor College of Medicine', group: 'academia' },
+  uthealth: { label: 'UTHealth Houston', group: 'academia' },
+  rice: { label: 'Rice University', group: 'academia' },
 };
 
 /**
@@ -393,4 +425,5 @@ export const CATEGORICAL = {
 export const STRUCTURE_LABEL: Record<Structure, string> = {
   subsidiary: 'Corporate subsidiary',
   nonprofit: 'Non-profit',
+  'public-benefit': 'Public benefit corporation',
 };

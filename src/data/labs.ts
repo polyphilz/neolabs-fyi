@@ -629,7 +629,7 @@ export const LABS: Lab[] = [
     name: 'Moonvalley',
     valuation: { usdM: 84, qualifier: 'undisclosed' },
     year: 2024,
-    domain: 'world',
+    domain: 'media',
     tags: ['video'],
     founders: [
       { person: 'naeem-talukdar', prior: ['toronto', 'toggl', 'zapier', 'contentfly'] },
@@ -1135,6 +1135,184 @@ export const LABS: Lab[] = [
     ],
     knownFor:
       'Vibe-coding interactive worlds and games from text; $28M seed backed by Ian Goodfellow, Jeff Dean, and other angels.',
+    location: CITIES.sf,
+  },
+  {
+    slug: 'inherent',
+    name: 'Inherent',
+    // $50M seed announced May 2026; no priced valuation was disclosed. usdM
+    // uses the financing total only as a neutral bubble-size proxy.
+    valuation: { usdM: 50, qualifier: 'undisclosed' },
+    year: 2026,
+    domain: 'rsi',
+    tags: ['agents'],
+    structure: 'public-benefit',
+    founders: [
+      { person: 'tantum-collins', prior: ['deepmind', 'whitehouse'] },
+      { person: 'edward-hughes', prior: ['deepmind', 'lse', 'queenmary'] },
+      { person: 'louis-kirsch', prior: ['deepmind', 'google', 'idsia', 'ucl', 'hpi'] },
+      { person: 'kaloyan-aleksiev', prior: ['reka', 'microsoft', 'oxford'] },
+    ],
+    knownFor:
+      'London public-benefit AI lab developing inventive research agents and redesigning the lab itself around recursive collective self-improvement.',
+    location: CITIES.london,
+  },
+  {
+    slug: 'logical-intelligence',
+    name: 'Logical Intelligence',
+    // Seed-backed, but neither a round amount nor priced valuation is public.
+    // usdM is a non-semantic layout placeholder only.
+    valuation: { usdM: 100, qualifier: 'undisclosed' },
+    year: 2025,
+    domain: 'general',
+    tags: ['math', 'agents'],
+    founders: [
+      { person: 'eve-bodnia', prior: ['ucsb', 'berkeley', 'lbnl', 'spbsu'] },
+    ],
+    knownFor:
+      'Energy-based reasoning models and formal-verification agents that enforce constraints and produce machine-checkable answers for critical systems.',
+    location: CITIES.sf,
+  },
+  {
+    slug: 'latent-labs',
+    name: 'Latent Labs',
+    // $50M total funding through its Series A; no priced valuation disclosed.
+    valuation: { usdM: 50, qualifier: 'undisclosed' },
+    year: 2025,
+    domain: 'science',
+    tags: ['drug-discovery', 'agents'],
+    founders: [
+      { person: 'simon-kohl', prior: ['deepmind', 'dkfz', 'kit'] },
+    ],
+    knownFor:
+      'Generative protein, peptide and antibody design models and autonomous drug-design agents, paired with an in-house wet lab for experimental validation.',
+    location: CITIES.london,
+  },
+  {
+    slug: 'autoscience',
+    name: 'Autoscience',
+    // $14M seed announced March 2026; no priced valuation disclosed.
+    valuation: { usdM: 14, qualifier: 'undisclosed' },
+    year: 2025,
+    domain: 'rsi',
+    tags: ['agents'],
+    founders: [
+      { person: 'eliot-cowan', prior: ['google', 'mit', 'harvard'] },
+    ],
+    knownFor:
+      'Autonomous AI scientists that read literature, propose and run experiments, and turn verified discoveries into improved production machine-learning models.',
+    location: CITIES.sanMateo,
+  },
+  {
+    slug: 'lawzero',
+    name: 'LawZero',
+    // Nonprofit: equity valuation is not applicable. About $30M was reportedly
+    // raised at launch and is used only as a neutral bubble-size proxy.
+    valuation: { usdM: 30, qualifier: 'undisclosed' },
+    year: 2025,
+    domain: 'safety',
+    structure: 'nonprofit',
+    founders: [
+      {
+        person: 'yoshua-bengio',
+        prior: ['mila', 'umontreal', 'cifar', 'ivado', 'mcgill', 'mit', 'belllabs', 'elementai'],
+      },
+    ],
+    knownFor:
+      'Yoshua Bengio’s nonprofit developing safe-by-design advanced AI, centered on a transparent, non-agentic Scientist AI without goals of its own.',
+    location: CITIES.montreal,
+  },
+  {
+    slug: 'oumi',
+    name: 'Oumi',
+    // $10M seed announced at its January 2025 launch; no priced valuation was
+    // disclosed. usdM uses funding only as a neutral bubble-size proxy.
+    valuation: { usdM: 10, qualifier: 'undisclosed' },
+    year: 2025,
+    domain: 'applied',
+    tags: ['open-weights', 'multimodal', 'efficient', 'agents'],
+    structure: 'public-benefit',
+    founders: [
+      {
+        person: 'manos-koukoumidis',
+        prior: ['google', 'microsoft', 'meta', 'princeton', 'mit'],
+      },
+      { person: 'matthew-persons', prior: ['google', 'microsoft', 'cornell'] },
+      { person: 'jeremiah-greer', prior: ['google', 'microsoft', 'cincinnati'] },
+      { person: 'william-zeng', prior: ['google', 'stanford'] },
+      { person: 'kostas-aisopos', prior: ['google', 'microsoft', 'princeton', 'mit'] },
+      { person: 'oussama-elachqar', prior: ['apple', 'twitter', 'microsoft', 'georgiatech'] },
+      { person: 'panos-achlioptas', prior: ['stanford', 'steelperlot', 'snap', 'meta'] },
+    ],
+    knownFor:
+      'Public-benefit lab and open platform for evaluating, fine-tuning and deploying specialized foundation models that organizations can own.',
+    location: CITIES.bellevue,
+  },
+  {
+    slug: 'futurehouse',
+    name: 'FutureHouse',
+    // Nonprofit: equity valuation is not applicable. $20M reflects FY2023
+    // contributions and is used only as a neutral funding proxy.
+    valuation: { usdM: 20, qualifier: 'undisclosed' },
+    year: 2023,
+    domain: 'science',
+    tags: ['agents'],
+    structure: 'nonprofit',
+    founders: [
+      {
+        person: 'sam-rodriques',
+        prior: ['franciscrick', 'petribio', 'mit', 'cambridge', 'haverford'],
+      },
+      {
+        person: 'andrew-white',
+        prior: ['rochester', 'uchicago', 'washington', 'maxplanck', 'rosehulman'],
+      },
+    ],
+    knownFor:
+      'Nonprofit building and wet-lab-validating AI scientists for basic research in biology and health; its commercial platform spun out as Edison Scientific in 2025.',
+    location: CITIES.sf,
+  },
+  {
+    slug: 'cursive',
+    name: 'Cursive',
+    // Approximate post-money value derived from the March 2026 Companies House
+    // allotment price across all economically participating shares: about
+    // £840–852M, or $1.12–1.14B at the allotment-date exchange rate.
+    valuation: { usdM: 1_130, qualifier: 'approx' },
+    year: 2025,
+    domain: 'rsi',
+    tags: ['continual-learning', 'agents', 'efficient'],
+    founders: [
+      { person: 'talfan-evans', prior: ['deepmind', 'imperial', 'ucl', 'oxford'] },
+      { person: 'olivier-henaff', prior: ['deepmind', 'nyu', 'polytechnique'] },
+      { person: 'oliver-vikbladh', prior: ['nyu', 'ucl'] },
+    ],
+    knownFor:
+      'London frontier lab building foundation models and low-latency generative infrastructure for adaptive software and agents that improve continuously from use.',
+    location: CITIES.london,
+  },
+  {
+    slug: 'transluce',
+    name: 'Transluce',
+    // Nonprofit: equity valuation is not applicable. $7M approximates its 2024
+    // contributions and grants and is used only as a neutral funding proxy.
+    valuation: { usdM: 7, qualifier: 'undisclosed' },
+    year: 2024,
+    domain: 'safety',
+    tags: ['agents'],
+    structure: 'nonprofit',
+    founders: [
+      {
+        person: 'jacob-steinhardt',
+        prior: ['berkeley', 'openai', 'openphilanthropy', 'stanford', 'mit'],
+      },
+      {
+        person: 'sarah-schwettmann',
+        prior: ['mit', 'ibm', 'baylor', 'uthealth', 'rice'],
+      },
+    ],
+    knownFor:
+      'Nonprofit building open infrastructure for scalable oversight of frontier AI through automated interpretability, model-behavior analysis and evaluations.',
     location: CITIES.sf,
   },
 ];

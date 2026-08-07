@@ -31,8 +31,9 @@ interface Props {
 }
 
 /**
- * Valuation spans $335M to $100B, so a linear slider would spend 99% of its
- * travel above $10B. The control is log-scaled; the encoding isn't.
+ * Valuation spans several orders of magnitude, so a linear slider would spend
+ * nearly all of its travel at the top. The control is always log-scaled; only
+ * the categorical canvas views use that compression in their size encoding.
  */
 const SLIDER_STEPS = 240;
 
@@ -86,6 +87,11 @@ export function FilterIsland({
   const chipCount =
     filters.domains.length + filters.lineage.length + filters.tags.length;
   const activeCount = chipCount || (dirty ? 1 : 0);
+  const categoricalView =
+    filters.view === "area" ||
+    filters.view === "lineage" ||
+    filters.view === "geography";
+  const logSizing = categoricalView && filters.sizeScale === "log";
 
   return (
     <div className="island-wrap" ref={rootRef}>
@@ -189,8 +195,36 @@ export function FilterIsland({
               }
             />
 
+            {categoricalView && (
+              <label className="size-scale-toggle">
+                <span className="size-scale-copy">
+                  <strong>Regular valuation scale</strong>
+                  <small>Match bubble areas to the Valuation view</small>
+                </span>
+                <input
+                  type="checkbox"
+                  checked={filters.sizeScale === "valuation"}
+                  onChange={(event) =>
+                    onChange({
+                      sizeScale: event.currentTarget.checked
+                        ? "valuation"
+                        : "log",
+                    })
+                  }
+                />
+                <span className="size-scale-control" aria-hidden="true" />
+              </label>
+            )}
+
             <div className="panel-legend">
-              <span className="range-label">Size &amp; colour = valuation</span>
+              <span className="range-label">
+                {filters.view === "valuation" ||
+                (categoricalView && filters.sizeScale === "valuation")
+                  ? "Size & colour = valuation"
+                  : filters.view === "table"
+                    ? "Valuation"
+                    : "Size = log valuation · colour = valuation"}
+              </span>
               <div className="legend-ramp" aria-hidden="true">
                 {VALUATION_BUCKETS.map((label, i) => (
                   <span
@@ -205,7 +239,10 @@ export function FilterIsland({
                 <span>{VALUATION_BUCKETS[VALUATION_BUCKETS.length - 1]}</span>
               </div>
               <p className="legend-note">
-                <i aria-hidden="true" /> Grey = valuation not disclosed
+                <i aria-hidden="true" />
+                {logSizing
+                  ? " Grey = undisclosed · neutral size"
+                  : " Grey = valuation not disclosed"}
               </p>
             </div>
 

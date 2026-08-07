@@ -1,9 +1,16 @@
 import { DOMAIN_ORDER, LINEAGE_ORDER, TAG_ORDER } from '../data/taxonomy';
 import type { DomainId, Lab, LineageGroup, TagId } from '../data/types';
-import { VIEW_IDS, lineageGroupsOf, type ViewId } from './layout';
+import {
+  VIEW_IDS,
+  lineageGroupsOf,
+  type CategoricalSizeScale,
+  type ViewId,
+} from './layout';
 
 export interface Filters {
   view: ViewId;
+  /** Bubble-size encoding for the three categorical canvas views. */
+  sizeScale: CategoricalSizeScale;
   /** Valuation bounds in millions USD. */
   minUsdM: number;
   maxUsdM: number;
@@ -29,7 +36,7 @@ export function bounds(labs: Lab[]) {
 
 export function defaultFilters(labs: Lab[]): Filters {
   const b = bounds(labs);
-  return { view: 'area', ...b, domains: [], lineage: [], tags: [] };
+  return { view: 'area', sizeScale: 'log', ...b, domains: [], lineage: [], tags: [] };
 }
 
 export function applyFilters(labs: Lab[], f: Filters): Lab[] {
@@ -50,6 +57,7 @@ export function isDefault(f: Filters, labs: Lab[]): boolean {
     f.maxUsdM === b.maxUsdM &&
     f.minYear === b.minYear &&
     f.maxYear === b.maxYear &&
+    (f.view === 'valuation' || f.view === 'table' || f.sizeScale === 'log') &&
     !f.domains.length &&
     !f.lineage.length &&
     !f.tags.length
@@ -69,6 +77,7 @@ export function toParams(
   const b = bounds(labs);
   const p = new URLSearchParams();
   if (f.view !== 'area') p.set('view', f.view);
+  if (f.sizeScale === 'valuation') p.set('size', 'valuation');
   if (query.trim()) p.set('q', query);
   if (f.minUsdM !== b.minUsdM) p.set('vmin', String(f.minUsdM));
   if (f.maxUsdM !== b.maxUsdM) p.set('vmax', String(f.maxUsdM));
@@ -101,6 +110,7 @@ export function fromParams(
   return {
     filters: {
       view: VIEW_IDS.includes(view as ViewId) ? (view as ViewId) : base.view,
+      sizeScale: p.get('size') === 'valuation' ? 'valuation' : 'log',
       minUsdM: num('vmin', base.minUsdM),
       maxUsdM: num('vmax', base.maxUsdM),
       minYear: num('ymin', base.minYear),

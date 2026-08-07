@@ -3,9 +3,9 @@ import { ORGS, STRUCTURE_LABEL } from "../../data/taxonomy";
 import type { Lab } from "../../data/types";
 import {
   foundersByLastName,
+  labValuationLabel,
   spaceLabel,
   valuationCaveat,
-  valuationLabel,
 } from "../../lib/format";
 
 interface Props {
@@ -61,7 +61,7 @@ export function DetailPanel({ lab, onClose }: Props) {
           )}
         </header>
 
-        <p className="drawer-valuation">{valuationLabel(lab.valuation)}</p>
+        <p className="drawer-valuation">{labValuationLabel(lab)}</p>
         {caveat && <p className="drawer-caveat">{caveat}</p>}
 
         <dl className="drawer-facts">
