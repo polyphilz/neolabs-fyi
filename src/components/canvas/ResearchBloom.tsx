@@ -28,7 +28,7 @@ export const AREA_COLORS: Record<DomainId, string> = {
 const AREA_LABEL_LINES: Record<DomainId, string[]> = {
   general: ['General-purpose', 'models'],
   coding: ['Coding'],
-  rsi: ['Recursive', 'self-improvement'],
+  rsi: ['Recursive', 'self-improvement &', 'continual learning'],
   physical: ['Physical AI', '& robotics'],
   world: ['World models', '& simulation'],
   media: ['Generative', 'media'],
@@ -324,8 +324,9 @@ function areaLabelPlacement(atlas: AreaAtlas, sector: AreaSector) {
 
   if (sine > 0.68) {
     // Bottom labels also live wholly outside the rim: the leader ends first,
-    // followed by the title and count as one compact annotation.
-    const firstLineY = -6;
+    // followed by a deliberate gap, then the title and count as one compact
+    // annotation. The extra space keeps multi-line labels off the curved rim.
+    const firstLineY = -1;
     return {
       x,
       y: point.y,
@@ -338,7 +339,7 @@ function areaLabelPlacement(atlas: AreaAtlas, sector: AreaSector) {
     // Keep the whole label outside the petal. Previously the title sat above
     // the rim while its count dropped below it, making this one field look like
     // two unrelated annotations.
-    const firstLineY = -(lines * 11) / 2 - 1;
+    const firstLineY = -(lines * 11) / 2 - 6;
     return {
       x,
       y: point.y,

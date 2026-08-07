@@ -15,7 +15,7 @@ export const DOMAINS: Record<DomainId, { label: string; blurb: string }> = {
     blurb: 'Models built specifically to write and reason about software.',
   },
   rsi: {
-    label: 'Recursive self-improvement',
+    label: 'Recursive self-improvement & continual learning',
     blurb: 'Systems that automate AI research, or improve from their own experience.',
   },
   physical: {

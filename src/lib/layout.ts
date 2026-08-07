@@ -694,6 +694,12 @@ function stableHash(key: string): number {
 // Research area — a chronological bloom
 // ---------------------------------------------------------------------------
 
+/** Stable lane corrections for same-domain, same-year peers whose automatic
+ * valuation ordering gives a large bubble an unnecessarily crowded target. */
+const AREA_LANE_SWAPS: ReadonlyArray<readonly [string, string]> = [
+  ['core-automation', 'mirendil'],
+];
+
 function areaLayout(
   labs: Lab[],
   referenceLabs: Lab[],
@@ -773,6 +779,13 @@ function areaLayout(
     // largest marks get the central lanes, where there is the most room.
     const slots = progressiveLanes(referenceMembers.length);
     const laneBySlug = new Map(referenceMembers.map((lab, index) => [lab.slug, slots[index]]));
+    for (const [first, second] of AREA_LANE_SWAPS) {
+      const firstLane = laneBySlug.get(first);
+      const secondLane = laneBySlug.get(second);
+      if (firstLane === undefined || secondLane === undefined) continue;
+      laneBySlug.set(first, secondLane);
+      laneBySlug.set(second, firstLane);
+    }
     const bounds = {
       cx,
       cy,
