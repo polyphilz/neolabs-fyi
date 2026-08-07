@@ -42,7 +42,7 @@ export const LineageEdges = memo(function LineageEdges({
   );
 
   const geometry = useMemo(() => {
-    const items: { edge: EdgeDatum; d: string; x2: number; y2: number }[] = [];
+    const items: { edge: EdgeDatum; d: string; liveD: string; x2: number; y2: number }[] = [];
     for (const edge of edges) {
       const node = positions.get(edge.from);
       const row = rowById.get(edge.toGroup);
@@ -52,6 +52,10 @@ export const LineageEdges = memo(function LineageEdges({
       items.push({
         edge,
         d: edgePath(rail.anchorX, row.y, x2, node.y),
+        // End the thick highlighted stroke beneath the arrowhead's broad
+        // base. Running it to the point exposes the rectangular stroke through
+        // the triangle's taper and makes the tip look square.
+        liveD: edgePath(rail.anchorX, row.y, x2 - ARROW_LINE_INSET, node.y),
         x2,
         y2: node.y,
       });
@@ -66,10 +70,10 @@ export const LineageEdges = memo(function LineageEdges({
     const arrowheads: string[] = [];
     const arrowedLabs = new Set<string>();
 
-    for (const { edge, d, x2, y2 } of geometry.items) {
+    for (const { edge, d, liveD, x2, y2 } of geometry.items) {
       const isLive = activeLab === edge.from || activeGroup === edge.toGroup;
       if (isLive) {
-        live.push(d);
+        live.push(liveD);
         // Several live edges can terminate at the same lab. Their old SVG
         // markers overlapped exactly, so paint one equivalent arrowhead.
         if (!arrowedLabs.has(edge.from)) {
@@ -111,6 +115,10 @@ function edgePath(x1: number, y1: number, x2: number, y2: number): string {
 }
 
 /** Same right-pointing silhouette as the former marker, baked into one path. */
+const ARROW_LENGTH = 7;
+const ARROW_LINE_INSET = ARROW_LENGTH - 0.75;
+const ARROW_TIP_EXTENSION = 2.25;
+
 function arrowPath(x: number, y: number): string {
-  return `M ${stable(x)} ${stable(y)} L ${stable(x - 7)} ${stable(y - 3.2)} L ${stable(x - 7)} ${stable(y + 3.2)} Z`;
+  return `M ${stable(x + ARROW_TIP_EXTENSION)} ${stable(y)} L ${stable(x - ARROW_LENGTH)} ${stable(y - 3.2)} L ${stable(x - ARROW_LENGTH)} ${stable(y + 3.2)} Z`;
 }

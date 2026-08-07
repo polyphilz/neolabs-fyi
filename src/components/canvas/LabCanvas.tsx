@@ -101,6 +101,19 @@ function selectionStrokeWidth(radius: number, screenScale: number): number {
   );
 }
 
+/** Tiny stable visual drift used only for the non-physical entrance animation. */
+function bubbleEntryDrift(slug: string): { x: number; y: number } {
+  let hash = 0x811c9dc5;
+  for (let index = 0; index < slug.length; index++) {
+    hash ^= slug.charCodeAt(index);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return {
+    x: ((hash & 0xff) / 0xff - 0.5) * 8,
+    y: (((hash >>> 8) & 0xff) / 0xff - 0.5) * 8,
+  };
+}
+
 const EMPTY_LINEAGE_OVERLAP = new Map<LineageGroup, number>();
 
 /**
@@ -601,6 +614,7 @@ const BubbleLayer = memo(function BubbleLayer({
         // Rotation and scale are per-lab and stable; the label has to be fitted
         // to the hexagon as actually drawn, not the packing circle.
         const jitter = hexJitter(n.slug);
+        const entryDrift = bubbleEntryDrift(n.slug);
         const shapeR = n.r * jitter.scale;
         const selectionStroke = selectionStrokeWidth(shapeR, screenScale);
         const label = chooseLabel(
@@ -622,6 +636,8 @@ const BubbleLayer = memo(function BubbleLayer({
               {
                 '--area-color': AREA_COLORS[n.lab.domain],
                 '--selection-stroke': selectionStroke,
+                '--bubble-entry-x': `${entryDrift.x}px`,
+                '--bubble-entry-y': `${entryDrift.y}px`,
               } as React.CSSProperties
             }
             onPointerDown={(event) => onNodePointerDown(event, n)}
@@ -641,62 +657,64 @@ const BubbleLayer = memo(function BubbleLayer({
               }
             }}
           >
-            <path
-              d={hexPath(shapeR, jitter.corner, jitter.rot)}
-              fill={unknown ? UNKNOWN_FILL : fillFor(n.lab.valuation.usdM)}
-              strokeWidth={Math.min(2, n.r * 0.12)}
-              className="bubble-disc"
-            />
-            {/* A $335M lab is ~10px across, which is a miserable target. This
-                pads it out without changing what's drawn. */}
-            {hitRadius > n.r && <circle r={hitRadius} className="bubble-hit" />}
-            {label?.kind === 'text' && (
-              <g transform={`scale(${label.fitted.fontSize / NOMINAL_FONT})`}>
-                <text
-                  className="bubble-label"
-                  textAnchor="middle"
-                  style={{
-                    fontSize: NOMINAL_FONT,
-                    fill: unknown ? UNKNOWN_INK : `var(--on-seq-${step})`,
-                  }}
+            <g className="bubble-entry">
+              <path
+                d={hexPath(shapeR, jitter.corner, jitter.rot)}
+                fill={unknown ? UNKNOWN_FILL : fillFor(n.lab.valuation.usdM)}
+                strokeWidth={Math.min(2, n.r * 0.12)}
+                className="bubble-disc"
+              />
+              {/* A $335M lab is ~10px across, which is a miserable target. This
+                  pads it out without changing what's drawn. */}
+              {hitRadius > n.r && <circle r={hitRadius} className="bubble-hit" />}
+              {label?.kind === 'text' && (
+                <g transform={`scale(${label.fitted.fontSize / NOMINAL_FONT})`}>
+                  <text
+                    className="bubble-label"
+                    textAnchor="middle"
+                    style={{
+                      fontSize: NOMINAL_FONT,
+                      fill: unknown ? UNKNOWN_INK : `var(--on-seq-${step})`,
+                    }}
+                  >
+                    {label.fitted.lines.map((line, index) => (
+                      <tspan
+                        key={line + index}
+                        x={0}
+                        y={
+                          (index - (label.fitted.lines.length - 1) / 2) *
+                            NOMINAL_FONT *
+                            LINE_SPACING +
+                          NOMINAL_FONT * 0.34
+                        }
+                      >
+                        {line}
+                      </tspan>
+                    ))}
+                  </text>
+                </g>
+              )}
+              {label?.kind === 'mark' && (
+                <g
+                  className="bubble-mark"
+                  style={{ color: unknown ? UNKNOWN_INK : `var(--on-seq-${step})` }}
+                  transform={`scale(${label.fitted.scale}) translate(${-(label.mark.x + label.mark.width / 2)},${-(label.mark.y + label.mark.height / 2)})`}
                 >
-                  {label.fitted.lines.map((line, index) => (
-                    <tspan
-                      key={line + index}
-                      x={0}
-                      y={
-                        (index - (label.fitted.lines.length - 1) / 2) *
-                          NOMINAL_FONT *
-                          LINE_SPACING +
-                        NOMINAL_FONT * 0.34
-                      }
-                    >
-                      {line}
-                    </tspan>
+                  {label.mark.shapes.map((shape) => (
+                    <path
+                      key={shape.d}
+                      d={shape.d}
+                      fill={shape.strokeWidth ? 'none' : 'currentColor'}
+                      fillRule={shape.fillRule}
+                      stroke={shape.strokeWidth ? 'currentColor' : 'none'}
+                      strokeWidth={shape.strokeWidth}
+                      strokeLinecap={shape.linecap}
+                      strokeLinejoin={shape.linejoin ?? shape.linecap}
+                    />
                   ))}
-                </text>
-              </g>
-            )}
-            {label?.kind === 'mark' && (
-              <g
-                className="bubble-mark"
-                style={{ color: unknown ? UNKNOWN_INK : `var(--on-seq-${step})` }}
-                transform={`scale(${label.fitted.scale}) translate(${-(label.mark.x + label.mark.width / 2)},${-(label.mark.y + label.mark.height / 2)})`}
-              >
-                {label.mark.shapes.map((shape) => (
-                  <path
-                    key={shape.d}
-                    d={shape.d}
-                    fill={shape.strokeWidth ? 'none' : 'currentColor'}
-                    fillRule={shape.fillRule}
-                    stroke={shape.strokeWidth ? 'currentColor' : 'none'}
-                    strokeWidth={shape.strokeWidth}
-                    strokeLinecap={shape.linecap}
-                    strokeLinejoin={shape.linejoin ?? shape.linecap}
-                  />
-                ))}
-              </g>
-            )}
+                </g>
+              )}
+            </g>
           </g>
         );
       })}

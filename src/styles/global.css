@@ -1171,6 +1171,33 @@ body.is-bare {
     filter 180ms ease;
 }
 
+/* Cold-load motion is visual rather than physical: nodes arrive with a small
+   stable drift after collision packing has already finished, so the canvas
+   feels alive without letting dense neighbours knock into one another. */
+.bubble-entry {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bubble-entry 520ms cubic-bezier(0.22, 0.75, 0.28, 1) both;
+}
+
+@keyframes bubble-entry {
+  from {
+    opacity: 0.58;
+    transform: translate(var(--bubble-entry-x), var(--bubble-entry-y)) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bubble-entry {
+    animation: none;
+  }
+}
+
 /* Lineage focus can affect every mark at once. Let that state snap cleanly;
    hundreds of simultaneous SVG opacity transitions read as a flash. */
 .canvas-svg[data-view='lineage'] .bubble {

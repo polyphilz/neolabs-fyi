@@ -35,6 +35,23 @@ const VIEW_TITLES: Record<Filters['view'], string> = {
   table: 'neolabs.fyi | Every neolab in a sortable table',
 };
 
+function sameFilters(a: Filters, b: Filters): boolean {
+  const sameList = <T,>(left: T[], right: T[]) =>
+    left.length === right.length && left.every((value, index) => value === right[index]);
+
+  return (
+    a.view === b.view &&
+    a.sizeScale === b.sizeScale &&
+    a.minUsdM === b.minUsdM &&
+    a.maxUsdM === b.maxUsdM &&
+    a.minYear === b.minYear &&
+    a.maxYear === b.maxYear &&
+    sameList(a.domains, b.domains) &&
+    sameList(a.lineage, b.lineage) &&
+    sameList(a.tags, b.tags)
+  );
+}
+
 /**
  * Every view of the dataset over one piece of filter state.
  *
@@ -56,7 +73,10 @@ export function Explorer({ labs, basemap }: Props) {
   // HTML and the first client render agree.
   useEffect(() => {
     const parsed = fromParams(new URLSearchParams(window.location.search), labs);
-    setFilters(parsed.filters);
+    // The default URL parses to a fresh object with exactly the state already
+    // rendered on the server. Replacing it anyway rebuilds the layout and
+    // reheats the force simulation immediately after its cold-start settle.
+    setFilters((current) => (sameFilters(current, parsed.filters) ? current : parsed.filters));
     setSelected(parsed.selected);
     setQuery(parsed.query);
     setHydrated(true);

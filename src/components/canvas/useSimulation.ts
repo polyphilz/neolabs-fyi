@@ -19,6 +19,32 @@ export interface SimNode {
   r: number;
 }
 
+const INITIAL_SETTLE_TICKS = 80;
+const INITIAL_COLLISION_CLEANUP_TICKS = 24;
+const REDUCED_MOTION_SETTLE_TICKS = 140;
+
+/** Stable reload-to-reload scatter without making every node enter dead-centre. */
+function initialJitter(slug: string): { x: number; y: number } {
+  let hash = 0x811c9dc5;
+  for (let index = 0; index < slug.length; index++) {
+    hash ^= slug.charCodeAt(index);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  const xBits = hash & 0xffff;
+  const yBits = hash >>> 16;
+  return {
+    x: (xBits / 0xffff - 0.5) * 60,
+    y: (yBits / 0xffff - 0.5) * 60,
+  };
+}
+
+function clearVelocity(nodes: SimNode[]) {
+  for (const node of nodes) {
+    node.vx = 0;
+    node.vy = 0;
+  }
+}
+
 /**
  * Keeps nodes inside the frame, and — where the layout supplies per-node boxes
  * — inside their own cell. Collision pressure will otherwise shove bubbles
@@ -161,6 +187,7 @@ function forceRadialBounds(
 export function useSimulation(labs: Lab[], layout: LayoutResult) {
   const nodesRef = useRef(new Map<string, SimNode>());
   const simRef = useRef<Simulation<SimNode, undefined> | null>(null);
+  const hasPopulatedRef = useRef(false);
   const [frame, forceRender] = useState(0);
   const activeRef = useRef<SimNode[]>([]);
 
@@ -175,19 +202,21 @@ export function useSimulation(labs: Lab[], layout: LayoutResult) {
     const sim = simRef.current!;
     const store = nodesRef.current;
     const active: SimNode[] = [];
+    const isColdStart = !hasPopulatedRef.current;
 
     for (const lab of labs) {
       const target = layout.targets.get(lab.slug);
       if (!target) continue;
       let node = store.get(lab.slug);
       if (!node) {
-        // Enter from near the target with a little scatter, so new nodes don't
-        // all stack on the exact same pixel and explode apart on first tick.
+        // Enter near the target with stable scatter. Reloading the same data
+        // should not occasionally create a much worse collision pile-up.
+        const jitter = initialJitter(lab.slug);
         node = {
           slug: lab.slug,
           lab,
-          x: target.x + (Math.random() - 0.5) * 60,
-          y: target.y + (Math.random() - 0.5) * 60,
+          x: target.x + jitter.x,
+          y: target.y + jitter.y,
           tx: target.x,
           ty: target.y,
           r: radiusForLab(lab, layout.sizing),
@@ -202,6 +231,7 @@ export function useSimulation(labs: Lab[], layout: LayoutResult) {
     }
 
     activeRef.current = active;
+    hasPopulatedRef.current = true;
 
     sim.nodes(active);
     const targetStrength = layout.targetStrength ?? 0.16;
@@ -230,7 +260,36 @@ export function useSimulation(labs: Lab[], layout: LayoutResult) {
     // Registered last so it runs after the other forces have moved everything.
     sim.force('bounds', layout.bounded ? forceBounds(active, layout.nodeBounds) : null);
     sim.on('tick', () => forceRender((n) => n + 1));
-    sim.alpha(0.85).restart();
+    sim.alphaTarget(0);
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion) {
+      // View changes should be immediate for reduced-motion users as well as
+      // the initial load, so settle the new layout entirely off-screen.
+      sim.stop().alpha(1).tick(REDUCED_MOTION_SETTLE_TICKS);
+      clearVelocity(active);
+      sim.alpha(0);
+      forceRender((n) => n + 1);
+    } else if (isColdStart) {
+      // Hide the high-energy collision phase. A short zero-alpha tail lets the
+      // collision force finish without the target forces pulling dense peers
+      // back together; the simulation then stays stopped until a real user
+      // action (view/filter/drag) intentionally reheats it.
+      sim.stop().alpha(0.85).tick(INITIAL_SETTLE_TICKS);
+      sim.force('target-tether', null);
+      sim.alpha(0).tick(INITIAL_COLLISION_CLEANUP_TICKS);
+      sim.force(
+        'target-tether',
+        layout.maxTargetDisplacement
+          ? forceTargetTether(active, layout.maxTargetDisplacement)
+          : null
+      );
+      clearVelocity(active);
+      forceRender((n) => n + 1);
+    } else {
+      // Filtering and view changes keep their full animated handoff.
+      sim.alpha(0.85).restart();
+    }
 
     return () => {
       sim.on('tick', null);
