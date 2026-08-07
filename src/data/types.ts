@@ -86,6 +86,7 @@ export type OrgId =
   | 'circlemedical'
   | 'codeplay'
   | 'cornell'
+  | 'columbia'
   | 'dataiku'
   | 'dropbox'
   | 'ea'

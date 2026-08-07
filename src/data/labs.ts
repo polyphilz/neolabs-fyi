@@ -1016,6 +1016,27 @@ export const LABS: Lab[] = [
     location: CITIES.sf,
   },
   {
+    slug: "engram",
+    name: "Engram",
+    // $98M round announced 23 Jun 2026 at a reported $600M post-money
+    // valuation, co-led by General Catalyst and Modern Capital.
+    valuation: { usdM: 600, qualifier: "exact" },
+    year: 2026,
+    domain: "rsi",
+    tags: ["continual-learning", "agents"],
+    founders: [
+      { person: "dan-biderman", prior: ["columbia", "stanford"] },
+      { person: "sabri-eyuboglu", prior: ["stanford"] },
+      { person: "jack-morris", prior: ["cornell", "meta", "google"] },
+      { person: "jessy-lin", prior: ["berkeley", "meta"] },
+      { person: "scott-linderman", prior: ["stanford", "harvard"] },
+      { person: "chris-re", prior: ["stanford", "washington"] },
+    ],
+    knownFor:
+      "A learned memory layer that trains models on an organization's knowledge in advance, creating compact, continuously improving memories that use up to 100× fewer tokens.",
+    location: CITIES.sf,
+  },
+  {
     slug: "inception-labs",
     name: "Inception Labs",
     valuation: { usdM: 500, qualifier: "approx" },

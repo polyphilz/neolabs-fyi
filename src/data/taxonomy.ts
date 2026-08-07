@@ -289,6 +289,7 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   salk: { label: 'Salk Institute', group: 'academia' },
   ucla: { label: 'UCLA', group: 'academia' },
   cornell: { label: 'Cornell', group: 'academia' },
+  columbia: { label: 'Columbia', group: 'academia' },
   michigan: { label: 'U. Michigan', group: 'academia' },
   mcgill: { label: 'McGill', group: 'academia' },
   georgiatech: { label: 'Georgia Tech', group: 'academia' },

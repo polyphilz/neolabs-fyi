@@ -266,6 +266,12 @@ export const PEOPLE = {
   'oliver-vikbladh': { name: 'Oliver Vikbladh' },
   'jacob-steinhardt': { name: 'Jacob Steinhardt' },
   'sarah-schwettmann': { name: 'Sarah Schwettmann' },
+  'dan-biderman': { name: 'Dan Biderman' },
+  'sabri-eyuboglu': { name: 'Sabri Eyuboglu' },
+  'jack-morris': { name: 'Jack Morris' },
+  'jessy-lin': { name: 'Jessy Lin' },
+  'scott-linderman': { name: 'Scott Linderman' },
+  'chris-re': { name: 'Chris Ré' },
 } satisfies Record<string, { name: string }>;
 
 /**
