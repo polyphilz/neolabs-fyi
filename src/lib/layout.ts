@@ -840,7 +840,15 @@ const nodeOuterRadius = 245;
     }
   }
 
-  const majorYears = new Set([minYear, maxYear, minYear + 4, maxYear - 3, maxYear - 1]);
+  const majorYears = new Set([
+    minYear,
+    minYear + 4,
+    maxYear - 4,
+    maxYear - 3,
+    maxYear - 2,
+    maxYear - 1,
+    maxYear,
+  ]);
   const rings = Array.from({ length: maxYear - minYear + 1 }, (_, index) => {
     const year = minYear + index;
     return { year, radius: radiusForYear(year), major: majorYears.has(year) };

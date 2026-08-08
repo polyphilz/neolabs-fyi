@@ -180,7 +180,7 @@ export function BloomCore({
             dominantBaseline="middle"
             y={-6}
           >
-            EACH RING MARKS ONE YEAR
+            FOUNDING YEAR BY RING
           </text>
           <text
             className="bloom-core-legend-direction"
@@ -273,8 +273,8 @@ function YearRingLabel({
 }
 
 /**
- * The year scale is drawn inside the inference petal, hugging its outer edge so
- * the ticks clear that sector's own nodes.
+ * The year scale is drawn inside the inference petal, hugging its lower edge
+ * (the boundary it shares with science) so it clears the sector's two nodes.
  *
  * Derived from the sector rather than pinned to a fixed angle on purpose:
  * sector spans are a function of how many labs each domain holds, so any
@@ -283,9 +283,9 @@ function YearRingLabel({
  */
 function yearLabelAngle(atlas: AreaAtlas): number {
   const inference = atlas.sectors.find((sector) => sector.id === 'inference');
-  if (!inference) return Math.PI * 0.86;
+  if (!inference) return Math.PI * 0.77;
   const inset = Math.min(0.06, (inference.endAngle - inference.startAngle) / 3);
-  return inference.endAngle - inset;
+  return inference.startAngle + inset;
 }
 
 interface Point {
