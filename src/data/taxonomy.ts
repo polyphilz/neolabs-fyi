@@ -47,7 +47,7 @@ export const DOMAINS: Record<
     blurb: 'Training hardware, chip design, distributed compute, and the orchestration layers above them.',
   },
   applied: {
-    label: 'Applied & agents',
+    label: 'Applied',
     blurb: 'Enterprise models, agent platforms, voice.',
   },
   safety: {

@@ -35,7 +35,7 @@ const AREA_LABEL_LINES: Record<DomainId, string[]> = {
   science: ['AI for math', '& science'],
   inference: ['Inference'],
   compute: ['Compute & chips'],
-  applied: ['Applied & agents'],
+  applied: ['Applied'],
   safety: ['Interpretability'],
 };
 
