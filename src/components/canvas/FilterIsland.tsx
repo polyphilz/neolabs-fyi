@@ -103,21 +103,14 @@ export function FilterIsland({
           onClick={() => setOpen((o) => !o)}
         >
           Filters
-          {activeCount > 0 && <span className="pip">{activeCount}</span>}
+          <span className={activeCount > 0 ? "pip" : "pip is-idle"}>
+            {activeCount}
+          </span>
         </button>
         <span className="island-count">
           <strong>{shown}</strong>
           <span className="island-count-total">/{total}</span>
         </span>
-        {dirty && (
-          <button
-            type="button"
-            className="island-btn island-btn-quiet"
-            onClick={onReset}
-          >
-            Reset
-          </button>
-        )}
       </div>
 
       {open && (
@@ -137,15 +130,14 @@ export function FilterIsland({
             <div className="sheet-head">
               <strong>Filters</strong>
               <div>
-                {dirty && (
-                  <button
-                    type="button"
-                    className="sheet-action"
-                    onClick={onReset}
-                  >
-                    Reset
-                  </button>
-                )}
+                <button
+                  type="button"
+                  className="sheet-action"
+                  disabled={!dirty}
+                  onClick={onReset}
+                >
+                  Reset
+                </button>
                 <button
                   type="button"
                   className="sheet-action sheet-action-primary"
