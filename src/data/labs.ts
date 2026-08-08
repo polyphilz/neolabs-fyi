@@ -507,10 +507,13 @@ export const LABS: Lab[] = [
     domain: "general",
     tags: ["academic-spinout", "on-device", "open-weights"],
     founders: [
-      { person: "daniela-rus", prior: ["mit"] },
-      { person: "ramin-hasani", prior: ["mit"] },
+      { person: "daniela-rus", prior: ["mit", "cornell", "dartmouth"] },
+      {
+        person: "ramin-hasani",
+        prior: ["mit", "vanguard", "tuwien", "infineon"],
+      },
       { person: "mathias-lechner", prior: ["mit", "ista"] },
-      { person: "alexander-amini", prior: ["mit"] },
+      { person: "alexander-amini", prior: ["mit", "themis"] },
     ],
     knownFor:
       "MIT CSAIL spinout; liquid neural networks for on-device inference.",
