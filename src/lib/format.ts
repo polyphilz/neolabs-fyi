@@ -195,6 +195,8 @@ export interface CanvasMark {
    * needs more room than a solid glyph to carry the same weight.
    */
   inset?: number;
+  /** Optional canvas-height ceiling for marks that should read a little larger. */
+  maxHeight?: number;
 }
 
 export type CanvasLabel = string | CanvasMark;
@@ -234,6 +236,8 @@ const SKILD_MARK: CanvasMark = {
   y: 13.4,
   width: 109.75,
   height: 172.6,
+  inset: 0.7,
+  maxHeight: 32,
 };
 
 const OAK_LAB_MARK: CanvasMark = {
@@ -623,6 +627,7 @@ const CHAI_DISCOVERY_MARK: CanvasMark = {
   y: 0.19,
   width: 192.9,
   height: 197.77,
+  inset: 0.68,
 };
 
 const HUMANS_AND_MARK: CanvasMark = {
@@ -775,7 +780,7 @@ const INFLECTION_MARK: CanvasMark = {
   height: 234,
   // Below the solid-mark inset: the glyph is tall, so it reads large for its
   // area, and matching the others by height makes it louder than any of them.
-  inset: 0.59,
+  inset: 0.55,
 };
 
 /** Isomorphic's mark: two interlocking figures, one filled path each. */
@@ -831,7 +836,7 @@ const PERIODIC_MARK: CanvasMark = {
   y: 14.5,
   width: 171,
   height: 170,
-  inset: 0.82,
+  inset: 0.76,
 };
 
 /**
@@ -858,6 +863,8 @@ const POOLSIDE_MARK: CanvasMark = {
   y: 133.399,
   width: 30.714,
   height: 30.715,
+  inset: 0.7,
+  maxHeight: 32,
 };
 
 /** Decart's mark: one filled path, straight from the source. */
@@ -2255,6 +2262,8 @@ const DEEPSEEK_MARK: CanvasMark = {
   y: 3.169,
   width: 24,
   height: 17.661,
+  inset: 0.7,
+  maxHeight: 44,
 };
 
 const MISTRAL_MARK: CanvasMark = {
@@ -2267,6 +2276,8 @@ const MISTRAL_MARK: CanvasMark = {
   y: 0,
   width: 560,
   height: 400,
+  inset: 0.7,
+  maxHeight: 32,
 };
 
 const PRIME_INTELLECT_MARK: CanvasMark = {
@@ -2514,16 +2525,19 @@ const SHORT_MARKS: Record<string, CanvasMark> = {
 };
 
 /**
- * Every name we're willing to draw on the canvas for this lab, longest first:
- * full name, then the canvas short form, then the mark. The caller picks the
- * longest rung that's legible at the current zoom, so a bubble grows from "π"
- * to "Physical Intel." to "Physical Intelligence" as you zoom in.
+ * Every label we're willing to draw on the canvas for this lab. A supplied
+ * mark is the lab's only canvas label, so zooming never replaces its logo with
+ * a name. Labs without a mark keep their text ladder, longest first: full name,
+ * then the configured canvas and short forms.
  *
- * Parenthetical glosses are dropped from the top rung. A name like
+ * Parenthetical glosses are dropped from the top text rung. A name like
  * "H (The H Company)" exists to disambiguate on the profile page; on a hex it
  * reads as a mistake.
  */
 export function canvasNames(lab: Lab): CanvasLabel[] {
+  const mark = SHORT_MARKS[lab.slug];
+  if (mark) return [mark];
+
   const full = lab.name.replace(/\s*\(.*\)\s*$/, '').trim();
   const names = [full, CANVAS_NAMES[lab.slug], SHORT_NAMES[lab.slug]];
   // Dedupe: a lab whose canvas name is its full name has one fewer rung, not a
@@ -2531,9 +2545,6 @@ export function canvasNames(lab: Lab): CanvasLabel[] {
   const rungs: CanvasLabel[] = names.filter(
     (name, i): name is string => Boolean(name) && names.indexOf(name) === i
   );
-  // A mark is always the bottom rung — it's the form that survives longest.
-  const mark = SHORT_MARKS[lab.slug];
-  if (mark) rungs.push(mark);
   return rungs;
 }
 

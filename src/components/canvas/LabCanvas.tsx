@@ -174,7 +174,14 @@ function chooseLabel(
             return fitted ? { kind: 'text' as const, fitted } : null;
           })()
         : (() => {
-            const fitted = fitMark(rung.width, rung.height, r, rot, rung.inset);
+            const fitted = fitMark(
+              rung.width,
+              rung.height,
+              r,
+              rot,
+              rung.inset,
+              rung.maxHeight
+            );
             return fitted ? { kind: 'mark' as const, mark: rung, fitted } : null;
           })();
     if (!chosen) continue;

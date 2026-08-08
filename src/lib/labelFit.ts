@@ -237,7 +237,8 @@ export function fitMark(
   markHeight: number,
   r: number,
   rot = 0,
-  inset = MARK_INSET
+  inset = MARK_INSET,
+  maxHeight = MAX_MARK
 ): FittedMark | null {
   const inner = r * inset;
   const aspect = markWidth / markHeight;
@@ -254,7 +255,7 @@ export function fitMark(
 
   if (!fitsAt(0.5)) return null;
   let lo = 0.5;
-  let hi = MAX_MARK;
+  let hi = maxHeight;
   for (let i = 0; i < 18; i++) {
     const mid = (lo + hi) / 2;
     if (fitsAt(mid)) lo = mid;
