@@ -289,13 +289,13 @@ export type DomainId =
 /**
  * Cross-cutting attributes. Unlike `domain`, which is single-select and drives
  * layout, a lab can carry several tags — DeepSeek is open-weights *and*
- * efficient *and* general-purpose, which one field can't express.
+ * math *and* general-purpose, which one field can't express.
  */
 export type TagId =
   | 'open-weights'
   | 'open-source'
   | 'multimodal'
-  | 'efficient'
+  | 'on-device'
   | 'continual-learning'
   | 'math'
   | 'vision'

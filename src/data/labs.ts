@@ -240,7 +240,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 5_000, qualifier: "lt", rumored: true },
     year: 2026,
     domain: "applied",
-    tags: ["agents", "continual-learning", "efficient"],
+    tags: ["agents", "continual-learning"],
     founders: [
       { person: "igor-babuschkin", prior: ["deepmind", "openai", "xai"] },
       { person: "dmytro-soboliev", prior: ["apple", "openai", "xai"] },
@@ -467,7 +467,6 @@ export const LABS: Lab[] = [
     valuation: { usdM: 2_650, qualifier: "exact" },
     year: 2023,
     domain: "general",
-    tags: ["efficient"],
     founders: [
       { person: "david-ha", prior: ["google"] },
       { person: "llion-jones", prior: ["google"] },
@@ -506,7 +505,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 2_000, qualifier: "gt" },
     year: 2023,
     domain: "general",
-    tags: ["academic-spinout", "efficient", "open-weights"],
+    tags: ["academic-spinout", "on-device", "open-weights"],
     founders: [
       { person: "daniela-rus", prior: ["mit"] },
       { person: "ramin-hasani", prior: ["mit"] },
@@ -900,7 +899,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 5_000, qualifier: "gt", rumored: true },
     year: 2021,
     domain: "general",
-    tags: ["efficient", "open-source", "open-weights"],
+    tags: ["open-source", "open-weights"],
     founders: [
       {
         person: "krithik-puthalath",
