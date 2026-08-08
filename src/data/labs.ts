@@ -902,10 +902,16 @@ export const LABS: Lab[] = [
     domain: "general",
     tags: ["efficient", "open-source", "open-weights"],
     founders: [
-      { person: "krithik-puthalath", prior: ["oxbridge"] },
-      { person: "danny-martinelli", prior: ["startup"] },
-      { person: "beren-millidge", prior: ["eleuther"] },
-      { person: "tomas-figliolia" },
+      {
+        person: "krithik-puthalath",
+        prior: ["cambridgequantum", "uiuc", "ibm", "xerion"],
+      },
+      { person: "danny-martinelli" },
+      { person: "beren-millidge", prior: ["conjecture", "oxford", "edinburgh"] },
+      {
+        person: "tomas-figliolia",
+        prior: ["apple", "xilinx", "qualcomm", "jhu"],
+      },
     ],
     knownFor:
       "Outsized results from small models; the Zamba and Zaya (ZAYA1) stack.",

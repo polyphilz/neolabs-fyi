@@ -226,7 +226,7 @@ export const PEOPLE = {
   'laurent-mazare': { name: 'Laurent Mazare' },
   'herve-jegou': { name: 'Hervé Jégou' },
   'beren-millidge': { name: 'Beren Millidge' },
-  'tomas-figliolia': { name: 'Tomas Figliolia' },
+  'tomas-figliolia': { name: 'Tomás Figliolia' },
   'mikhail-shapiro': { name: 'Mikhail Shapiro' },
   'aditya-grover': { name: 'Aditya Grover' },
   'volodymyr-kuleshov': { name: 'Volodymyr Kuleshov' },
