@@ -254,7 +254,7 @@ function YearRingLabel({
   year: number;
   radius: number;
 }) {
-  const angle = Math.PI * 0.86;
+  const angle = yearLabelAngle(atlas);
   const point = areaPoint(atlas, radius, angle);
   const tick = areaPoint(atlas, radius + 6, angle);
   return (
@@ -265,6 +265,22 @@ function YearRingLabel({
       </text>
     </g>
   );
+}
+
+/**
+ * The year scale is drawn inside the inference petal, hugging its outer edge so
+ * the ticks clear that sector's own nodes.
+ *
+ * Derived from the sector rather than pinned to a fixed angle on purpose:
+ * sector spans are a function of how many labs each domain holds, so any
+ * reclassification rotates every boundary. A literal angle here silently drifts
+ * into the neighbouring petal the next time a lab moves domain.
+ */
+function yearLabelAngle(atlas: AreaAtlas): number {
+  const inference = atlas.sectors.find((sector) => sector.id === 'inference');
+  if (!inference) return Math.PI * 0.86;
+  const inset = Math.min(0.06, (inference.endAngle - inference.startAngle) / 3);
+  return inference.endAngle - inset;
 }
 
 interface Point {
