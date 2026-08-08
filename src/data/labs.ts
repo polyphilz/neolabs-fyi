@@ -20,7 +20,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 115, qualifier: "exact" },
     year: 2026,
     domain: "rsi",
-    tags: ["continual-learning", "agents"],
+    tags: ["agents", "continual-learning"],
     founders: [
       { person: "ronak-malde", prior: ["windsurf", "deepmind", "stanford"] },
       { person: "michael-elabd", prior: ["deepmind", "google", "stanford"] },
@@ -57,6 +57,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 12_000, qualifier: "exact" },
     year: 2025,
     domain: "general",
+    tags: ["open-source", "open-weights"],
     founders: [
       { person: "mira-murati", prior: ["openai"] },
       { person: "john-schulman", prior: ["openai", "anthropic"] },
@@ -120,7 +121,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 14_000, qualifier: "gt" },
     year: 2023,
     domain: "physical",
-    tags: ["robot-foundation-models", "academic-spinout"],
+    tags: ["academic-spinout", "robot-foundation-models"],
     founders: [
       { person: "deepak-pathak", prior: ["cmu", "berkeley"] },
       { person: "abhinav-gupta", prior: ["cmu", "meta"] },
@@ -149,7 +150,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 11_000, qualifier: "gt", rumored: true },
     year: 2024,
     domain: "physical",
-    tags: ["robot-foundation-models"],
+    tags: ["open-source", "open-weights", "robot-foundation-models"],
     founders: [
       { person: "sergey-levine", prior: ["berkeley", "google", "deepmind"] },
       { person: "karol-hausman", prior: ["google", "deepmind", "stanford"] },
@@ -505,7 +506,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 2_000, qualifier: "gt" },
     year: 2023,
     domain: "general",
-    tags: ["efficient", "academic-spinout"],
+    tags: ["academic-spinout", "efficient", "open-weights"],
     founders: [
       { person: "daniela-rus", prior: ["mit"] },
       { person: "ramin-hasani", prior: ["mit"] },
@@ -522,7 +523,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 370, qualifier: "undisclosed" },
     year: 2024,
     domain: "applied",
-    tags: ["agents"],
+    tags: ["agents", "open-weights"],
     founders: [
       {
         person: "charles-kantor",
@@ -566,7 +567,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 1_600, qualifier: "gt" },
     year: 2025,
     domain: "science",
-    tags: ["math"],
+    tags: ["math", "open-source"],
     founders: [
       { person: "carina-hong", prior: ["mit", "stanford"] },
       { person: "shubho-sengupta", prior: ["meta", "google"] },
@@ -625,6 +626,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 1_400, qualifier: "exact" },
     year: 2017,
     domain: "applied",
+    tags: ["open-weights"],
     founders: [
       { person: "ori-goshen", prior: ["startup"] },
       { person: "yoav-shoham", prior: ["stanford", "google"] },
@@ -655,7 +657,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 3_800, qualifier: "exact" },
     year: 2024,
     domain: "science",
-    tags: ["drug-discovery"],
+    tags: ["drug-discovery", "open-weights"],
     founders: [
       { person: "joshua-meier", prior: ["meta", "openai", "absci"] },
       { person: "jack-dent", prior: ["stripe"] },
@@ -687,7 +689,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 142, qualifier: "undisclosed" },
     year: 2024,
     domain: "science",
-    tags: ["drug-discovery"],
+    tags: ["drug-discovery", "open-weights"],
     founders: [
       { person: "alexander-rives", prior: ["meta"] },
       { person: "tom-sercu", prior: ["meta"] },
@@ -785,7 +787,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 1_000, qualifier: "gt" },
     year: 2022,
     domain: "applied",
-    tags: ["agents"],
+    tags: ["agents", "open-source"],
     founders: [
       { person: "kanjun-qiu", prior: ["startup"] },
       { person: "josh-albrecht", prior: ["startup"] },
@@ -845,7 +847,7 @@ export const LABS: Lab[] = [
     year: 2023,
     domain: "applied",
     structure: "nonprofit",
-    tags: ["voice", "open-weights"],
+    tags: ["open-source", "open-weights", "voice"],
     founders: [
       { person: "patrick-perez", prior: ["valeo"] },
       { person: "neil-zeghidour", prior: ["deepmind", "google", "meta"] },
@@ -866,7 +868,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 1_000, qualifier: "gt", rumored: true },
     year: 2023,
     domain: "applied",
-    tags: ["open-weights"],
+    tags: ["open-source", "open-weights"],
     founders: [
       { person: "mark-mcquade", prior: ["huggingface", "roboflow"] },
       { person: "jacob-solawetz", prior: ["startup"] },
@@ -898,7 +900,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 5_000, qualifier: "gt", rumored: true },
     year: 2021,
     domain: "general",
-    tags: ["open-weights", "efficient"],
+    tags: ["efficient", "open-source", "open-weights"],
     founders: [
       { person: "krithik-puthalath", prior: ["oxbridge"] },
       { person: "danny-martinelli", prior: ["startup"] },
@@ -932,7 +934,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 1_000, qualifier: "exact" },
     year: 2023,
     domain: "applied",
-    tags: ["open-weights", "agents"],
+    tags: ["agents", "open-source", "open-weights"],
     founders: [
       { person: "jeffrey-quesnelle", prior: ["startup"] },
       { person: "karan-malhotra", prior: ["startup"] },
@@ -1024,7 +1026,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 600, qualifier: "exact" },
     year: 2026,
     domain: "rsi",
-    tags: ["continual-learning", "agents"],
+    tags: ["agents", "continual-learning"],
     founders: [
       { person: "dan-biderman", prior: ["columbia", "stanford"] },
       { person: "sabri-eyuboglu", prior: ["stanford"] },
@@ -1215,7 +1217,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 3_000, qualifier: "gt" },
     year: 2023,
     domain: "physical",
-    tags: ["robot-foundation-models", "humanoid"],
+    tags: ["humanoid", "robot-foundation-models"],
     founders: [
       { person: "wang-he", prior: ["peking", "stanford"] },
       { person: "yao-tengzhou" },
@@ -1274,7 +1276,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 1_500, qualifier: "exact" },
     year: 2023,
     domain: "general",
-    tags: ["sovereign", "voice"],
+    tags: ["open-weights", "sovereign", "voice"],
     founders: [
       { person: "vivek-raghavan", prior: ["uidai", "startup"] },
       { person: "pratyush-kumar", prior: ["microsoft"] },
@@ -1346,7 +1348,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 100, qualifier: "undisclosed" },
     year: 2025,
     domain: "science",
-    tags: ["math", "agents"],
+    tags: ["agents", "math"],
     founders: [
       { person: "eve-bodnia", prior: ["ucsb", "berkeley", "lbnl", "spbsu"] },
     ],
@@ -1361,7 +1363,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 50, qualifier: "undisclosed" },
     year: 2025,
     domain: "science",
-    tags: ["drug-discovery", "agents"],
+    tags: ["agents", "drug-discovery"],
     founders: [{ person: "simon-kohl", prior: ["deepmind", "dkfz", "kit"] }],
     knownFor:
       "Generative protein, peptide and antibody design models and autonomous drug-design agents, paired with an in-house wet lab for experimental validation.",
@@ -1416,7 +1418,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 10, qualifier: "undisclosed" },
     year: 2025,
     domain: "applied",
-    tags: ["open-weights", "open-source", "multimodal"],
+    tags: ["multimodal", "open-source", "open-weights"],
     structure: "public-benefit",
     founders: [
       {
@@ -1454,7 +1456,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 20, qualifier: "undisclosed" },
     year: 2023,
     domain: "science",
-    tags: ["agents"],
+    tags: ["agents", "open-weights"],
     structure: "nonprofit",
     founders: [
       {
@@ -1488,7 +1490,7 @@ export const LABS: Lab[] = [
     // Talfan Evans dates his Cursive co-founder/CEO role to January 2026.
     year: 2026,
     domain: "rsi",
-    tags: ["continual-learning", "agents"],
+    tags: ["agents", "continual-learning"],
     founders: [
       {
         person: "talfan-evans",
@@ -1509,7 +1511,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 7, qualifier: "undisclosed" },
     year: 2024,
     domain: "safety",
-    tags: ["agents"],
+    tags: ["agents", "open-source", "open-weights"],
     structure: "nonprofit",
     founders: [
       {
