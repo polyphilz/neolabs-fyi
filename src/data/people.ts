@@ -287,6 +287,21 @@ export const PEOPLE = {
   'vincent-weisser': { name: 'Vincent Weisser' },
   'johannes-hagemann': { name: 'Johannes Hagemann' },
   'liang-wenfeng': { name: 'Liang Wenfeng' },
+  'karan-goel': { name: 'Karan Goel' },
+  'albert-gu': { name: 'Albert Gu' },
+  'arjun-desai': { name: 'Arjun Desai' },
+  'brandon-yang': { name: 'Brandon Yang' },
+  'jeremy-fraenkel': { name: 'Jeremy Fraenkel' },
+  'marta-garnelo': { name: 'Marta Garnelo' },
+  'gabriel-suissa': { name: 'Gabriel Suissa' },
+  'frank-hutter': { name: 'Frank Hutter' },
+  'noah-hollmann': { name: 'Noah Hollmann' },
+  'sauraj-gambhir': { name: 'Sauraj Gambhir' },
+  'jonas-andrulis': { name: 'Jonas Andrulis' },
+  'samuel-weinbach': { name: 'Samuel Weinbach' },
+  'scott-stephenson': { name: 'Scott Stephenson' },
+  'adam-sypniewski': { name: 'Adam Sypniewski' },
+  'noah-shutty': { name: 'Noah Shutty' },
 } satisfies Record<string, { name: string }>;
 
 /**

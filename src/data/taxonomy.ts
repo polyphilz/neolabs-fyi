@@ -31,8 +31,10 @@ export const DOMAINS: Record<
     blurb: 'Learned models and simulations of physical, virtual, and social systems.',
   },
   media: {
-    label: 'Generative media',
-    blurb: 'Models built to create images, video, audio, and other creative media.',
+    label: 'Generative media & voice',
+    short: 'Media & voice',
+    blurb:
+      'Models over a continuous perceptual signal — images, video, audio and speech — whether they synthesise it or interpret it.',
   },
   science: {
     label: 'AI for math & science',
@@ -48,7 +50,7 @@ export const DOMAINS: Record<
   },
   applied: {
     label: 'Applied',
-    blurb: 'Enterprise models, agent platforms, voice.',
+    blurb: 'Enterprise models, agent platforms, and models for structured business data.',
   },
   safety: {
     label: 'AI safety & interpretability',
@@ -79,6 +81,7 @@ export const TAGS: Record<TagId, string> = {
   'open-weights': 'Open weights',
   'open-source': 'Open source',
   multimodal: 'Multimodal',
+  tabular: 'Tabular / structured data',
   'on-device': 'On-device',
   'continual-learning': 'Continual learning',
   math: 'Math',
@@ -100,6 +103,7 @@ export const TAG_ORDER: TagId[] = [
   'open-weights',
   'open-source',
   'multimodal',
+  'tabular',
   'on-device',
   'continual-learning',
   'math',
@@ -162,6 +166,9 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   roblox: { label: 'Roblox', group: 'bigtech' },
   onsemi: { label: 'onsemi', group: 'bigtech' },
   jpmorgan: { label: 'J.P. Morgan', group: 'bigtech' },
+  bridgewater: { label: 'Bridgewater Associates', group: 'bigtech' },
+  bosch: { label: 'Bosch Center for AI', group: 'bigtech' },
+  bcg: { label: 'Boston Consulting Group', group: 'bigtech' },
   vanguard: { label: 'The Vanguard Group', group: 'bigtech' },
   pixar: { label: 'Pixar Research', group: 'bigtech' },
   belllabs: { label: 'Bell Labs', group: 'bigtech' },
@@ -256,6 +263,9 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   steelperlot: { label: 'Steel Perlot', group: 'startup' },
   petribio: { label: 'Petri Bio', group: 'startup' },
   openphilanthropy: { label: 'Open Philanthropy', group: 'startup' },
+  snorkelai: { label: 'Snorkel AI', group: 'startup' },
+  greenfieldpartners: { label: 'Greenfield Partners', group: 'startup' },
+  finlync: { label: 'FinLync', group: 'startup' },
 
   // The five schools currently broken out as dedicated lineage rows. Other
   // institutions remain grouped in `academia` until that editorial taxonomy
@@ -341,6 +351,9 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   baylor: { label: 'Baylor College of Medicine', group: 'academia' },
   uthealth: { label: 'UTHealth Houston', group: 'academia' },
   rice: { label: 'Rice University', group: 'academia' },
+  ucdavis: { label: 'UC Davis', group: 'academia' },
+  freiburg: { label: 'University of Freiburg', group: 'academia' },
+  ubc: { label: 'University of British Columbia', group: 'academia' },
 };
 
 /**

@@ -31,7 +31,7 @@ const AREA_LABEL_LINES: Record<DomainId, string[]> = {
   rsi: ['Recursive', 'self-improvement &', 'continual learning'],
   physical: ['Physical AI', '& robotics'],
   world: ['World models', '& simulation'],
-  media: ['Generative', 'media'],
+  media: ['Generative media', '& voice'],
   science: ['AI for math', '& science'],
   inference: ['Inference'],
   compute: ['Compute & chips'],

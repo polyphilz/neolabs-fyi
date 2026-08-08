@@ -958,7 +958,7 @@ export const LABS: Lab[] = [
     name: "Kyutai",
     valuation: { usdM: 330, qualifier: "undisclosed" },
     year: 2023,
-    domain: "applied",
+    domain: "media",
     structure: "nonprofit",
     tags: ["open-source", "open-weights", "voice"],
     founders: [
@@ -1644,6 +1644,148 @@ export const LABS: Lab[] = [
     ],
     knownFor:
       "Nonprofit building open infrastructure for scalable oversight of frontier AI through automated interpretability, model-behavior analysis and evaluations.",
+    location: CITIES.sf,
+  },
+  {
+    slug: "cartesia",
+    name: "Cartesia",
+    // A floor, not a figure. No round has a disclosed post-money, but
+    // certificate-of-incorporation filings price the Mar 2025 Series A at
+    // $18.67/share for ~$404M post (up from ~$296M at the Dec 2024 seed). The
+    // $100M Series B that followed in Oct 2025 is undisclosed and would almost
+    // certainly have priced above the A, so ">$400M" is what the record
+    // supports. Replace with the Series B post if it is ever reported.
+    valuation: { usdM: 400, qualifier: "gt" },
+    year: 2023,
+    domain: "media",
+    tags: ["academic-spinout", "agents", "voice"],
+    founders: [
+      { person: "karan-goel", prior: ["stanford"] },
+      { person: "albert-gu", prior: ["stanford"] },
+      { person: "arjun-desai", prior: ["apple", "stanford"] },
+      { person: "brandon-yang", prior: ["snorkelai", "stanford", "google"] },
+      { person: "chris-re", prior: ["stanford", "washington"] },
+    ],
+    knownFor:
+      "Real-time voice built on state space models rather than transformers, out of the Stanford lab that invented them; the Sonic text-to-speech, Ink speech-to-text and Line agent stack, tuned for sub-100ms latency.",
+    location: CITIES.sf,
+  },
+  {
+    slug: "fundamental",
+    name: "Fundamental",
+    // $225M Series A led by Oak HC/FT on top of an earlier $30M seed, out of
+    // stealth 5 Feb 2026. Post-money is reported as $1.4B by TechCrunch and
+    // Axios Pro but $1.2B by Calcalist, so the qualifier is approximate rather
+    // than exact — the round is confirmed, the figure is not settled.
+    valuation: { usdM: 1_400, qualifier: "approx" },
+    year: 2024,
+    domain: "applied",
+    tags: ["tabular"],
+    founders: [
+      {
+        person: "jeremy-fraenkel",
+        prior: ["bridgewater", "jpmorgan", "startup"],
+      },
+      { person: "marta-garnelo", prior: ["deepmind", "imperial"] },
+      {
+        person: "gabriel-suissa",
+        prior: ["greenfieldpartners", "jpmorgan", "finlync"],
+      },
+    ],
+    knownFor:
+      "NEXUS, a deterministic large tabular model pretrained on billions of enterprise spreadsheets and database tables, aimed at fraud detection, pricing and forecasting rather than free-text generation.",
+    location: CITIES.sf,
+  },
+  {
+    slug: "prior-labs",
+    name: "Prior Labs",
+    // Price undisclosed by both parties. SAP's release commits to up to €1B of
+    // follow-on investment over four years, which is not a sale price, and
+    // Forbes' "more than $1.14B" conflates the two. The only hard number on
+    // record is the €9M pre-seed of Feb 2025, used here as the nominal figure.
+    valuation: { usdM: 10, qualifier: "undisclosed" },
+    year: 2024,
+    domain: "applied",
+    tags: ["academic-spinout", "open-source", "open-weights", "tabular"],
+    founders: [
+      { person: "frank-hutter", prior: ["freiburg", "ubc", "bosch"] },
+      { person: "noah-hollmann", prior: ["bcg"] },
+      { person: "sauraj-gambhir" },
+    ],
+    knownFor:
+      "Creator of TabPFN, a tabular foundation model that predicts on structured data by in-context learning over synthetic priors instead of per-dataset gradient training; spun out of the AutoML lab at Freiburg.",
+    location: CITIES.freiburg,
+    structure: "subsidiary",
+    // Announced 4 May 2026, closed 17 Jul 2026. SAP runs it on as an
+    // independent unit under its own name, hence absorbed: false.
+    exit: { type: "acquired", absorbed: false, to: "SAP", year: 2026 },
+  },
+  {
+    slug: "aleph-alpha",
+    name: "Aleph Alpha",
+    // Implied by the merger terms, not disclosed. Reuters reports the price as
+    // undisclosed, and no standalone post-money was ever published — the Nov
+    // 2023 round was headlined at $500M but trade press put only ~€110M of it
+    // in cash equity, the rest compute and research credits. What is reported
+    // is the split: Handelsblatt's sources have Cohere shareholders taking
+    // ~90% of the combined entity and Aleph Alpha's ~10%, against the ~$20B
+    // the merged company is valued at. That 10% is the figure below. It rests
+    // on unnamed insiders via a single outlet, hence rumored; the other
+    // outlets carrying it all trace back to the same Handelsblatt reporting.
+    valuation: { usdM: 2_000, qualifier: "approx", rumored: true },
+    year: 2019,
+    domain: "applied",
+    tags: ["multimodal", "sovereign"],
+    founders: [
+      { person: "jonas-andrulis", prior: ["apple"], departed: true },
+      { person: "samuel-weinbach" },
+    ],
+    knownFor:
+      "Built the Luminous models as Europe's answer to OpenAI, then abandoned frontier scale for PhariaAI, a sovereign platform sold into government, defence and regulated industry.",
+    location: CITIES.heidelberg,
+    // Announced 24 Apr 2026. Close is not cleanly documented: PitchBook
+    // carries a 19 May 2026 deal date, but reporting that same day still
+    // described the merger as in process, and no primary statement from
+    // either company or a named regulator confirms completion. Recorded as
+    // absorbed on the balance of that evidence rather than on a settled fact.
+    exit: { type: "acquired", absorbed: true, to: "cohere", year: 2026 },
+  },
+  {
+    slug: "edison-scientific",
+    name: "Edison Scientific",
+    // $70M seed announced 18 Dec 2025, co-led by Spark Capital and Triatomic
+    // with an unnamed US biotech investor, joined by Pillar, Susa, Hawktail
+    // and Olive. Post-money is cited as $244.55M by Forge and ~$250M by
+    // Caplight, so the figure is approximate.
+    valuation: { usdM: 250, qualifier: "approx" },
+    year: 2025,
+    domain: "science",
+    tags: ["agents", "drug-discovery"],
+    founders: [
+      { person: "sam-rodriques", prior: ["franciscrick", "petribio", "mit"] },
+      { person: "andrew-white", prior: ["rochester", "uchicago", "washington"] },
+    ],
+    knownFor:
+      "FutureHouse's for-profit spinout, commercialising Kosmos — an agent that runs multi-day research campaigns across literature and proprietary data to propose therapeutic targets.",
+    location: CITIES.sf,
+  },
+  {
+    slug: "deepgram",
+    name: "Deepgram",
+    // $130M Series C at $1.3B post-money led by AVP, announced 13 Jan 2026,
+    // with Twilio, ServiceNow Ventures, SAP and Citi Ventures joining existing
+    // backers. Still private: no S-1, no listing, no acquisition on record.
+    valuation: { usdM: 1_300, qualifier: "exact" },
+    year: 2015,
+    domain: "media",
+    tags: ["agents", "voice"],
+    founders: [
+      { person: "scott-stephenson", prior: ["michigan", "ucdavis"] },
+      { person: "adam-sypniewski", prior: ["michigan"] },
+      { person: "noah-shutty", departed: true },
+    ],
+    knownFor:
+      "Founded by Michigan particle physicists who repurposed dark-matter waveform analysis for speech; the Nova speech-to-text models and a voice-agent stack sold as enterprise API infrastructure.",
     location: CITIES.sf,
   },
 ];

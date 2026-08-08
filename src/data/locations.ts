@@ -31,6 +31,7 @@ export const CITIES = {
   cambridgeUk: city('Cambridge', 'United Kingdom', 'GB', 52.2053, 0.1218),
   paris: city('Paris', 'France', 'FR', 48.8566, 2.3522),
   freiburg: city('Freiburg', 'Germany', 'DE', 47.999, 7.8421),
+  heidelberg: city('Heidelberg', 'Germany', 'DE', 49.3988, 8.6724),
   helsinki: city('Helsinki', 'Finland', 'FI', 60.1699, 24.9384),
 
   telAviv: city('Tel Aviv', 'Israel', 'IL', 32.0853, 34.7818),

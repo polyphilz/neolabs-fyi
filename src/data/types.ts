@@ -256,6 +256,15 @@ export type OrgId =
   | 'baylor'
   | 'uthealth'
   | 'rice'
+  | 'snorkelai'
+  | 'ucdavis'
+  | 'bridgewater'
+  | 'greenfieldpartners'
+  | 'finlync'
+  | 'freiburg'
+  | 'ubc'
+  | 'bosch'
+  | 'bcg'
   | 'startup';
 
 /**
@@ -312,6 +321,7 @@ export type TagId =
   | 'open-weights'
   | 'open-source'
   | 'multimodal'
+  | 'tabular'
   | 'on-device'
   | 'continual-learning'
   | 'math'
