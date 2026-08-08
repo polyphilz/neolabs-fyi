@@ -20,7 +20,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 115, qualifier: "exact" },
     year: 2026,
     domain: "rsi",
-    tags: ["agents", "continual-learning"],
+    tags: ["agents", "continual-learning", "training-infra-tools"],
     founders: [
       { person: "ronak-malde", prior: ["windsurf", "deepmind", "stanford"] },
       { person: "michael-elabd", prior: ["deepmind", "google", "stanford"] },
@@ -57,7 +57,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 12_000, qualifier: "exact" },
     year: 2025,
     domain: "general",
-    tags: ["open-source", "open-weights"],
+    tags: ["open-source", "open-weights", "training-infra-tools"],
     founders: [
       { person: "mira-murati", prior: ["openai"] },
       { person: "john-schulman", prior: ["openai", "anthropic"] },
@@ -135,7 +135,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 12_000, qualifier: "exact", rumored: true },
     year: 2023,
     domain: "coding",
-    tags: ["open-weights"],
+    tags: ["agents", "open-weights"],
     founders: [
       { person: "jason-warner", prior: ["github", "salesforce", "canonical"] },
       { person: "eiso-kant", prior: ["startup"] },
@@ -240,7 +240,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 5_000, qualifier: "lt", rumored: true },
     year: 2026,
     domain: "applied",
-    tags: ["agents", "continual-learning"],
+    tags: ["training-infra-tools"],
     founders: [
       { person: "igor-babuschkin", prior: ["deepmind", "openai", "xai"] },
       { person: "dmytro-soboliev", prior: ["apple", "openai", "xai"] },
@@ -257,6 +257,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 4_650, qualifier: "exact" },
     year: 2025,
     domain: "rsi",
+    tags: ["agents"],
     founders: [
       {
         person: "richard-socher",
@@ -368,7 +369,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 4_000, qualifier: "approx" },
     year: 2021,
     domain: "media",
-    tags: ["video"],
+    tags: ["agents", "video"],
     founders: [
       { person: "amit-jain", prior: ["apple", "circlemedical"] },
       {
@@ -392,6 +393,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 6_000, qualifier: "exact" },
     year: 2025,
     domain: "applied",
+    tags: ["agents"],
     founders: [{ person: "brett-adcock", prior: ["archer", "figureai"] }],
     knownFor:
       "Personalised multimodal AI and bespoke hardware designed as a new interface to computing.",
@@ -870,7 +872,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 1_000, qualifier: "gt", rumored: true },
     year: 2023,
     domain: "applied",
-    tags: ["open-source", "open-weights"],
+    tags: ["open-source", "open-weights", "training-infra-tools"],
     founders: [
       { person: "mark-mcquade", prior: ["huggingface", "roboflow"] },
       { person: "jacob-solawetz", prior: ["startup"] },
@@ -1156,7 +1158,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 400, qualifier: "exact" },
     year: 2026,
     domain: "inference",
-    tags: ["open-source"],
+    tags: ["open-source", "training-infra-tools"],
     founders: [
       {
         person: "ying-sheng",
@@ -1240,6 +1242,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 2_900, qualifier: "approx" },
     year: 2023,
     domain: "applied",
+    tags: ["agents"],
     founders: [{ person: "wang-xiaochuan", prior: ["sogou"] }],
     knownFor:
       "Sogou's founder; shifted strategic focus from the general-purpose LLM race toward AI-for-healthcare, while continuing to develop its base model series.",
@@ -1426,7 +1429,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 10, qualifier: "undisclosed" },
     year: 2025,
     domain: "applied",
-    tags: ["multimodal", "open-source", "open-weights"],
+    tags: ["multimodal", "open-source", "open-weights", "training-infra-tools"],
     structure: "public-benefit",
     founders: [
       {
@@ -1498,7 +1501,6 @@ export const LABS: Lab[] = [
     // Talfan Evans dates his Cursive co-founder/CEO role to January 2026.
     year: 2026,
     domain: "rsi",
-    tags: ["agents", "continual-learning"],
     founders: [
       {
         person: "talfan-evans",
@@ -1519,7 +1521,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 7, qualifier: "undisclosed" },
     year: 2024,
     domain: "safety",
-    tags: ["agents", "open-source", "open-weights"],
+    tags: ["open-source", "open-weights"],
     structure: "nonprofit",
     founders: [
       {

@@ -305,6 +305,7 @@ export type TagId =
   | 'math'
   | 'vision'
   | 'agents'
+  | 'training-infra-tools'
   | 'video'
   | 'voice'
   | 'sovereign'
