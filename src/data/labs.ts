@@ -14,6 +14,114 @@ import type { Lab } from "./types";
  */
 export const LABS: Lab[] = [
   {
+    slug: "deepseek",
+    name: "DeepSeek",
+    // ~RMB 50bn raised at a ~$52B valuation, round closed June 2026 with
+    // Tencent and CATL as largest external shareholders (Caixin). A second
+    // round at ~$71B pre-money was reported in progress in July 2026 but had
+    // not closed, so the figure below is the last closed round.
+    valuation: { usdM: 52_000, qualifier: "exact" },
+    year: 2023,
+    domain: "general",
+    tags: ["math", "open-source", "open-weights"],
+    founders: [{ person: "liang-wenfeng", prior: ["highflyer"] }],
+    knownFor:
+      "Spun out of the quant fund High-Flyer; open-weight frontier models trained at a fraction of the compute cost US labs disclose.",
+    location: CITIES.hangzhou,
+  },
+  {
+    slug: "mistral",
+    name: "Mistral AI",
+    // €1.7B Series C at €11.7B post-money, led by ASML, September 2025;
+    // converted at the announcement-date rate. A ~€20B round was reported in
+    // talks in June 2026 but is not confirmed closed.
+    valuation: { usdM: 13_800, qualifier: "approx" },
+    year: 2023,
+    domain: "general",
+    tags: ["agents", "on-device", "open-weights", "sovereign"],
+    founders: [
+      { person: "arthur-mensch", prior: ["deepmind", "parissaclay"] },
+      { person: "guillaume-lample", prior: ["meta", "sorbonne"] },
+      { person: "timothee-lacroix", prior: ["meta", "ponts"] },
+    ],
+    knownFor:
+      "Europe's frontier lab; Apache-licensed open-weight models alongside proprietary ones, positioned as a sovereign alternative to the US labs.",
+    location: CITIES.paris,
+  },
+  {
+    slug: "cohere",
+    name: "Cohere",
+    // $500M Series C at $6.8B (August 2025), extended by a $100M second close
+    // in September 2025 that took it to roughly $7B. The ~$20B attached to the
+    // announced Aleph Alpha merger is a combined-entity figure, not a closed
+    // round.
+    valuation: { usdM: 7_000, qualifier: "approx" },
+    year: 2019,
+    domain: "applied",
+    tags: ["agents", "multimodal", "open-weights", "sovereign"],
+    founders: [
+      { person: "aidan-gomez", prior: ["google", "oxford"] },
+      { person: "nick-frosst", prior: ["google"] },
+      { person: "ivan-zhang", prior: ["forai"] },
+    ],
+    knownFor:
+      "Enterprise LLMs sold on private deployment; the Command and Aya model families and the North agent platform. Announced a merger with Germany's Aleph Alpha in 2026.",
+    location: CITIES.toronto,
+  },
+  {
+    slug: "runway",
+    name: "Runway",
+    valuation: { usdM: 5_300, qualifier: "exact" },
+    year: 2018,
+    domain: "media",
+    tags: ["multimodal", "video"],
+    founders: [
+      { person: "cristobal-valenzuela" },
+      { person: "anastasis-germanidis", prior: ["ibm", "chartbeat"] },
+      { person: "alejandro-matamala" },
+    ],
+    knownFor:
+      "Generative video for film and production, from Gen-1 to Gen-4.5; a co-author of the latent diffusion work behind Stable Diffusion.",
+    location: CITIES.newYork,
+  },
+  {
+    slug: "black-forest-labs",
+    name: "Black Forest Labs",
+    valuation: { usdM: 3_250, qualifier: "exact" },
+    year: 2024,
+    domain: "media",
+    tags: ["multimodal", "open-weights", "video"],
+    founders: [
+      { person: "robin-rombach", prior: ["stabilityai", "lmu"] },
+      { person: "andreas-blattmann", prior: ["stabilityai", "lmu"] },
+      {
+        person: "patrick-esser",
+        prior: ["stabilityai", "runway", "heidelberg"],
+      },
+    ],
+    knownFor:
+      "The Stable Diffusion authors' lab; the FLUX family of image models, part of it Apache-licensed, now extending into video and robot manipulation.",
+    location: CITIES.freiburg,
+  },
+  {
+    slug: "prime-intellect",
+    name: "Prime Intellect",
+    valuation: { usdM: 1_000, qualifier: "exact" },
+    year: 2024,
+    domain: "compute",
+    tags: ["agents", "open-source", "open-weights", "training-infra-tools"],
+    founders: [
+      { person: "vincent-weisser", prior: ["molecule"] },
+      {
+        person: "johannes-hagemann",
+        prior: ["bunchai", "alephalpha", "vitadao"],
+      },
+    ],
+    knownFor:
+      "Aggregated compute plus a training, sandbox and inference stack, sold on the pitch that any company can be its own lab; ships the INTELLECT open-weight models and an open RL toolchain.",
+    location: CITIES.sf,
+  },
+  {
     slug: "trajectory",
     name: "Trajectory",
     // Set by the $15M seed announced in May 2026, led by Conviction.
@@ -106,7 +214,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 25_000, qualifier: "exact" },
     year: 2024,
     domain: "general",
-    tags: ["open-weights"],
+    tags: ["open-weights", "sovereign"],
     founders: [
       { person: "misha-laskin", prior: ["deepmind"] },
       { person: "ioannis-antonoglou", prior: ["deepmind"] },
@@ -469,6 +577,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 2_650, qualifier: "exact" },
     year: 2023,
     domain: "general",
+    tags: ["sovereign"],
     founders: [
       { person: "david-ha", prior: ["google"] },
       { person: "llion-jones", prior: ["google"] },

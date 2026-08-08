@@ -30,11 +30,13 @@ export const CITIES = {
   london: city('London', 'United Kingdom', 'GB', 51.5072, -0.1276),
   cambridgeUk: city('Cambridge', 'United Kingdom', 'GB', 52.2053, 0.1218),
   paris: city('Paris', 'France', 'FR', 48.8566, 2.3522),
+  freiburg: city('Freiburg', 'Germany', 'DE', 47.999, 7.8421),
   helsinki: city('Helsinki', 'Finland', 'FI', 60.1699, 24.9384),
 
   telAviv: city('Tel Aviv', 'Israel', 'IL', 32.0853, 34.7818),
   beijing: city('Beijing', 'China', 'CN', 39.9042, 116.4074),
   shanghai: city('Shanghai', 'China', 'CN', 31.2304, 121.4737),
+  hangzhou: city('Hangzhou', 'China', 'CN', 30.2741, 120.1551),
   tokyo: city('Tokyo', 'Japan', 'JP', 35.6762, 139.6503),
   toronto: city('Toronto', 'Canada', 'CA', 43.6532, -79.3832),
   montreal: city('Montreal', 'Canada', 'CA', 45.5017, -73.5673),
