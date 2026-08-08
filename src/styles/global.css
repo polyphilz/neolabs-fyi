@@ -1439,25 +1439,6 @@ body.is-bare {
   vector-effect: non-scaling-stroke;
 }
 
-.area-year-ring.is-major ellipse {
-  stroke: var(--rule);
-  stroke-width: 0.75;
-  opacity: 0.55;
-}
-
-.area-year-label line {
-  stroke: var(--rule);
-  stroke-width: 0.8;
-  vector-effect: non-scaling-stroke;
-}
-
-.area-year-label text {
-  fill: var(--muted);
-  font-size: 5.7px;
-  font-weight: 750;
-  font-variant-numeric: tabular-nums;
-}
-
 .research-bloom-core ellipse {
   fill: color-mix(in srgb, var(--surface) 94%, var(--area-color));
   stroke: color-mix(in srgb, var(--area-color) 45%, var(--rule));
@@ -1474,13 +1455,6 @@ body.is-bare {
 .research-bloom-core.is-active ellipse {
   fill: color-mix(in srgb, var(--area-color) 13%, var(--surface));
   stroke: color-mix(in srgb, var(--area-color) 72%, var(--rule));
-}
-
-.bloom-core-legend-copy {
-  fill: var(--ink-2);
-  font-size: 5px;
-  font-weight: 680;
-  letter-spacing: 0.05em;
 }
 
 .bloom-core-legend-direction {

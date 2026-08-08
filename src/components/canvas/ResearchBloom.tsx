@@ -126,14 +126,13 @@ export function ResearchBloom({
 
       <g className="area-year-rings" aria-hidden="true">
         {atlas.rings.map((ring) => (
-          <g key={ring.year} className={ring.major ? 'area-year-ring is-major' : 'area-year-ring'}>
+          <g key={ring.year} className="area-year-ring">
             <ellipse
               cx={atlas.cx}
               cy={atlas.cy}
               rx={ring.radius * atlas.xScale}
               ry={ring.radius}
             />
-            {ring.major && <YearRingLabel atlas={atlas} year={ring.year} radius={ring.radius} />}
           </g>
         ))}
       </g>
@@ -175,18 +174,9 @@ export function BloomCore({
       {!activeSector && (
         <g className="bloom-core-legend">
           <text
-            className="bloom-core-legend-copy"
-            textAnchor="middle"
-            dominantBaseline="middle"
-            y={-6}
-          >
-            FOUNDING YEAR BY RING
-          </text>
-          <text
             className="bloom-core-legend-direction"
             textAnchor="middle"
             dominantBaseline="middle"
-            y={6}
           >
             OLDER INWARD · NEWER OUTWARD
           </text>
@@ -248,44 +238,6 @@ function balancedBlurbLines(blurb: string): string[] {
   }
 
   return best;
-}
-
-function YearRingLabel({
-  atlas,
-  year,
-  radius,
-}: {
-  atlas: AreaAtlas;
-  year: number;
-  radius: number;
-}) {
-  const angle = yearLabelAngle(atlas);
-  const point = areaPoint(atlas, radius, angle);
-  const tick = areaPoint(atlas, radius + 6, angle);
-  return (
-    <g className="area-year-label">
-      <line x1={point.x} y1={point.y} x2={tick.x} y2={tick.y} />
-      <text x={tick.x - 3} y={tick.y + 3} textAnchor="end">
-        {year}
-      </text>
-    </g>
-  );
-}
-
-/**
- * The year scale is drawn inside the inference petal, hugging its lower edge
- * (the boundary it shares with science) so it clears the sector's two nodes.
- *
- * Derived from the sector rather than pinned to a fixed angle on purpose:
- * sector spans are a function of how many labs each domain holds, so any
- * reclassification rotates every boundary. A literal angle here silently drifts
- * into the neighbouring petal the next time a lab moves domain.
- */
-function yearLabelAngle(atlas: AreaAtlas): number {
-  const inference = atlas.sectors.find((sector) => sector.id === 'inference');
-  if (!inference) return Math.PI * 0.77;
-  const inset = Math.min(0.06, (inference.endAngle - inference.startAngle) / 3);
-  return inference.startAngle + inset;
 }
 
 interface Point {
