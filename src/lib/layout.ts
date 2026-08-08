@@ -165,7 +165,7 @@ export interface LineageRail {
 
 /** Year columns for the lineage field. Categorical, not a continuous scale. */
 export interface YearAxis {
-  columns: { year: number; x0: number; x1: number; cx: number; count: number }[];
+  columns: { id: string; label: string; x0: number; x1: number; cx: number; count: number }[];
   labelY: number;
   top: number;
   bottom: number;
@@ -468,6 +468,9 @@ const FIELD_BOTTOM = RAIL_BOTTOM;
 /** Same baseline as the caption's first line: the year labels and the note
  * beneath the rail read as one band across the bottom of the view. */
 const YEAR_LABEL_Y = RAIL_CAPTION_Y;
+/** Sparse launch years before the current wave share one explicit cohort. */
+const EARLY_COHORT_START = 2015;
+const EARLY_COHORT_END = 2018;
 
 /**
  * Lineage.
@@ -525,21 +528,45 @@ function lineageLayout(
   const rowById = new Map(rows.map((row) => [row.id, row]));
 
   // Year columns, from the full dataset so the axis holds still under the
-  // timeline filter. Categorical rather than linear: the gap between 2017 and
-  // 2021 is real, but spending a third of the canvas on it buys nothing.
+  // timeline filter. Categorical rather than linear: sparse 2015–2018 launches
+  // form one explicit early cohort, leaving more room for the recent surge.
   const presentYears = [...new Set(referenceLabs.map((lab) => lab.year))].sort((a, b) => a - b);
-  const columnW = presentYears.length ? (FIELD_X1 - FIELD_X0) / presentYears.length : 0;
-  const columns = presentYears.map((year, index) => {
+  const earlyYears = presentYears.filter(
+    (year) => year >= EARLY_COHORT_START && year <= EARLY_COHORT_END
+  );
+  const yearGroups = [
+    ...presentYears
+      .filter((year) => year < EARLY_COHORT_START)
+      .map((year) => ({ id: String(year), label: String(year), years: [year] })),
+    ...(earlyYears.length
+      ? [
+          {
+            id: `${EARLY_COHORT_START}-${EARLY_COHORT_END}`,
+            label: `${EARLY_COHORT_START}–${String(EARLY_COHORT_END).slice(2)}`,
+            years: earlyYears,
+          },
+        ]
+      : []),
+    ...presentYears
+      .filter((year) => year > EARLY_COHORT_END)
+      .map((year) => ({ id: String(year), label: String(year), years: [year] })),
+  ];
+  const columnW = yearGroups.length ? (FIELD_X1 - FIELD_X0) / yearGroups.length : 0;
+  const columns = yearGroups.map((group, index) => {
     const x0 = stable(FIELD_X0 + columnW * index);
     return {
-      year,
+      id: group.id,
+      label: group.label,
+      years: group.years,
       x0,
       x1: stable(x0 + columnW),
       cx: stable(x0 + columnW / 2),
-      count: labs.filter((lab) => lab.year === year).length,
+      count: labs.filter((lab) => group.years.includes(lab.year)).length,
     };
   });
-  const columnByYear = new Map(columns.map((column) => [column.year, column]));
+  const columnByYear = new Map(
+    columns.flatMap((column) => column.years.map((year) => [year, column] as const))
+  );
 
   const targets = new Map<string, Vec>();
   const nodeBounds = new Map<string, Box>();
@@ -565,9 +592,9 @@ function lineageLayout(
       x: column.cx,
       y: stable(Math.max(FIELD_TOP + own, Math.min(FIELD_BOTTOM - own, meanY))),
     });
-    // Hard cell per year, the same device the valuation bands use. Collision in
-    // a crowded column would otherwise push labs into the neighbouring year and
-    // quietly falsify the axis.
+    // Hard cell per displayed year/cohort, the same device the valuation bands
+    // use. Collision in a crowded column would otherwise push labs into the
+    // neighbouring period and quietly falsify the axis.
     nodeBounds.set(lab.slug, { x0: column.x0, y0: FIELD_TOP, x1: column.x1, y1: FIELD_BOTTOM });
   }
 

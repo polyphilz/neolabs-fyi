@@ -7,21 +7,20 @@ import { stable } from '../../lib/precision';
 /**
  * Year columns for the lineage field.
  *
- * Categorical, not a continuous scale — the 2018–2020 gap is real but spending
- * a third of the canvas on three empty years buys nothing. Reading the columns
- * fill up to the right is the point: 18 labs in 2023, 20 in 2025, and 12 in
- * 2026 with most of the year still to run.
+ * Categorical, not a continuous scale. The three sparse launches from
+ * 2015–2018 form one labeled cohort; reading the later columns fill up to the
+ * right is the point.
  */
 export const LineageYearAxis = memo(function LineageYearAxis({ axis }: { axis: YearAxis }) {
   return (
     <g className="year-axis" aria-hidden="true">
       {axis.columns.map((column, index) => (
-        <g key={column.year} className={column.count === 0 ? 'year-column is-empty' : 'year-column'}>
+        <g key={column.id} className={column.count === 0 ? 'year-column is-empty' : 'year-column'}>
           {index > 0 && (
             <line className="year-rule" x1={column.x0} y1={axis.top} x2={column.x0} y2={axis.bottom} />
           )}
           <text className="year-label" x={column.cx} y={axis.labelY} textAnchor="middle">
-            {column.year}
+            {column.label}
           </text>
           <text className="year-count" x={column.cx} y={axis.labelY + 12} textAnchor="middle">
             {column.count}
