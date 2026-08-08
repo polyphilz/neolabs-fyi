@@ -53,6 +53,15 @@ interface Props {
 const MIN_SCREEN_FONT = 9.5;
 
 /**
+ * The same floor for marks, which is lower on purpose. Type has to be read
+ * glyph by glyph, so below ~9px it stops resolving into words; a mark is
+ * recognised whole, as a silhouette, and survives being smaller. Holding both
+ * to the type threshold hid a lab's logo on any hex too small for its name —
+ * which is most of them at the zoom the page opens at.
+ */
+const MIN_SCREEN_MARK = 6.5;
+
+/**
  * Drag slop: how far the pointer must travel before a press counts as a drag
  * rather than a click. Without this, a single pixel of hand tremor between
  * press and release swallowed the click entirely — and essentially no real
@@ -144,8 +153,8 @@ type ChosenLabel =
  * changes without needing to be cleared.
  *
  * A mark is measured by its drawn height where type is measured by its font
- * size — near enough the same quantity for deciding whether either can be made
- * out, so both rungs answer to the one threshold.
+ * size. They answer to different floors: see MIN_SCREEN_MARK for why a logo
+ * stays legible below the size where type gives up.
  */
 function chooseLabel(
   slug: string,
@@ -170,12 +179,14 @@ function chooseLabel(
           })();
     if (!chosen) continue;
 
-    const size = chosen.kind === 'text' ? chosen.fitted.fontSize : chosen.fitted.height;
+    const isMark = chosen.kind === 'mark';
+    const size = isMark ? chosen.fitted.height : chosen.fitted.fontSize;
     // The margin governs switching, not first paint: on a fresh render there's
     // nothing on screen to flicker against, and charging it would demote a name
     // that was reading perfectly well before the ladder existed.
     const settled = current === undefined || i === current;
-    const floor = settled ? MIN_SCREEN_FONT : MIN_SCREEN_FONT * PROMOTE;
+    const base = isMark ? MIN_SCREEN_MARK : MIN_SCREEN_FONT;
+    const floor = settled ? base : base * PROMOTE;
     if (size * screenScale >= floor) {
       memory.set(slug, i);
       return chosen;
