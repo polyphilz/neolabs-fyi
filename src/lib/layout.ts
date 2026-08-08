@@ -445,8 +445,11 @@ const RAIL_BAR_W = 194;
 const RAIL_ANCHOR_X = 248;
 /** Clear of the floating header, which overlaps the top of the canvas. */
 const RAIL_TOP = 86;
-/** Rows stop here; the caption owns the rest of the column. */
-const RAIL_BOTTOM = 540;
+/** Rows stop here; the caption owns the rest of the column. Set so the bottom
+ * band (caption and year labels) lands near the foot of the 680-unit view —
+ * the viewBox is fixed and centred, so leaving slack here floats the whole
+ * lineage layout upward instead of widening the bottom margin. */
+const RAIL_BOTTOM = 580;
 /** Space for the rule dividing named origins from the residual buckets, and
  * for the note that sits above it. */
 const RAIL_DIVIDER_GAP = 26;
@@ -454,13 +457,17 @@ const RAIL_DIVIDER_GAP = 26;
  * after the final named-origin bar while still reading as a heading for the
  * long-tail section below it. */
 const RAIL_DIVIDER_BIAS = 6;
-const RAIL_CAPTION_Y = 566;
+const RAIL_CAPTION_Y = 606;
 
 const FIELD_X0 = 300;
 const FIELD_X1 = 1168;
 const FIELD_TOP = 58;
-const FIELD_BOTTOM = 596;
-const YEAR_LABEL_Y = 622;
+/** Ends level with the rail's last row, so the two halves of the view share a
+ * floor instead of the field running 56 units past it. */
+const FIELD_BOTTOM = RAIL_BOTTOM;
+/** Same baseline as the caption's first line: the year labels and the note
+ * beneath the rail read as one band across the bottom of the view. */
+const YEAR_LABEL_Y = RAIL_CAPTION_Y;
 
 /**
  * Lineage.
