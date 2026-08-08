@@ -1581,17 +1581,11 @@ export const LABS: Lab[] = [
     founders: [
       {
         person: "sam-rodriques",
-        prior: ["franciscrick", "petribio", "mit", "cambridge", "haverford"],
+        prior: ["franciscrick", "mit"],
       },
       {
         person: "andrew-white",
-        prior: [
-          "rochester",
-          "uchicago",
-          "washington",
-          "maxplanck",
-          "rosehulman",
-        ],
+        prior: ["rochester", "uchicago", "washington", "maxplanck"],
       },
     ],
     knownFor:
@@ -1689,7 +1683,7 @@ export const LABS: Lab[] = [
       { person: "marta-garnelo", prior: ["deepmind", "imperial"] },
       {
         person: "gabriel-suissa",
-        prior: ["greenfieldpartners", "jpmorgan", "finlync"],
+        prior: ["greenfieldpartners", "jpmorgan"],
       },
     ],
     knownFor:
@@ -1709,7 +1703,7 @@ export const LABS: Lab[] = [
     tags: ["academic-spinout", "open-source", "open-weights", "tabular"],
     founders: [
       { person: "frank-hutter", prior: ["freiburg", "ubc", "bosch"] },
-      { person: "noah-hollmann", prior: ["bcg"] },
+      { person: "noah-hollmann" },
       { person: "sauraj-gambhir" },
     ],
     knownFor:
@@ -1762,8 +1756,11 @@ export const LABS: Lab[] = [
     domain: "science",
     tags: ["agents", "drug-discovery"],
     founders: [
-      { person: "sam-rodriques", prior: ["franciscrick", "petribio", "mit"] },
-      { person: "andrew-white", prior: ["rochester", "uchicago", "washington"] },
+      { person: "sam-rodriques", prior: ["futurehouse", "franciscrick", "mit"] },
+      {
+        person: "andrew-white",
+        prior: ["futurehouse", "rochester", "uchicago", "washington", "maxplanck"],
+      },
     ],
     knownFor:
       "FutureHouse's for-profit spinout, commercialising Kosmos — an agent that runs multi-day research campaigns across literature and proprietary data to propose therapeutic targets.",

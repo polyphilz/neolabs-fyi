@@ -247,11 +247,9 @@ export type OrgId =
   | 'steelperlot'
   | 'cincinnati'
   | 'franciscrick'
-  | 'petribio'
-  | 'haverford'
+  | 'futurehouse'
   | 'rochester'
   | 'uchicago'
-  | 'rosehulman'
   | 'openphilanthropy'
   | 'baylor'
   | 'uthealth'
@@ -260,11 +258,9 @@ export type OrgId =
   | 'ucdavis'
   | 'bridgewater'
   | 'greenfieldpartners'
-  | 'finlync'
   | 'freiburg'
   | 'ubc'
   | 'bosch'
-  | 'bcg'
   | 'startup';
 
 /**

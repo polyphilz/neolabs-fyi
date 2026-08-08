@@ -168,7 +168,6 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   jpmorgan: { label: 'J.P. Morgan', group: 'bigtech' },
   bridgewater: { label: 'Bridgewater Associates', group: 'bigtech' },
   bosch: { label: 'Bosch Center for AI', group: 'bigtech' },
-  bcg: { label: 'Boston Consulting Group', group: 'bigtech' },
   vanguard: { label: 'The Vanguard Group', group: 'bigtech' },
   pixar: { label: 'Pixar Research', group: 'bigtech' },
   belllabs: { label: 'Bell Labs', group: 'bigtech' },
@@ -261,11 +260,10 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   reka: { label: 'Reka', group: 'startup' },
   elementai: { label: 'Element AI', group: 'startup' },
   steelperlot: { label: 'Steel Perlot', group: 'startup' },
-  petribio: { label: 'Petri Bio', group: 'startup' },
+  futurehouse: { label: 'FutureHouse', group: 'startup' },
   openphilanthropy: { label: 'Open Philanthropy', group: 'startup' },
   snorkelai: { label: 'Snorkel AI', group: 'startup' },
   greenfieldpartners: { label: 'Greenfield Partners', group: 'startup' },
-  finlync: { label: 'FinLync', group: 'startup' },
 
   // The five schools currently broken out as dedicated lineage rows. Other
   // institutions remain grouped in `academia` until that editorial taxonomy
@@ -344,10 +342,8 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   cifar: { label: 'CIFAR', group: 'academia' },
   cincinnati: { label: 'University of Cincinnati', group: 'academia' },
   franciscrick: { label: 'Francis Crick Institute', group: 'academia' },
-  haverford: { label: 'Haverford College', group: 'academia' },
   rochester: { label: 'University of Rochester', group: 'academia' },
   uchicago: { label: 'University of Chicago', group: 'academia' },
-  rosehulman: { label: 'Rose-Hulman Institute of Technology', group: 'academia' },
   baylor: { label: 'Baylor College of Medicine', group: 'academia' },
   uthealth: { label: 'UTHealth Houston', group: 'academia' },
   rice: { label: 'Rice University', group: 'academia' },
