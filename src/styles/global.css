@@ -1429,20 +1429,6 @@ body.is-bare {
   stroke: color-mix(in srgb, var(--area-color) 72%, var(--rule));
 }
 
-.bloom-core-legend-rings ellipse {
-  fill: none;
-  stroke: var(--rule);
-  stroke-width: 0.75;
-  filter: none;
-  transition: none;
-  vector-effect: non-scaling-stroke;
-}
-
-.bloom-core-legend-rings ellipse.is-outer {
-  stroke: color-mix(in srgb, var(--area-color) 62%, var(--rule));
-  stroke-width: 1.1;
-}
-
 .bloom-core-legend-copy {
   fill: var(--ink-2);
   font-size: 5px;

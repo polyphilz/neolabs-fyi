@@ -174,15 +174,20 @@ export function BloomCore({
       <ellipse rx={atlas.innerRadius * atlas.xScale * 0.9} ry={atlas.innerRadius * 0.9} />
       {!activeSector && (
         <g className="bloom-core-legend">
-          <g className="bloom-core-legend-rings" transform="translate(0,-18)">
-            <ellipse rx={14} ry={6} />
-            <ellipse rx={23} ry={10} />
-            <ellipse className="is-outer" rx={32} ry={14} />
-          </g>
-          <text className="bloom-core-legend-copy" textAnchor="middle" y={13}>
+          <text
+            className="bloom-core-legend-copy"
+            textAnchor="middle"
+            dominantBaseline="middle"
+            y={-6}
+          >
             EACH RING MARKS ONE YEAR
           </text>
-          <text className="bloom-core-legend-direction" textAnchor="middle" y={24}>
+          <text
+            className="bloom-core-legend-direction"
+            textAnchor="middle"
+            dominantBaseline="middle"
+            y={6}
+          >
             OLDER INWARD · NEWER OUTWARD
           </text>
         </g>
