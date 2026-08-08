@@ -473,7 +473,7 @@ export const LABS: Lab[] = [
       { person: "ren-ito", prior: ["startup"] },
     ],
     knownFor:
-      "Japan's first AI unicorn, co-founded by a Transformer co-author; nature-inspired model merging and AI for science.",
+      "Japan's first AI unicorn, co-founded by a Transformer co-author; nature-inspired model merging and AI for science, betting on sample efficiency over raw compute.",
     location: CITIES.tokyo,
   },
   {
@@ -632,7 +632,7 @@ export const LABS: Lab[] = [
       { person: "amnon-shashua", prior: ["mobileye", "hebrew"] },
     ],
     knownFor:
-      "The original Israeli LLM company; predates the current wave by five years.",
+      "The original Israeli LLM company, predating the current wave by five years; its Jamba models pair Mamba state-space layers with transformer blocks for long context at lower memory cost.",
     location: CITIES.telAviv,
   },
   {
@@ -1303,7 +1303,7 @@ export const LABS: Lab[] = [
       { person: "khurram-javed", prior: ["keen", "alberta"] },
     ],
     knownFor:
-      "The Turing laureate who wrote the book on reinforcement learning, arguing today's methods are a dead end and betting on agents that learn from their own experience.",
+      "The Turing laureate who wrote the book on reinforcement learning, arguing today's methods are a dead end and betting on agents that learn from their own experience — targeting a trillion-parameter agent that plans in real time on 20 watts.",
     location: CITIES.toronto,
   },
   {
