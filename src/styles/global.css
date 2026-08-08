@@ -891,7 +891,7 @@ body.is-bare {
      it only fitted on a large viewport by coincidence. */
   right: 0;
   left: auto;
-  width: 23rem;
+  width: 24rem;
   max-width: calc(100vw - 1.5rem);
   max-height: min(70vh, 34rem);
   overflow-y: auto;
@@ -901,7 +901,7 @@ body.is-bare {
   background: var(--raised);
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 0.9rem 1rem 1rem;
+  padding: 1.25rem 1.35rem 1.4rem;
   display: grid;
   gap: 1rem;
   z-index: 20;
@@ -2455,7 +2455,7 @@ td.name a:hover {
     max-width: none;
     max-height: min(85dvh, 44rem);
     border-radius: 20px;
-    padding: 0 1rem 1rem;
+    padding: 0 1.35rem 1.4rem;
     overscroll-behavior: contain;
   }
 

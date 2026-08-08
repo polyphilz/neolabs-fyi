@@ -5,7 +5,10 @@ import type { DomainId, LineageGroup, OrgId, Structure, TagId } from './types';
  * research-area layout. `space` on each lab stays finer-grained; this is the
  * level a person can actually hold in their head.
  */
-export const DOMAINS: Record<DomainId, { label: string; blurb: string }> = {
+export const DOMAINS: Record<
+  DomainId,
+  { label: string; blurb: string; /** Filter-chip form, when the full label is too wide for one. */ short?: string }
+> = {
   general: {
     label: 'General-purpose models',
     blurb: 'Broad frontier model labs without a single narrower thesis.',
@@ -16,6 +19,7 @@ export const DOMAINS: Record<DomainId, { label: string; blurb: string }> = {
   },
   rsi: {
     label: 'Recursive self-improvement & continual learning',
+    short: 'RSI & continual learning',
     blurb: 'Systems that automate AI research, or improve from their own experience.',
   },
   physical: {

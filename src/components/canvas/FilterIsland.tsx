@@ -250,7 +250,8 @@ export function FilterIsland({
               label="Research area"
               options={DOMAIN_ORDER.map((d) => ({
                 id: d,
-                label: DOMAINS[d].label,
+                label: DOMAINS[d].short ?? DOMAINS[d].label,
+                title: DOMAINS[d].label,
               }))}
               selected={filters.domains}
               onToggle={(id) =>
@@ -294,7 +295,8 @@ function ChipGroup({
   onToggle,
 }: {
   label: string;
-  options: { id: string; label: string }[];
+  /** `title` carries the unabbreviated name when `label` is a shortened chip form. */
+  options: { id: string; label: string; title?: string }[];
   selected: string[];
   onToggle: (id: string) => void;
 }) {
@@ -309,6 +311,8 @@ function ChipGroup({
               key={o.id}
               type="button"
               aria-pressed={on}
+              title={o.title}
+              aria-label={o.title}
               className={on ? "chip is-on" : "chip"}
               onClick={() => onToggle(o.id)}
             >
