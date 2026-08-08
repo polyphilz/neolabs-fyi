@@ -728,11 +728,7 @@ function stableHash(key: string): number {
 // Research area — a chronological bloom
 // ---------------------------------------------------------------------------
 
-/** Stable lane corrections for same-domain, same-year peers whose automatic
- * valuation ordering gives a large bubble an unnecessarily crowded target. */
-const AREA_LANE_SWAPS: ReadonlyArray<readonly [string, string]> = [
-  ['core-automation', 'mirendil'],
-];
+const AREA_COLLISION_PADDING = 2;
 
 function areaLayout(
   labs: Lab[],
@@ -749,7 +745,7 @@ function areaLayout(
   // Use the petal rather than reserving a large empty outer band. The
   // remaining 25 units accommodate the largest area-view bubbles and keep
   // their strokes inside the sector rim.
-  const nodeOuterRadius = 245;
+const nodeOuterRadius = 245;
   const labelRadius = 290;
   const gap = 0.032;
   const minimumSpan = 0.13;
@@ -809,17 +805,20 @@ function areaLayout(
     const usableStart = sector.startAngle + angularPadding;
     const usableEnd = sector.endAngle - angularPadding;
     // Give every lab a stable lane across the petal, using the full dataset so
-    // filters remove marks without making their neighbours jump sideways. The
-    // largest marks get the central lanes, where there is the most room.
-    const slots = progressiveLanes(referenceMembers.length);
-    const laneBySlug = new Map(referenceMembers.map((lab, index) => [lab.slug, slots[index]]));
-    for (const [first, second] of AREA_LANE_SWAPS) {
-      const firstLane = laneBySlug.get(first);
-      const secondLane = laneBySlug.get(second);
-      if (firstLane === undefined || secondLane === undefined) continue;
-      laneBySlug.set(first, secondLane);
-      laneBySlug.set(second, firstLane);
-    }
+    // filters remove marks without making their neighbours jump sideways.
+    // Score the lanes geometrically: valuation order still places the largest
+    // marks first, but same-year peers cannot inherit adjacent targets merely
+    // because their valuations happen to be far apart.
+    const laneBySlug = collisionAwareAreaLanes(
+      referenceMembers,
+      usableStart,
+      usableEnd,
+      sector.startAngle,
+      sector.endAngle,
+      radiusForYear,
+      sizing,
+      xScale
+    );
     const bounds = {
       cx,
       cy,
@@ -866,6 +865,7 @@ function areaLayout(
       },
     },
     collideStrength: 1,
+    collisionPadding: AREA_COLLISION_PADDING,
     sizing,
     targetStrength: 0.38,
     maxTargetDisplacement: 18,
@@ -876,9 +876,85 @@ function areaLayout(
 }
 
 /**
- * Low-discrepancy lanes: each new mark fills the largest remaining angular
- * gap. This matters because data order is valuation order — the few very large
- * circles get separated first, and tiny marks subsequently fill between them.
+ * Assign stable angular lanes while respecting the actual year radii and
+ * bubble sizes. Candidate lanes come from a dense low-discrepancy sequence;
+ * greedily maximizing the worst clearance keeps peers on the same year ring
+ * from receiving overlapping targets. Edge clearance participates in the same
+ * score, so solving a collision cannot simply push a large mark into a petal
+ * boundary.
+ */
+function collisionAwareAreaLanes(
+  members: Lab[],
+  usableStart: number,
+  usableEnd: number,
+  sectorStart: number,
+  sectorEnd: number,
+  radiusForYear: (year: number) => number,
+  sizing: BubbleSizing,
+  xScale: number
+): Map<string, number> {
+  const candidates = progressiveLanes(Math.max(32, members.length * 4));
+  const placed: { x: number; y: number; r: number }[] = [];
+  const lanes = new Map<string, number>();
+  const boundaryPadding = 3;
+  const startX = Math.cos(sectorStart) * xScale;
+  const startY = Math.sin(sectorStart);
+  const endX = Math.cos(sectorEnd) * xScale;
+  const endY = Math.sin(sectorEnd);
+  const startLength = Math.hypot(startX, startY);
+  const endLength = Math.hypot(endX, endY);
+
+  for (const lab of members) {
+    const r = radiusForLab(lab, sizing);
+    const yearRadius = radiusForYear(lab.year);
+    let bestIndex = 0;
+    let bestScore = Number.NEGATIVE_INFINITY;
+    let bestCentreDistance = Number.POSITIVE_INFINITY;
+    let bestPoint = { x: 0, y: 0 };
+
+    for (let index = 0; index < candidates.length; index++) {
+      const lane = candidates[index];
+      const angle = usableStart + lane * (usableEnd - usableStart);
+      const x = Math.cos(angle) * yearRadius * xScale;
+      const y = Math.sin(angle) * yearRadius;
+      const startClearance =
+        (startX * y - startY * x) / startLength - r - boundaryPadding;
+      const endClearance = (x * endY - y * endX) / endLength - r - boundaryPadding;
+      let score = Math.min(startClearance, endClearance);
+
+      for (const other of placed) {
+        score = Math.min(
+          score,
+          Math.hypot(x - other.x, y - other.y) -
+            r -
+            other.r -
+            AREA_COLLISION_PADDING * 2
+        );
+      }
+
+      const centreDistance = Math.abs(lane - 0.5);
+      if (
+        score > bestScore + 1e-6 ||
+        (Math.abs(score - bestScore) <= 1e-6 && centreDistance < bestCentreDistance)
+      ) {
+        bestIndex = index;
+        bestScore = score;
+        bestCentreDistance = centreDistance;
+        bestPoint = { x, y };
+      }
+    }
+
+    const [lane] = candidates.splice(bestIndex, 1);
+    lanes.set(lab.slug, lane);
+    placed.push({ ...bestPoint, r });
+  }
+
+  return lanes;
+}
+
+/**
+ * Low-discrepancy candidates, ordered from the centre into the largest
+ * remaining gaps.
  */
 function progressiveLanes(count: number): number[] {
   if (count === 2) return [0.35, 0.65];
