@@ -26,5 +26,6 @@ pnpm-debug.log*
 # working plans / research notes
 .plans/
 
-# local design source files
-assets/
+# local design source files, except images the README renders
+assets/*
+!assets/readme/
