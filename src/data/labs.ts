@@ -1822,14 +1822,60 @@ export const LABS: Lab[] = [
   {
     slug: "cursive",
     name: "Cursive",
-    // Seed-backed by SuperSeed; neither a round amount nor a valuation has ever
-    // been disclosed, and PitchBook lists total VC raised as "Undisclosed". The
-    // single confirmed Companies House allotment (10 Jul 2025) states only
-    // aggregate nominal capital, not the premium, so no figure is derivable
-    // from the register. usdM is a non-semantic layout placeholder only.
-    valuation: { usdM: 100, qualifier: "undisclosed" },
-    // Cursive dates its founding to January 2026.
-    year: 2026,
+    // Never priced. SuperSeed is the only investor any source names: PitchBook
+    // carries a single investor and states total VC raised as undisclosed,
+    // Dealroom dates a SuperSeed seed to Feb 2026 with the amount masked and
+    // offers no enterprise-value band, and TechFundingNews (28 Apr 2026) also
+    // has "Total VC raised: Undisclosed". EDGAR full-text returns no Form D for
+    // "Cursive AI" or "Cursive Labs", and the seven hits on "Cursive" alone are
+    // two California hedge funds, an Ohio company and a Maryland one; the
+    // identical query returns Deep Cogito's D and D/A, so the absence is real
+    // rather than a broken search.
+    //
+    // Companies House is unusually informative here, and it is why the $100M
+    // placeholder that stood in this slot cannot. The filing entity is Cursive
+    // AI Ltd (16099785), incorporated 25 Nov 2024 as Persona Labs Ltd and
+    // renamed 16 Apr 2026. Four allotments are on file, not the one previously
+    // recorded: incorporation, 11 Mar 2025, 10 Jul 2025 and 26 Mar 2026. The
+    // last does state a premium, which an SH01 usually does not — 10,000
+    // ordinary shares for GBP 20,998.16, or GBP 2.0998 a share against 40,578
+    // in issue, pricing the company at about GBP 85,000. That is not a figure
+    // to record: the shares are voting ordinary in a block the same size as
+    // each of the three founder vehicles holds, so it prices founder stock and
+    // not the enterprise. Funding Spotter's "Cursive Ai Ltd Secures GBP 21k in
+    // Early-Stage Funding" (25 Apr 2026) is that same subscription
+    // auto-generated into a round, and is rejected.
+    //
+    // What the register does establish is that no priced institutional round
+    // had closed by Mar 2026. The Nov 2025 confirmation statement shows the
+    // whole cap table — three founder vehicles at 10,000 ordinary each, and 578
+    // non-voting A ordinary split between two individuals and a Swedish holding
+    // company. SuperSeed is not on it, so its money sits on a convertible,
+    // which carries a cap and not a price. The UK Sovereign AI Fund allocation
+    // of Apr 2026 is up to 1M GPU hours of AIRR compute rather than equity —
+    // only Callosum took an equity cheque in that batch — so it is set aside,
+    // though the fund holds a right of first refusal on future rounds.
+    //
+    // So there is no round to invert and the nominal is a stage comparison.
+    // This file's seed cluster sits at $60-80M and every member has a
+    // disclosed, priced round of $13.5-16.25M behind it; Oumi at $50M has a
+    // disclosed $10M seed, and Poetiq at $46M is the nearest structural twin,
+    // senior ex-DeepMind researchers in this same domain. Cursive has less than
+    // any of them: no disclosed amount, no priced round sixteen months after
+    // incorporation, and a manifesto page where they have shipped. The house
+    // default of 20% on a SuperSeed-sized seed of GBP 3-4M gives GBP 15-20M
+    // post, roughly $20-27M, and $25M sits in that band. That round size is
+    // inferred from the investor's stage, not reported, and is the weakest link
+    // here. $15M is the floor — a GBP 1.5-2M pre-seed at a GBP 10-12M cap,
+    // below which a team holding an AIRR allocation does not price — and $50M
+    // the ceiling, Oumi's mark, which rests on a disclosed and priced seed
+    // where this has neither.
+    valuation: { usdM: 25, qualifier: "undisclosed" },
+    // Incorporated 25 Nov 2024 as Persona Labs Ltd; the three-founder company
+    // dates to Mar 2025, when its second and third directors were appointed.
+    // Dealroom's launch date and TechFundingNews both say 2025, and founding
+    // year is what this field carries — cf. PrismML and Fundamental.
+    year: 2025,
     domain: "rsi",
     founders: [
       {
