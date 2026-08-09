@@ -1466,9 +1466,41 @@ export const LABS: Lab[] = [
   {
     slug: "inherent",
     name: "Inherent",
-    // $50M seed announced May 2026; no priced valuation was disclosed. usdM
-    // uses the financing total only as a neutral bubble-size proxy.
-    valuation: { usdM: 50, qualifier: "undisclosed" },
+    // Never priced in public. TipRanks leaves the post-money column empty,
+    // Notice.co says outright it is "missing all Inherent funding round
+    // valuations", Crunchbase has no page, and none of Sifted, Tech.eu, TNW or
+    // UKTN printed a figure. Dealroom's "$200-300m enterprise value" is the
+    // same band it models for Orbital on $71M raised — it brackets capital,
+    // not worth, and is not used. No Caplight, Forge or Hiive mark exists and
+    // none can: the company was four months old at announcement. Tracxn also
+    // carries an unrelated Inherent, a 1993 San Francisco IT-services firm.
+    //
+    // The round is firm: $50M seed announced 28 May 2026, co-led by Index
+    // (Danny Rimer) and Radical, with Nvidia's NVentures, Ex/Ante, Metaplanet,
+    // Macroscopic and Mythos — seven investors on a first cheque, per Wilson
+    // Sonsini and TNW. Neither register helps. EDGAR full-text returns nothing
+    // for "Inherent Laboratories", and its twelve Inherent registrants are
+    // Inherent Group's ESG and credit funds, a Utah biotech and an LLC; the
+    // identical query returns Deep Cogito's Form D and D/A, so the absence is
+    // real. Inherent Laboratories Ltd (16968849, incorporated 16 Jan 2026) has
+    // filed no SH01 and still stands at £1 of capital, so the equity sits in
+    // the Delaware parent that the public-benefit structure and a San
+    // Francisco Wilson Sonsini team imply; the opco's only substantive filings
+    // are two HSBC Innovation Banking charges created 22 Apr 2026, dating the
+    // money in the bank five weeks before the announcement.
+    //
+    // A public-benefit corporation is for-profit and dilutes normally, so the
+    // nominal inverts the seed at the house default of 20%: $250M. Two
+    // co-leads plus Nvidia on a $50M first round closing three months after
+    // incorporation argue tighter, but eleven staff with nothing shipped and
+    // no published work under the Inherent name argue softer, and the AI
+    // mega-seed comparables — SSI, Thinking Machines — cluster at 20% rather
+    // than at the 12.5-13% this file reserves for priced step-ups. $200M is
+    // the floor (25%: a lab selling a quarter of itself at seed does not draw
+    // two competing leads and Nvidia) and $333M the ceiling (15%, a pre-empt).
+    // The 5.0x multiple of raised is not an independent check here — on a
+    // single-round company it is just 1/0.20 restated.
+    valuation: { usdM: 250, qualifier: "undisclosed" },
     year: 2026,
     domain: "rsi",
     tags: ["agents"],
@@ -1489,9 +1521,46 @@ export const LABS: Lab[] = [
   {
     slug: "logical-intelligence",
     name: "Logical Intelligence",
-    // Seed-backed, but neither a round amount nor priced valuation is public.
-    // usdM is a non-semantic layout placeholder only.
-    valuation: { usdM: 100, qualifier: "undisclosed" },
+    // No round amount has ever been disclosed and no priced valuation exists.
+    // Crunchbase obfuscates every financial field, CB Insights masks the
+    // amount, PitchBook's Amount, Raised-to-Date and Post-Val columns are all
+    // empty on its single deal, and Dealroom carries "no known external
+    // funding" at all — so there is not even a tracker EV range to argue with
+    // here, and no secondary mark exists on Caplight, Forge, Hiive or
+    // UpMarket. EDGAR full-text search returns zero Form D for "Logical
+    // Intelligence", "Logical Intelligence Inc", "Bodnia", "Isenbaev" and
+    // "Fetisov", and the EDGAR company index has no such registrant; the same
+    // query returns Deep Cogito's Form D and D/A, and "Pebblebed" returns four
+    // fund-level Form Ds, so the absence is real rather than a broken search.
+    //
+    // What is on record is one seed, dated 1 Oct 2025 by CB Insights and 1 Nov
+    // 2025 by PitchBook, with Pebblebed, Cathay Innovation and Roar Ventures
+    // named and no lead disclosed. Pebblebed lists the company on its own
+    // portfolio page and says it leads and makes ~20 investments per fund; its
+    // Fund II Form D is $125M and Fund III $200M, so the lead's initial check
+    // is single-digit millions and the seed is small.
+    //
+    // The only price-shaped number anywhere is the FT standfirst of 21 Jan
+    // 2026 — "six-month-old US start-up ... as it targets $1bn-plus valuation"
+    // — and that is an asking price, not a close. WIRED put it to Bodnia on 29
+    // Jan 2026 that she was "looking for funding at the moment"; Morning Brew
+    // has her still pitching investors in Manhattan in Mar 2026. Nothing has
+    // been announced since and no Form D has appeared. A target the market has
+    // not met in seven months is not a valuation, so the qualifier stays.
+    //
+    // With no priced round to invert, the nominal is a stage comparison. $150M
+    // is the floor: that is Grafton Sciences, and where Grafton has fifteen
+    // people and nothing published, this has 31 profiles on LinkedIn across SF
+    // and Belgrade, two shipped systems (Kona 1.0 and the Aleph prover), Yann
+    // LeCun as founding chair of its technical research board and Fields
+    // Medalist Michael Freedman as chief science officer, FT/WIRED/TIME
+    // coverage, and a named customer relationship in Nebius's Q1 2026
+    // shareholder letter. $300M is the ceiling — Deep Cogito's mark, and it
+    // has a competitively priced Series A and $53.4M raised where this has one
+    // undisclosed seed. The file's 3.2-5.8x raised band cannot be applied at
+    // all, because the capital base is unknown; if the seed proves to be
+    // single-digit millions this figure is generous.
+    valuation: { usdM: 200, qualifier: "undisclosed" },
     year: 2025,
     domain: "science",
     tags: ["agents", "math"],
@@ -1505,8 +1574,47 @@ export const LABS: Lab[] = [
   {
     slug: "latent-labs",
     name: "Latent Labs",
-    // $50M total funding through its Series A; no priced valuation disclosed.
-    valuation: { usdM: 50, qualifier: "undisclosed" },
+    // Never priced in public. PitchBook's Post-Val column is empty on both
+    // rounds; Caplight and Hiive each carry a page with the valuation field
+    // blank (Caplight's "$60M total raised" is also wrong). Dealroom models
+    // enterprise value at $200-300M — a tracker bracketing capital raised, so
+    // it corroborates rather than sets the figure, and its seed row wrongly
+    // names Sequoia. PremierAlts' "$139.9M" is a secondary desk's own
+    // arithmetic on a page that says "market implied" and "0 funding rounds on
+    // record", and is not used; Forge's "Latent, $600M, $94M raised" is a
+    // different company, as is the Latent that raised $80M from Spark in Mar
+    // 2026 for medication-approval software.
+    //
+    // The rounds are hard. Latent Labs Technologies, Inc. (CIK 1989109) has
+    // two Form Ds, both signed by Kohl as CEO. The first (17 Aug 2023): a
+    // $10,000,002 offering, $9,114,910 sold, first sale 25 Jul 2023, 24
+    // investors — the seed Sifted later attributed to Kindred, 8VC and Pillar.
+    // The second (2 Jan 2025): $40,499,931 offered, $39,874,911 sold, first
+    // sale 16 Dec 2024, 13 investors, no placement agent — the $40M Series A
+    // announced 12 Feb 2025, co-led by Radical Ventures and Sofinnova Partners
+    // with Flying Fish, Isomer and all three seed funds re-upping. So $50M is
+    // the total and $40M is the round the nominal has to price. Companies
+    // House adds nothing: Latent Labs Limited (14964224) is wholly owned by
+    // the Delaware topco per its confirmation statements, and its three SH01s
+    // state only aggregate nominal capital (£879.5 across 87,950 ordinary
+    // £0.01 shares), never a premium.
+    //
+    // Two new outside co-leads at 4x the seed, every insider following, and
+    // the AlphaFold Nobel two months old at first sale — but the offering
+    // merely filled rather than oversubscribed, and the Form D adds no
+    // director to Kohl, Tony Kulesa (Pillar) and John Cassidy (Kindred) from
+    // the seed. Strong but not contested, so the nominal prices the $40M at
+    // ~16% dilution: tighter than EvolutionaryScale's 17%, well short of the
+    // ~13% Deep Cogito's competitive A commands. On $49.0M sold that is 5.1x,
+    // between EvolutionaryScale's 4.2x and Orbital's 5.6x, and mid-band on
+    // Dealroom's independent $200-300M. $160M is the floor (25%, the textbook
+    // life-sciences Series A — Sofinnova co-leading is the argument for it,
+    // and 3.3x raised sits beside Moonvalley and Xaira at the bottom of the
+    // band, which is where a ~20-person lab with nothing shipped at the Dec
+    // 2024 close belongs; Latent-X came seven months later). $400M is the
+    // ceiling (10%) — the same arithmetic Deep Cogito's identically sized $40M
+    // A gets, and 8x raised, off the top of the band.
+    valuation: { usdM: 250, qualifier: "undisclosed" },
     year: 2025,
     domain: "science",
     tags: ["agents", "drug-discovery"],
@@ -1518,8 +1626,45 @@ export const LABS: Lab[] = [
   {
     slug: "autoscience",
     name: "Autoscience",
-    // $14M seed announced March 2026; no priced valuation disclosed.
-    valuation: { usdM: 14, qualifier: "undisclosed" },
+    // $14M seed announced 18 Mar 2026 — General Catalyst leading, with
+    // Perplexity Fund, Toyota Ventures, S32 and MaC Ventures — and never
+    // priced in public. Axios covered it the next day with no figure, as did
+    // SiliconANGLE, R&D World, AIwire/BigDATAwire and FinSMEs; PitchBook's
+    // Post-Val column is empty on the single row it carries. EDGAR full-text
+    // returns zero for "Autoscience", "Autoscience Inc", "Autoscience
+    // Institute" and "Eliot Cowan" alike, while the identical query returns
+    // Deep Cogito's Form D (8 Apr 2026) and D/A (24 Apr 2026) — so the absence
+    // is real, and there is no Reg D filing to date the close or count the
+    // investors. Nothing has been announced since.
+    //
+    // The $14 that stood here was capital raised, not worth. The nominal
+    // inverts the seed at the house default of 20%: $70M. TechCrunch, 31 Mar
+    // 2026, thirteen days after this round, has "$10 million at a $40 million
+    // to $45 million post-money" as the typical AI seed — 22-25% — and sources
+    // it partly to MaC Ventures, an investor in this very round; a five-fund
+    // round with General Catalyst leading, a claimed Kaggle Santa 2025 silver
+    // medal and Fortune 500 customers prices tighter than typical, which is
+    // what 20% expresses. That is 5.0x the disclosed $14M, just under Orbital
+    // and Deep Cogito at 5.6x; on PitchBook's $24.5M raised-to-date it is
+    // 2.9x, below Moonvalley at the bottom of the band, so it survives either
+    // reading of what has gone in. $56M is the floor (25%, the soft end of
+    // TechCrunch's band — thirteen people with a shipped product and paying
+    // enterprise customers do not price below market with GC leading) and
+    // $93M the ceiling (15%, a pre-empted seed).
+    //
+    // Rejected: PitchBook's $24.5M, which is capital and contradicts the
+    // company's own $14M; StartupHub.ai's "$98.0M effective valuation (range
+    // $61.3M to $147.0M, 22% confidence), based on comparable companies", an
+    // avowedly modelled number carried across two contradictory profiles of
+    // the same company; and Dealroom's "Autoscience", which is
+    // autoscience.info — a B2C dating and advertising company with "no known
+    // external funding" — not this lab. Crunchbase's "uses science and tech to
+    // improve vehicle automation, safety, and performance" is bleed from Auto
+    // Science of Hatboro, PA (autoscience.com); its financial fields are all
+    // paywall placeholders and its 1-10 headcount band is stale against
+    // LinkedIn's 13. No Caplight, Forge, Hiive or UpMarket mark exists — too
+    // early, as with Deep Cogito.
+    valuation: { usdM: 70, qualifier: "undisclosed" },
     year: 2025,
     domain: "rsi",
     tags: ["agents"],
@@ -1559,9 +1704,36 @@ export const LABS: Lab[] = [
   {
     slug: "oumi",
     name: "Oumi",
-    // $10M seed announced at its January 2025 launch; no priced valuation was
-    // disclosed. usdM uses funding only as a neutral bubble-size proxy.
-    valuation: { usdM: 10, qualifier: "undisclosed" },
+    // Never priced. The only round is the $10M seed announced 29 Jan 2025 with
+    // the launch — Venrock and Obvious Ventures co-leading per Oumi's own
+    // release (Ascend's post credits Venrock alone), Plug & Play and Ascend
+    // joining, Venrock's Ganesh Srinivasan quoted in it. Nothing since: Oumi's
+    // newsroom and blog run unbroken to Jul 2026 with no funding item, Tracxn
+    // still shows one round on a 27 Jun 2026 refresh, Dealroom carries "no
+    // known external funding" so there is not even a tracker EV band to argue
+    // with, and EDGAR full-text returns zero for "Oumi Inc", "Oumi AI" and
+    // "Oumi PBC" while the identical query returns Deep Cogito's Form D and
+    // D/A — the absence is real, not a broken search. StartupHub.ai's profile
+    // ($63M raised, a Series A, an $810.9M "effective valuation" at 32%
+    // confidence, San Francisco, founded 2022, 39 staff) is wrong on every
+    // checkable field and is rejected outright — the same failure mode as the
+    // invented Essential AI Series B.
+    //
+    // So the nominal inverts the seed at the house default of 20%: $50M. This
+    // one reads mid-band rather than pre-empted — two funds splitting a $10M
+    // lead is a syndicate, not a fight, and a public-benefit charter plus 16
+    // Founding Scholars enlarges the non-investor cap table rather than
+    // shrinking the investor slice, so the multi-cofounder block argues the
+    // team wanted a high price, not that it got one. The multiple-of-raised
+    // test is degenerate on a one-round company (5.0x is just 1/0.20
+    // restated), but it lands between Essential AI's 3.8x and Orbital's 5.6x.
+    // $40M is the floor (25% — pre-revenue until the commercial platform
+    // shipped 31 Mar 2026, fourteen months later) and $67M the ceiling (15% —
+    // a seed priced above that is a pre-empt, and a pre-empted team does not
+    // then go eighteen months without a follow-on). This is the January 2025
+    // price carried forward unrefreshed; 9.4K GitHub stars, ~20 staff and
+    // ~1.2K PyPI installs a month are traction, not a new round.
+    valuation: { usdM: 50, qualifier: "undisclosed" },
     year: 2025,
     domain: "applied",
     tags: ["multimodal", "open-source", "open-weights", "training-infra-tools"],
