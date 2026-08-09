@@ -1615,7 +1615,11 @@ export const LABS: Lab[] = [
     // ceiling (10%) — the same arithmetic Deep Cogito's identically sized $40M
     // A gets, and 8x raised, off the top of the band.
     valuation: { usdM: 250, qualifier: "undisclosed" },
-    year: 2025,
+    // Incorporated in London 27 Jun 2023 (Companies House 14964224) and in
+    // Delaware the same year per both Form Ds; TechCrunch has Kohl
+    // incorporating "in London in mid-2023". 2025 is the stealth exit, not the
+    // founding — the file dates by founding (D3).
+    year: 2023,
     domain: "science",
     tags: ["agents", "drug-discovery"],
     founders: [{ person: "simon-kohl", prior: ["deepmind", "dkfz", "kit"] }],
@@ -1665,7 +1669,11 @@ export const LABS: Lab[] = [
     // LinkedIn's 13. No Caplight, Forge, Hiive or UpMarket mark exists — too
     // early, as with Deep Cogito.
     valuation: { usdM: 70, qualifier: "undisclosed" },
-    year: 2025,
+    // LinkedIn dates the company to 2024, mirrored by RocketReach and Built
+    // In, and autoscience.ai was already resolving in Wayback on 28 May 2024;
+    // the Carl announcement and the first site content came Mar 2025. Only
+    // PitchBook says 2025, and that is the launch.
+    year: 2024,
     domain: "rsi",
     tags: ["agents"],
     founders: [{ person: "eliot-cowan", prior: ["google", "mit", "harvard"] }],
@@ -1734,7 +1742,10 @@ export const LABS: Lab[] = [
     // price carried forward unrefreshed; 9.4K GitHub stars, ~20 staff and
     // ~1.2K PyPI installs a month are traction, not a new round.
     valuation: { usdM: 50, qualifier: "undisclosed" },
-    year: 2025,
+    // The oumi-ai GitHub org was created 18 Apr 2024 and the oumi repo 7 May
+    // 2024; the company came out of stealth with the seed on 29 Jan 2025. Same
+    // shape as Deep Cogito, which is dated to incorporation rather than launch.
+    year: 2024,
     domain: "applied",
     tags: ["multimodal", "open-source", "open-weights", "training-infra-tools"],
     structure: "public-benefit",
