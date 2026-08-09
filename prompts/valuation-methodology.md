@@ -3,8 +3,7 @@
 How this dataset arrives at a `Valuation` for a lab, and how to research one from scratch.
 
 This file is both a **reference** for the repo and a **prompt** you can hand to a research
-agent verbatim — §9 is the agent contract. It was extracted from the method established in
-`606cd52` and refined across the Orbital, Deep Cogito, Grafton and plan-007 passes.
+agent verbatim — §9 is the agent contract.
 
 ---
 
@@ -133,9 +132,9 @@ what it asserts.
 | --- | --- | --- |
 | Dealroom "enterprise value" bands | Models capital raised, not worth — the same $200–300M band appears for labs with wildly different profiles | Orbital, Inherent, Latent Labs |
 | Caplight / Forge / Hiive / UpMarket marks | Secondary-marketplace models, not rounds | EvolutionaryScale's $1.14B |
-| AI-generated profile sites — nextomoro, valueaddvc, aiwiki, startuphub.ai, mtsoln, ai-market-watch | Fabricate figures wholesale | Essential AI's invented "$1B valuation / $175M Series B led by Lightspeed"; Oumi's "$810.9M effective valuation" |
-| Name collisions | A different company entirely | Dealroom's "Autoscience" is a dating app; Forge's "Latent" is another firm; Crunchbase's Autoscience text is a Pennsylvania car-parts company |
-| Derivative lab indexes | Circular — they scraped this kind of dataset | labindex.fyi |
+| Auto-generated company profiles — sites such as nextomoro, valueaddvc, startuphub.ai | Figures with no traceable source; several contradict primary filings and the company's own statements | A Series B and post-money for one lab that no filing or outlet supports; a modelled "effective valuation" presented as a figure for another |
+| Name collisions | A different company entirely | Dealroom's "Autoscience" is an unrelated consumer app; Forge's "Latent" is another firm; Crunchbase's Autoscience description belongs to a car-parts company |
+| Derivative lab indexes | Circular — likely built from datasets like this one | labindex.fyi |
 | FX round-trip artifacts | Spurious precision | Tracxn's `$50,000,647.82` for a $50M round |
 
 A tracker figure can **corroborate** a nominal you derived independently. It must never
@@ -260,6 +259,13 @@ Structure that works:
 Write for a reader who will try to prove you wrong. If a figure rests on an assumption, name
 the assumption in the comment rather than letting the number imply confidence it lacks.
 
+**Keep the comment about the company.** Never annotate an
+individual — someone's degrees, why they left a role, what their personal profiles say, or
+how their fundraising is going. Where a deal fact concerns people (proceeds, payouts,
+who signed what), state it at the level of the company and leave the individuals out. Deal
+facts that are unavoidably about a person — a founder quoted in a release, an investor named
+as a round's lead — are fine. See AGENTS.md.
+
 ---
 
 ## 9. Agent contract
@@ -287,9 +293,9 @@ Hand an agent §1–§8 above plus this section and the target lab's current rec
 5. **Anything else about the record that looks wrong** — founders, year, tags, structure,
    location. Flag only; do not fix.
 
-Item 5 has repeatedly been worth more than the valuation itself. The plan-007 pass found
-three wrong `year` values, an over-long founder list, and a misattributed `prior` purely as a
-by-product of pricing five labs.
+Item 5 has repeatedly been worth more than the valuation itself: a single pricing pass over
+five labs surfaced three wrong `year` values, an over-long founder list, and a misattributed
+`prior`, purely as a by-product.
 
 ---
 

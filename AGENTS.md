@@ -19,6 +19,25 @@ pnpm astro dev --background
 Manage the background server with `pnpm astro dev stop`, `pnpm astro dev status`, and
 `pnpm astro dev logs`.
 
+## Comments in the dataset
+
+`src/data/labs.ts` uses inline comments to defend values that would otherwise look
+wrong to the next reader. Keep them tightly scoped.
+
+- **Valuations — comment freely.** An `undisclosed` figure is an inferred nominal,
+  not a reported one, so the reasoning behind it *is* the datum. See
+  `prompts/valuation-methodology.md`.
+- **Company-level facts — a sentence where it earns one.** A renamed entity, a
+  contested HQ, an ambiguous founding year, an exit whose close date is unclear.
+  Enough to stop someone "correcting" a researched value back.
+- **Everything else — leave it out.** Not every field needs justifying.
+
+**Never write comments about individual people.**
+
+Company-level notes that happen to mention a person in passing are fine — a founder
+quoted in a press release, an investor named as a round's lead. The line is whether
+the comment is *about the company* or *about the human*.
+
 ## Documentation
 
 Full documentation: https://docs.astro.build

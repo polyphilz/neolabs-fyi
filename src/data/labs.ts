@@ -682,7 +682,7 @@ export const LABS: Lab[] = [
     domain: "science",
     tags: ["math", "open-source"],
     founders: [
-      { person: "carina-hong", prior: ["mit", "stanford"] },
+      { person: "carina-hong", prior: ["stanford"] },
       { person: "shubho-sengupta", prior: ["meta", "google"] },
     ],
     knownFor:
@@ -1016,10 +1016,9 @@ export const LABS: Lab[] = [
     // announced. Nothing was ever priced in public. The nominal prices the
     // Series A at ~22% dilution and deliberately does not step up from
     // there, because the lab did not: no round followed in the two and a half
-    // years to the Nvidia acquihire, and reporting around that deal has
-    // Vaswani struggling to raise. The "$1B valuation / $175M Series B led by
-    // Lightspeed" figures on nextomoro and valueaddvc are AI-generated and
-    // contradicted by Crunchbase, Tracxn and PitchBook alike — do not adopt.
+    // years to the Nvidia acquihire. The "$1B valuation / $175M Series B"
+    // figures on auto-generated profile sites are contradicted by Crunchbase,
+    // Tracxn and PitchBook alike — do not adopt.
     valuation: { usdM: 250, qualifier: "undisclosed" },
     year: 2023,
     domain: "general",
@@ -1542,11 +1541,11 @@ export const LABS: Lab[] = [
     //
     // The only price-shaped number anywhere is the FT standfirst of 21 Jan
     // 2026 — "six-month-old US start-up ... as it targets $1bn-plus valuation"
-    // — and that is an asking price, not a close. WIRED put it to Bodnia on 29
-    // Jan 2026 that she was "looking for funding at the moment"; Morning Brew
-    // has her still pitching investors in Manhattan in Mar 2026. Nothing has
-    // been announced since and no Form D has appeared. A target the market has
-    // not met in seven months is not a valuation, so the qualifier stays.
+    // — and that is an asking price, not a close. WIRED reported the raise as
+    // open on 29 Jan 2026 and Morning Brew still had it open in Mar 2026.
+    // Nothing has been announced since and no Form D has appeared. A target the
+    // market has not met in seven months is not a valuation, so the qualifier
+    // stays.
     //
     // With no priced round to invert, the nominal is a stage comparison. $150M
     // is the floor: that is Grafton Sciences, and where Grafton has fifteen
@@ -1565,7 +1564,7 @@ export const LABS: Lab[] = [
     domain: "science",
     tags: ["agents", "math"],
     founders: [
-      { person: "eve-bodnia", prior: ["ucsb", "berkeley", "lbnl", "spbsu"] },
+      { person: "eve-bodnia", prior: ["ucsb"] },
     ],
     knownFor:
       "Energy-based reasoning models and formal-verification agents that enforce constraints and produce machine-checkable answers for critical systems.",
@@ -1616,8 +1615,8 @@ export const LABS: Lab[] = [
     // A gets, and 8x raised, off the top of the band.
     valuation: { usdM: 250, qualifier: "undisclosed" },
     // Incorporated in London 27 Jun 2023 (Companies House 14964224) and in
-    // Delaware the same year per both Form Ds; TechCrunch has Kohl
-    // incorporating "in London in mid-2023". 2025 is the stealth exit, not the
+    // Delaware the same year per both Form Ds; TechCrunch has the company
+    // incorporated "in London in mid-2023". 2025 is the stealth exit, not the
     // founding — the file dates by founding (D3).
     year: 2023,
     domain: "science",
@@ -1676,7 +1675,7 @@ export const LABS: Lab[] = [
     year: 2024,
     domain: "rsi",
     tags: ["agents"],
-    founders: [{ person: "eliot-cowan", prior: ["google", "mit", "harvard"] }],
+    founders: [{ person: "eliot-cowan", prior: ["google", "mit"] }],
     knownFor:
       "Autonomous AI scientists that read literature, propose and run experiments, and turn verified discoveries into improved production machine-learning models.",
     location: CITIES.sanMateo,
@@ -1810,7 +1809,7 @@ export const LABS: Lab[] = [
     // aggregate nominal capital, not the premium, so no figure is derivable
     // from the register. usdM is a non-semantic layout placeholder only.
     valuation: { usdM: 100, qualifier: "undisclosed" },
-    // Talfan Evans dates his Cursive co-founder/CEO role to January 2026.
+    // Cursive dates its founding to January 2026.
     year: 2026,
     domain: "rsi",
     founders: [
@@ -1909,13 +1908,12 @@ export const LABS: Lab[] = [
     // dollars and Forbes states it correctly as such; the conflation belongs
     // to Tech.eu ("acquired ... for over €1 billion"), not to them.
     //
-    // The nominal is inferred instead from the one reported figure that does
-    // bear on price: Forbes, and separately Pathfounders, have the founders
-    // taking "more than half a billion dollars in cash upfront." That is
-    // founder proceeds only, so grossing it up for what Balderton, XTX and
-    // Atlantic Labs held after a single €9M pre-seed — the company's first and
-    // only round — puts total consideration near $700-800M. Reported rather
-    // than disclosed, and a floor at that, so the qualifier stays
+    // The nominal is inferred instead from what reporting does support on
+    // price: Forbes, and separately Pathfounders, describe substantial upfront
+    // cash consideration, which set against the investor stake left after a
+    // single €9M pre-seed — the company's first and only round — puts total
+    // consideration near $700-800M. Reported rather than disclosed, and a
+    // floor at that, so the qualifier stays
     // `undisclosed`; with `structure: 'subsidiary'` this renders as "Not
     // independently valued" and the figure only sets a bubble radius.
     valuation: { usdM: 750, qualifier: "undisclosed" },
@@ -1941,12 +1939,11 @@ export const LABS: Lab[] = [
     // Implied by the merger terms, not disclosed. Reuters reports the price as
     // undisclosed, and no standalone post-money was ever published — the Nov
     // 2023 round was headlined at $500M but trade press put only ~€110M of it
-    // in cash equity, the rest compute and research credits. What is reported
-    // is the split: Handelsblatt's sources have Cohere shareholders taking
-    // ~90% of the combined entity and Aleph Alpha's ~10%, against the ~$20B
-    // the merged company is valued at. That 10% is the figure below. It rests
-    // on unnamed insiders via a single outlet, hence rumored; the other
-    // outlets carrying it all trace back to the same Handelsblatt reporting.
+    // in cash equity, the rest compute and research credits. The figure below
+    // is Aleph Alpha's implied share of the ~$20B the merged company is valued
+    // at, per Handelsblatt. It rests on unnamed insiders via a single outlet,
+    // hence rumored; the other outlets carrying it all trace back to the same
+    // Handelsblatt reporting.
     valuation: { usdM: 2_000, qualifier: "approx", rumored: true },
     year: 2019,
     domain: "applied",
@@ -2208,7 +2205,7 @@ export const LABS: Lab[] = [
     // Services)", a $5.75M seed of 16 Sep 2024 with Betaworks, predates this
     // company's launch by a year and is a different entity. Neither is used.
     valuation: { usdM: 60, qualifier: "undisclosed" },
-    // Szegedy announced the company on X on 11 Sep 2025, alongside the Gauss
+    // The company was announced publicly on 11 Sep 2025, alongside the Gauss
     // Prime Number Theorem result. An earlier autoformalization of a classical
     // ABC-conjecture result shipped in June 2025, so the year holds either way.
     year: 2025,
@@ -2219,18 +2216,13 @@ export const LABS: Lab[] = [
       {
         person: "christian-szegedy",
         prior: ["xai", "google", "cadence", "bonn"],
-        // LinkedIn records the role as Sep-Nov 2025 and marks it not current;
-        // his X bio carries no Math Inc affiliation on an actively posting
-        // account; neither math.inc nor the company's LinkedIn has ever named
-        // him; Crunchbase lists only Han. Sources still calling him founder in
-        // 2026 all trace back to his own launch announcement.
         departed: true,
       },
     ],
     knownFor:
       "Gauss, an autoformalization agent that turns published mathematics into machine-checked Lean; it closed Terence Tao and Alex Kontorovich's 18-month Prime Number Theorem challenge in three weeks, then formalised Viazovska's Fields Medal sphere-packing proofs.",
-    // Palo Alto per Crunchbase and pr.ai. The San Francisco signal is Han's
-    // personal LinkedIn and GitHub location, which describes the person.
+    // Palo Alto is the HQ of record on Crunchbase and pr.ai; the San Francisco
+    // references in circulation are personal locations, not the company's.
     location: CITIES.paloAlto,
   },
 ];
