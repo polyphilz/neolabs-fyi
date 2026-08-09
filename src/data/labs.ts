@@ -752,16 +752,35 @@ export const LABS: Lab[] = [
   {
     slug: "lila-sciences",
     name: "Lila Sciences",
+    // Reuters, 14 Oct 2025: the $115M NVentures extension closing the Series A
+    // "lifted its valuation to more than $1.3 billion" — a bound, never a point
+    // value, hence `gt`. Total raised is $550M: a $200M Flagship-led seed
+    // unveiled Mar 2025, then a $235M Series A co-led by Braidwell and
+    // Collective Global announced 15 Sep 2025 and extended to $350M on 14 Oct
+    // 2025 with NVentures, Analog Devices, IQT, Dauntless, Catalio and Pennant
+    // joining.
+    //
+    // Deliberately not updated to the $8.5B circulating since 3 Jun 2026.
+    // Bloomberg has the company "in talks to raise about $2 billion" at that
+    // figure; both Lila and CalPERS declined to comment, it is a pre-money on
+    // an unclosed round, Sacra states terms are not final, and Lila's own news
+    // feed runs to Jul 2026 with no Series B item. An asking price is not a
+    // valuation. Caplight's $10.5B post and $785M raised are its own
+    // arithmetic on that story, not a disclosure. The four "Lila Sciences"
+    // Form Ds on EDGAR are third-party SPV feeders (Alumni Ventures, Sydecar)
+    // whose $30K-$1.56M offerings price nothing, though the two with Jun 2026
+    // first sales do corroborate a raise being assembled when Bloomberg
+    // reported it.
     valuation: { usdM: 1_300, qualifier: "gt" },
     year: 2023,
     domain: "science",
-    tags: ["agents"],
+    tags: ["agents", "drug-discovery", "materials"],
     founders: [
       { person: "geoffrey-von-maltzahn", prior: ["mit", "startup"] },
-      { person: "noubar-afeyan", prior: ["mit", "startup"] },
+      { person: "noubar-afeyan", prior: ["mit", "startup"], isBacker: true },
     ],
     knownFor:
-      "Flagship Pioneering-backed scientific superintelligence platform for autonomous, AI-driven scientific discovery.",
+      "Flagship Pioneering's scientific superintelligence venture: the Lila Iris reasoning model driving AI Science Factory autonomous labs, which have closed the loop across hundreds of thousands of experiments spanning antibodies, genetic medicines, catalysts and coatings.",
     location: CITIES.cambridgeMa,
   },
   {
