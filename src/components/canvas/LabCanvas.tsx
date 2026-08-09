@@ -58,6 +58,18 @@ const MIN_SCREEN_FONT = 9.5;
  * recognised whole, as a silhouette, and survives being smaller. Holding both
  * to the type threshold hid a lab's logo on any hex too small for its name —
  * which is most of them at the zoom the page opens at.
+ *
+ * Measured against the side of the square of equal area — √(w·h) — and not the
+ * mark's height. A wide mark is fitted by its *width*, since that is what runs
+ * out of hexagon first, so the height that comes back is small however legible
+ * the mark is: charging height against this floor kept Irregular hidden until
+ * it was already 14px wide, where a square mark appears at 6.5. Height is only
+ * a stand-in for how big a mark looks when the mark is square, which is the
+ * same reason MAX_MARK cannot be read as a size either.
+ *
+ * The number is unchanged by that switch, and means what it always did: a
+ * square mark has √(h·h) = h, so the value stays tuned against exactly the
+ * marks it was tuned on.
  */
 const MIN_SCREEN_MARK = 6.5;
 
@@ -152,9 +164,10 @@ type ChosenLabel =
  * above possible; it's keyed by slug and self-correcting, so it survives view
  * changes without needing to be cleared.
  *
- * A mark is measured by its drawn height where type is measured by its font
- * size. They answer to different floors: see MIN_SCREEN_MARK for why a logo
- * stays legible below the size where type gives up.
+ * A mark is measured by the side of the square of equal area where type is
+ * measured by its font size. They answer to different floors: see
+ * MIN_SCREEN_MARK for both why a logo stays legible below the size where type
+ * gives up, and why a mark's height is not the thing to weigh it by.
  */
 function chooseLabel(
   slug: string,
@@ -187,7 +200,9 @@ function chooseLabel(
     if (!chosen) continue;
 
     const isMark = chosen.kind === 'mark';
-    const size = isMark ? chosen.fitted.height : chosen.fitted.fontSize;
+    const size = isMark
+      ? Math.sqrt(chosen.fitted.width * chosen.fitted.height)
+      : chosen.fitted.fontSize;
     // The margin governs switching, not first paint: on a fresh render there's
     // nothing on screen to flicker against, and charging it would demote a name
     // that was reading perfectly well before the ladder existed.

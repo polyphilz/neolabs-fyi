@@ -2535,7 +2535,67 @@ const GRAFTON_MARK: CanvasMark = {
   height: 324,
 };
 
+/**
+ * Irregular's mark: one solid path, a curl that tapers to a point at the top
+ * left and sweeps down and right onto a full-width baseline bar. A single
+ * closed subpath with no counters, so it needs neither a stroke nor a fill
+ * rule. The source viewBox is already the ink box — the tip lands on y=0, the
+ * bar's left end on x=0 and its far corner on the other two edges — and at
+ * better than 2:1 the hexagon's width, not its height, is what bounds the fit,
+ * so the default inset stands.
+ */
+const IRREGULAR_MARK: CanvasMark = {
+  shapes: [
+    {
+      d: 'M87 6.4l-6.3 6.5 3.4 4c22.1 25.5 33 41 42 59.6 24.1 49.5 7.5 82.5-48.5 96.5-16 4-30.1 5.8-55.3 7.2L0 181.4V200h431v-18.7l-12.2-.7c-24.5-1.4-49.7-5.9-73.9-13.1-76.2-22.8-160.5-77-233.5-150.3C101.9 7.8 94 0 93.8 0c-.2 0-3.2 2.9-6.8 6.4Z',
+    },
+  ],
+  x: 0,
+  y: 0,
+  width: 431,
+  height: 200,
+};
+
+/**
+ * Deep Cogito's icosahedron. One filled outline with the facets cut back out of
+ * it by subpaths, so it carries `evenodd`: the triangles are holes the hexagon
+ * shows through, not black shapes drawn on top of it.
+ *
+ * The source is a 460 square, but the artwork only occupies the middle 305 of
+ * it — the rest is padding. Centring on that canvas would draw the mark at
+ * two-thirds size and off-centre, so the box below is the ink instead.
+ *
+ * Takes the wider inset the other line art does. A lattice this open reads far
+ * lighter than a solid glyph of the same bounds, and the extra room is also
+ * what carries it past the size where its facets stop separating.
+ */
+const DEEP_COGITO_MARK: CanvasMark = {
+  shapes: [
+    {
+      d:
+        'M 288.5 78.5 L 279.5 77.5 L 133.5 117.5 L 128.5 124.5 L 76.5 257.5 L 81.5 265.5 L 170.5 379.5 L 175.5 382.5 L 325.5 355.5 L 329.5 350.5 L 381.5 220.5 L 381.5 212.5 L 294.5 89.5 Z' +
+        ' M 189.5 363.5 L 220.5 294.5 L 299.5 343.5 L 296.5 345.5 L 197.5 363.5 Z' +
+        ' M 105.5 268.5 L 205.5 288.5 L 174.5 359.5 L 104.5 269.5 Z' +
+        ' M 324.5 207.5 L 325.5 216.5 L 315.5 333.5 L 313.5 334.5 L 230.5 281.5 Z' +
+        ' M 342.5 204.5 L 362.5 217.5 L 364.5 221.5 L 335.5 292.5 L 334.5 282.5 L 340.5 210.5 Z' +
+        ' M 172.5 155.5 L 174.5 156.5 L 204.5 266.5 L 204.5 272.5 L 98.5 250.5 Z' +
+        ' M 188.5 150.5 L 189.5 149.5 L 317.5 193.5 L 221.5 268.5 L 219.5 266.5 Z' +
+        ' M 162.5 140.5 L 163.5 142.5 L 115.5 203.5 L 114.5 200.5 L 140.5 135.5 L 144.5 134.5 Z' +
+        ' M 200.5 116.5 L 177.5 128.5 L 166.5 125.5 L 167.5 123.5 L 197.5 115.5 Z' +
+        ' M 198.5 135.5 L 278.5 95.5 L 318.5 175.5 L 317.5 176.5 Z',
+      fillRule: 'evenodd',
+    },
+  ],
+  x: 76.5,
+  y: 77.5,
+  width: 305,
+  height: 305,
+  inset: 0.76,
+};
+
 const SHORT_MARKS: Record<string, CanvasMark> = {
+  'deep-cogito': DEEP_COGITO_MARK,
+  irregular: IRREGULAR_MARK,
   'grafton-sciences': GRAFTON_MARK,
   orbital: ORBITAL_MARK,
   'generalist-ai': GENERALIST_MARK,
