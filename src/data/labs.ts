@@ -2167,6 +2167,61 @@ export const LABS: Lab[] = [
     // Corners, GA bench that ARPA-H lists against the award.
     location: CITIES.redwoodCity,
   },
+  {
+    slug: "math-inc",
+    name: "Math, Inc.",
+    // Never priced in public. Crunchbase records two seed rounds and three
+    // investors with Chapter One leading; VCBacked puts the total at $15.0M
+    // with the most recent announced March 2026, and the company confirmed
+    // that round itself on LinkedIn (9 Mar 2026), naming Robot Ventures and
+    // Tarun Chitra. No post-money appears in any tracker, and EDGAR full-text
+    // returns no Form D for "Math, Inc.", "Math Inc", "Mathematical
+    // Instrumentality Project", "math.inc" or either founder's name — the
+    // identical query returns Deep Cogito's D and D/A, so the absence is real
+    // rather than a broken search.
+    //
+    // The two rounds were never split out, so there is no single round to
+    // invert and the nominal prices the seed programme whole: $15M at ~25%
+    // cumulative dilution across two seeds — wider than the 20% a single seed
+    // takes here, because two rounds compound — puts it near $60M. That is
+    // 4.0x raised, between Essential AI's 3.8x and Oumi's 5.0x, which is where
+    // a lab that has raised half again what Oumi did on a far stronger
+    // technical record belongs. $50M is the floor (30% cumulative, the soft
+    // end for two seeds) and $100M the ceiling at 6.7x raised, past the top of
+    // the band — a lab priced above that does not raise $15M in total. DARPA's
+    // expMath support is a non-dilutive research grant and is excluded.
+    //
+    // The Information's Feb 2026 "quintuples an AI math startup's valuation"
+    // is Axiom, not this lab — Techmeme ran it alongside Wired's AxiomProver
+    // story and the two are direct rivals. PitchBook's "Math (Information
+    // Services)", a $5.75M seed of 16 Sep 2024 with Betaworks, predates this
+    // company's launch by a year and is a different entity. Neither is used.
+    valuation: { usdM: 60, qualifier: "undisclosed" },
+    // Szegedy announced the company on X on 11 Sep 2025, alongside the Gauss
+    // Prime Number Theorem result. An earlier autoformalization of a classical
+    // ABC-conjecture result shipped in June 2025, so the year holds either way.
+    year: 2025,
+    domain: "science",
+    tags: ["agents", "math", "open-source"],
+    founders: [
+      { person: "jesse-michael-han", prior: ["openai", "pitt"] },
+      {
+        person: "christian-szegedy",
+        prior: ["xai", "google", "cadence", "bonn"],
+        // LinkedIn records the role as Sep-Nov 2025 and marks it not current;
+        // his X bio carries no Math Inc affiliation on an actively posting
+        // account; neither math.inc nor the company's LinkedIn has ever named
+        // him; Crunchbase lists only Han. Sources still calling him founder in
+        // 2026 all trace back to his own launch announcement.
+        departed: true,
+      },
+    ],
+    knownFor:
+      "Gauss, an autoformalization agent that turns published mathematics into machine-checked Lean; it closed Terence Tao and Alex Kontorovich's 18-month Prime Number Theorem challenge in three weeks, then formalised Viazovska's Fields Medal sphere-packing proofs.",
+    // Palo Alto per Crunchbase and pr.ai. The San Francisco signal is Han's
+    // personal LinkedIn and GitHub location, which describes the person.
+    location: CITIES.paloAlto,
+  },
 ];
 
 /** Sorted big → small, which is how every view wants them. */

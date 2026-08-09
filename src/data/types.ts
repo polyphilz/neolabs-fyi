@@ -269,6 +269,9 @@ export type OrgId =
   | 'imprintai'
   | 'bostondynamics'
   | 'broad'
+  | 'pitt'
+  | 'bonn'
+  | 'cadence'
   | 'startup';
 
 /**

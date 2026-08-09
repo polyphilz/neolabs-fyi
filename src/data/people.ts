@@ -313,6 +313,8 @@ export const PEOPLE = {
   'drishan-arora': { name: 'Drishan Arora' },
   'dhruv-malrana': { name: 'Dhruv Malrana' },
   'anubhav-dubey': { name: 'Anubhav Dubey' },
+  'jesse-michael-han': { name: 'Jesse Michael Han' },
+  'christian-szegedy': { name: 'Christian Szegedy' },
 } satisfies Record<string, { name: string }>;
 
 /**

@@ -171,6 +171,7 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   jpmorgan: { label: 'J.P. Morgan', group: 'bigtech' },
   bridgewater: { label: 'Bridgewater Associates', group: 'bigtech' },
   bosch: { label: 'Bosch Center for AI', group: 'bigtech' },
+  cadence: { label: 'Cadence Design Systems', group: 'bigtech' },
   vanguard: { label: 'The Vanguard Group', group: 'bigtech' },
   pixar: { label: 'Pixar Research', group: 'bigtech' },
   belllabs: { label: 'Bell Labs', group: 'bigtech' },
@@ -366,6 +367,8 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   freiburg: { label: 'University of Freiburg', group: 'academia' },
   ubc: { label: 'University of British Columbia', group: 'academia' },
   broad: { label: 'Broad Institute', group: 'academia' },
+  pitt: { label: 'University of Pittsburgh', group: 'academia' },
+  bonn: { label: 'University of Bonn', group: 'academia' },
 };
 
 /**
