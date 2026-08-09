@@ -1914,6 +1914,37 @@ export const LABS: Lab[] = [
       "Frontier AI security lab that stress-tests models for offensive cyber capability inside simulated networks; its evaluations ship inside OpenAI and Anthropic system cards, alongside the SOLVE vulnerability-scoring framework.",
     location: CITIES.telAviv,
   },
+  {
+    slug: "deep-cogito",
+    name: "Deep Cogito",
+    // Never priced in public: PitchBook's Post-Val column is empty across all
+    // three rounds, Tracxn masks its own, and the company is far too early for
+    // a secondary mark on Caplight or Forge. Dealroom's "$52-78M enterprise
+    // value" brackets capital raised rather than worth, and is not used.
+    //
+    // What is hard is the round. Deep Cogito's Form D (8 Apr 2026) and D/A (23
+    // Apr 2026) report a $39,999,956 Series A Preferred offering, first sale 24
+    // Mar 2026, sold in full by the amendment across eight investors with no
+    // placement agent — and a fourth board seat for Schuster Tanger of TQ
+    // Ventures, a new outside lead seven months after Benchmark's $13M seed.
+    // That is a competitive round, so the nominal prices the $40M at ~13%
+    // dilution rather than the textbook 16-20%. On $53.4M raised to date that
+    // is 5.6x, level with Orbital and just under Isomorphic at the top of the
+    // band here. $200M is the floor (20% dilution) and $400M the ceiling (10%
+    // — a lab priced above that does not raise only $40M).
+    valuation: { usdM: 300, qualifier: "undisclosed" },
+    // Incorporated 2024 per the Form D; out of stealth 8 Apr 2025 with Cogito v1.
+    year: 2024,
+    domain: "general",
+    tags: ["open-weights"],
+    founders: [
+      { person: "drishan-arora", prior: ["google"] },
+      { person: "dhruv-malrana", prior: ["deepmind", "google", "microsoft"] },
+    ],
+    knownFor:
+      "Open-weight hybrid reasoning models trained by iterated distillation and amplification; the model's own search traces are folded back into its weights.",
+    location: CITIES.sf,
+  },
 ];
 
 /** Sorted big → small, which is how every view wants them. */
