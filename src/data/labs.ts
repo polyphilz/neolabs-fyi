@@ -1945,6 +1945,56 @@ export const LABS: Lab[] = [
       "Open-weight hybrid reasoning models trained by iterated distillation and amplification; the model's own search traces are folded back into its weights.",
     location: CITIES.sf,
   },
+  {
+    slug: "grafton-sciences",
+    name: "Grafton Sciences",
+    // Renamed from Grafton Biosciences; Grafton Biosciences, Inc. is still the
+    // legal entity on the ARPA-H award and the SAM.gov registration.
+    priorNames: ["Grafton Biosciences"],
+    // The thinnest evidence base of any figure here. No equity round has ever
+    // been reported: EDGAR full-text search returns zero hits for "Grafton
+    // Sciences", "Grafton Biosciences" and "Sognef" alike — and the identical
+    // query returns Deep Cogito's Form D and D/A, so the absence is real
+    // rather than a broken search. Crunchbase renders every financial field as
+    // an empty placeholder, no secondary mark exists on Caplight, Forge or
+    // Hiive, and no investor has ever been named.
+    //
+    // The only disclosed capital is government and non-dilutive: an ARPA-H
+    // POSEIDON award of 30 Sep 2025 that the company states as $42.5M and
+    // ARPA-H's own directory as "up to $37.5M". These are Other Transactions
+    // Agreements contingent on milestones, so both figures are ceilings. The
+    // "$40 million in funding" on the old graftonbio.com is that same money
+    // loosely stated, not a round — the Wayback capture carrying it is 4 Oct
+    // 2025, four days after the award, and the Mar 2025 capture of that page
+    // claims no funding at all.
+    //
+    // Private capital almost certainly exists but has never been disclosed.
+    // ARPA-H records two corporate performers committing up to $21M of
+    // resource sharing across the programme and marks Grafton as one of them;
+    // a ~15-person company funds cost-share off its own balance sheet, not out
+    // of the award. Its own phrasing reads the same way: "backed by leading
+    // partners, *including* ARPA-H", "*other* leading partners".
+    //
+    // So the dilution method behind every other undisclosed figure here cannot
+    // run — there is no priced round to invert. The nominal is a stage
+    // comparison instead. ~3.5x the $42.5M capital base sits at the bottom of
+    // this file's band (Moonvalley 3.2x, Xaira 3.4x, up to Isomorphic 5.8x),
+    // which is where non-dilutive milestone-contingent money and zero
+    // published work belong. $100M is the floor: fifteen people across three
+    // sites with lab and manufacturing space are not worth less. $300M is the
+    // ceiling — that is Deep Cogito's mark, and it has a competitively priced
+    // Series A and three shipped model families where Grafton has neither.
+    valuation: { usdM: 150, qualifier: "undisclosed" },
+    year: 2024,
+    domain: "physical",
+    founders: [{ person: "anubhav-dubey", prior: ["startup"] }],
+    knownFor:
+      "Robot-run factories and laboratories, and the models to drive them, so an AI can run its own physical experiments; funded so far by a $42.5M ARPA-H award for at-home cancer screening.",
+    // Three sites: Redwood City (1100 Island Dr, the HQ of record on LinkedIn
+    // and Crunchbase), San Francisco (600 California St), and the Peachtree
+    // Corners, GA bench that ARPA-H lists against the award.
+    location: CITIES.redwoodCity,
+  },
 ];
 
 /** Sorted big → small, which is how every view wants them. */

@@ -16,7 +16,8 @@ export type Qualifier =
   | 'gt' // ">$1B"
   | 'lt' // "<$500M"
   | 'range' // "~$2.7-4B"
-  | 'undisclosed'; // round announced, figure withheld
+  | 'undisclosed'; // no figure on record — usually a round with the price
+                   // withheld, sometimes a lab that has never priced one
 
 export interface Valuation {
   /**

@@ -52,7 +52,10 @@ export function valuationCaveat(lab: Lab): string | null {
   if (lab.status === 'public') {
     return v.asOf ? `Market cap as of ${v.asOf} — moves daily` : 'Market cap — moves daily';
   }
-  if (v.qualifier === 'undisclosed') return 'Round announced; valuation not disclosed';
+  // Deliberately says less than it could. "Round announced" is not true of
+  // every holder — Grafton has never had one — and the part that always holds
+  // is the part worth saying.
+  if (v.qualifier === 'undisclosed') return 'Valuation not disclosed';
   if (v.rumored) return 'Rumored or unconfirmed';
   if (v.qualifier === 'gt') return 'Known only as a lower bound';
   if (v.qualifier === 'lt') return 'Known only as an upper bound';
@@ -2499,7 +2502,41 @@ const GENERALIST_MARK: CanvasMark = {
   inset: 0.7,
 };
 
+/**
+ * Grafton's mark: three rounded squares on a 2x2 grid, the fourth cell replaced
+ * by an arrow turning up out of the bottom-right corner. The squares become
+ * paths because a shape here carries only `d`; the arrow stays a stroke, since
+ * outlining it would discard the round caps that give it its terminals. The
+ * source viewBox is the ink box — the squares reach all four edges, and the
+ * arrow's 28-wide stroke lands exactly on the right edge and inside everywhere
+ * else.
+ */
+const GRAFTON_MARK: CanvasMark = {
+  shapes: [
+    {
+      d: 'M26 0H133A26 26 0 0 1 159 26V129A26 26 0 0 1 133 155H26A26 26 0 0 1 0 129V26A26 26 0 0 1 26 0Z',
+    },
+    {
+      d: 'M203 0H310A26 26 0 0 1 336 26V129A26 26 0 0 1 310 155H203A26 26 0 0 1 177 129V26A26 26 0 0 1 203 0Z',
+    },
+    {
+      d: 'M26 171H133A26 26 0 0 1 159 197V298A26 26 0 0 1 133 324H26A26 26 0 0 1 0 298V197A26 26 0 0 1 26 171Z',
+    },
+    {
+      d: 'M194 305H322V204',
+      strokeWidth: 28,
+      linecap: 'round',
+      linejoin: 'round',
+    },
+  ],
+  x: 0,
+  y: 0,
+  width: 336,
+  height: 324,
+};
+
 const SHORT_MARKS: Record<string, CanvasMark> = {
+  'grafton-sciences': GRAFTON_MARK,
   orbital: ORBITAL_MARK,
   'generalist-ai': GENERALIST_MARK,
   cartesia: CARTESIA_MARK,

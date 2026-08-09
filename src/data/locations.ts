@@ -18,6 +18,7 @@ export const CITIES = {
   mountainView: city('Mountain View', 'United States', 'US', 37.3861, -122.0839),
   sanJose: city('San Jose', 'United States', 'US', 37.3382, -121.8863),
   sanMateo: city('San Mateo', 'United States', 'US', 37.563, -122.3255),
+  redwoodCity: city('Redwood City', 'United States', 'US', 37.4852, -122.2364),
   bellevue: city('Bellevue', 'United States', 'US', 47.6101, -122.2015),
   berkeley: city('Berkeley', 'United States', 'US', 37.8715, -122.273),
   southSf: city('South San Francisco', 'United States', 'US', 37.6547, -122.4077),
