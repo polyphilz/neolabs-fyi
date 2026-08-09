@@ -290,6 +290,7 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   bitcoinpolicy: { label: 'Bitcoin Policy Institute', group: 'startup' },
   kittai: { label: 'KITT.AI', group: 'startup' },
   neuralpropulsion: { label: 'Neural Propulsion Systems', group: 'startup' },
+  scaleai: { label: 'Scale AI', group: 'startup' },
 
   // The five schools currently broken out as dedicated lineage rows. Other
   // institutions remain grouped in `academia` until that editorial taxonomy
@@ -379,6 +380,7 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   broad: { label: 'Broad Institute', group: 'academia' },
   pitt: { label: 'University of Pittsburgh', group: 'academia' },
   bonn: { label: 'University of Bonn', group: 'academia' },
+  ohiostate: { label: 'Ohio State University', group: 'academia' },
 };
 
 /**

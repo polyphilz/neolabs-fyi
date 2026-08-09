@@ -2507,6 +2507,51 @@ export const LABS: Lab[] = [
       "Large physics models in place of the CAE loop: SUV-PT predicts surface pressure, wall shear stress and drag straight from 3D geometry in seconds where high-fidelity CFD takes days, on an in-house Latent Interaction Field Transformer trained on millions of generated simulations.",
     location: CITIES.sf,
   },
+  {
+    slug: "neocognition",
+    name: "NeoCognition",
+    // One round: a $40M seed announced 21 Apr 2026 on emergence from stealth,
+    // oversubscribed, co-led by Cambium Capital and Walden Catalyst Ventures
+    // with Vista Equity Partners participating. No pre- or post-money has ever
+    // been published — TechCrunch, The Next Web, TechFundingNews and the wire
+    // release all carry the round size and stop there. The company calls it
+    // "committed" seed capital, wording unchanged on a 26 May 2026 recrawl, so
+    // the round may be signed rather than fully called; PitchBook alone marks
+    // it completed, and files it as a Series A against everyone else's seed.
+    // Rejected: Dealroom's $160-240M is its modelled "enterprise value" band,
+    // on a profile it labels "Made with AI"; PitchBook, Crunchbase, Tracxn and
+    // Caplight are blank or gated and TrueUp states "not available"; and
+    // startuphub.ai's $957M is comps output over a mis-scraped entity it also
+    // dates to 2023 in Columbus, Ohio running an AI consultancy. EDGAR has
+    // nothing, under the name or four entity variants, full-text or company
+    // index — the control query "Deep Cogito" returns its two known filings,
+    // so the null is the search working rather than failing. The nominal is
+    // therefore inverted from the round at the 20% seed default: 40/0.20 =
+    // $200M. An oversubscribed book, two competing co-leads and a growth-stage
+    // crossover in at seed argue against the 25% soft case; nothing shipped, a
+    // stub research page and ~15 people argue against the 15% pre-emption case,
+    // which no outlet reported anyway. $160M is the floor — 25%, and a book
+    // that closes oversubscribed with two leads is not selling a quarter of
+    // itself — and $270M the ceiling, 15%, where a seed priced that tightly is
+    // normally reported as pre-empted by someone. The multiple-of-raised check
+    // is degenerate on a single round, 5.0x being 1/0.20 restated, so it
+    // corroborates nothing; Dealroom's band bracketing $200M is the same
+    // tautology, since those bands model capital raised.
+    valuation: { usdM: 200, qualifier: "undisclosed" },
+    // Founded mid-2025 and out of stealth 21 Apr 2026. The company's own
+    // LinkedIn record gives 2025; Dealroom's "2026" is its launch date.
+    year: 2025,
+    domain: "rsi",
+    tags: ["continual-learning", "agents", "academic-spinout"],
+    founders: [
+      { person: "yu-su", prior: ["ohiostate", "microsoft", "ucsb"] },
+      { person: "xiang-deng", prior: ["scaleai", "google", "ohiostate"] },
+      { person: "yu-gu", prior: ["ohiostate"] },
+    ],
+    knownFor:
+      "Ohio State's AI agent group commercialized: the team behind Mind2Web, MMMU and SeeAct, now building agents that learn a “world model of work” on the job and specialize into domain experts rather than one general super-agent.",
+    location: CITIES.paloAlto,
+  },
 ];
 
 /** Sorted big → small, which is how every view wants them. */

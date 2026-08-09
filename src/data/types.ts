@@ -278,6 +278,8 @@ export type OrgId =
   | 'kittai'
   | 'instacart'
   | 'neuralpropulsion'
+  | 'scaleai'
+  | 'ohiostate'
   | 'startup';
 
 /**

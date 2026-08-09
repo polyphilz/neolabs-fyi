@@ -2748,7 +2748,39 @@ const UNIVERSALAGI_MARK: CanvasMark = {
   inset: 0.72,
 };
 
+/**
+ * NeoCognition's N, drawn as two stems and two arrowheads with the diagonal
+ * between them left out — the letter's crossing stroke is implied by where the
+ * heads point rather than drawn, and the figure is symmetric under a half turn
+ * about its centre. Kept as the source's single stroked path: the round caps
+ * are what terminate each open arm, so outlining it into a fill would lose
+ * them, and joining the arms would draw the diagonal the mark deliberately
+ * omits.
+ *
+ * The source viewBox is already the ink bounds — the path spans 6-66 by 6-86
+ * and the 12-unit stroke adds exactly its half-width on each side. The default
+ * inset stands: the strokes run a sixth of the box wide, so this reads as a
+ * solid glyph rather than the line art the wider insets exist to rescue, and
+ * at 0.78:1 it is only mildly portrait — not the tall-glyph case that pulls
+ * Inflection's I below the default.
+ */
+const NEOCOGNITION_MARK: CanvasMark = {
+  shapes: [
+    {
+      d: 'M38 6 6 18v58m0-58 30 15m-1 25 31 17V16m0 59-32 11',
+      strokeWidth: 12,
+      linecap: 'round',
+      linejoin: 'round',
+    },
+  ],
+  x: 0,
+  y: 0,
+  width: 72,
+  height: 92,
+};
+
 const SHORT_MARKS: Record<string, CanvasMark> = {
+  neocognition: NEOCOGNITION_MARK,
   'math-inc': MATH_INC_MARK,
   'deep-cogito': DEEP_COGITO_MARK,
   irregular: IRREGULAR_MARK,
