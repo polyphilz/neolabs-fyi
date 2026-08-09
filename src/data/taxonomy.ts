@@ -177,6 +177,7 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   belllabs: { label: 'Bell Labs', group: 'bigtech' },
   twitter: { label: 'Twitter', group: 'bigtech' },
   snap: { label: 'Snap', group: 'bigtech' },
+  instacart: { label: 'Instacart', group: 'bigtech' },
 
   // Two distinct IDF units, deliberately kept apart: Irregular's founders came
   // from one each. They share the `government` group, so this is two labels on
@@ -281,6 +282,7 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   // tech giant nor a university, which is what the bucket has always been.
   bostondynamics: { label: 'Boston Dynamics', group: 'startup' },
   kittai: { label: 'KITT.AI', group: 'startup' },
+  neuralpropulsion: { label: 'Neural Propulsion Systems', group: 'startup' },
 
   // The five schools currently broken out as dedicated lineage rows. Other
   // institutions remain grouped in `academia` until that editorial taxonomy

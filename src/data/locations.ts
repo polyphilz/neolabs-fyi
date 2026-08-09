@@ -15,6 +15,7 @@ const city = (
 export const CITIES = {
   sf: city('San Francisco', 'United States', 'US', 37.7749, -122.4194),
   paloAlto: city('Palo Alto', 'United States', 'US', 37.4419, -122.143),
+  pasadena: city('Pasadena', 'United States', 'US', 34.1478, -118.1445),
   mountainView: city('Mountain View', 'United States', 'US', 37.3861, -122.0839),
   sanJose: city('San Jose', 'United States', 'US', 37.3382, -121.8863),
   sanMateo: city('San Mateo', 'United States', 'US', 37.563, -122.3255),

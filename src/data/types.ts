@@ -273,6 +273,8 @@ export type OrgId =
   | 'bonn'
   | 'cadence'
   | 'kittai'
+  | 'instacart'
+  | 'neuralpropulsion'
   | 'startup';
 
 /**

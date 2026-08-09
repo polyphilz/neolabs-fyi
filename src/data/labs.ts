@@ -2296,6 +2296,58 @@ export const LABS: Lab[] = [
       "Unreasonable.DISCOVERY, a cross-domain discovery engine that pairs LLMs with neurosymbolic abstractions over a unified world model of physics, biology, chemistry and materials — built to compose new hypotheses rather than retrieve known facts.",
     location: CITIES.paloAlto,
   },
+  {
+    slug: "prismml",
+    name: "PrismML",
+    // No post-money has ever been published, and there may be none to publish:
+    // the March 2026 raise is described as SAFE and seed money, and a SAFE
+    // carries a cap rather than a price. The round is reported at $16.25M
+    // (HPCwire 3 Apr 2026; PitchBook $16.2M, Signalbase and Aventure $16.3M) but
+    // the company's own release states no figure at all, naming only Khosla
+    // Ventures as lead and Cerberus Ventures alongside it, with Google and
+    // Caltech contributing compute grants rather than equity — compute is not
+    // capital, so it is set aside here. Rejected: Dealroom's $65-98M
+    // "enterprise value", which models money raised rather than worth;
+    // Caplight, whose own round table leaves the valuation column empty; CB
+    // Insights, which masks the figure as "$XXM". EDGAR has no Form D under any
+    // name variant, and the control returns Deep Cogito's two filings, so the
+    // null is real; the company-name index lists 78 Form D filers beginning
+    // "Prism" without this one among them. The nominal below is therefore
+    // derived: $16.25M at the 20% seed default gives ~$81M. The 15% ceiling
+    // ($108M) is unearned — one lead, one other fund, and nothing shipped on the
+    // day the round was announced, which is not a contested round. The 25% floor
+    // ($65M) reads too soft for a raise Khosla Ventures led with an exclusive
+    // Caltech patent licence attached. Multiple-of-raised is degenerate against
+    // a single round: 4.9x is 1/0.205 restated, though it does sit inside the
+    // file's 3-6x band.
+    valuation: { usdM: 80, qualifier: "undisclosed" },
+    // Founded June 2025, out of stealth 31 March 2026. Founding year is what
+    // this field carries elsewhere — cf. Fundamental and Prior Labs.
+    year: 2025,
+    domain: "general",
+    tags: [
+      "academic-spinout",
+      "multimodal",
+      "on-device",
+      "open-source",
+      "open-weights",
+    ],
+    founders: [
+      {
+        person: "babak-hassibi",
+        prior: ["neuralpropulsion", "caltech", "belllabs", "stanford"],
+      },
+      { person: "sahin-lale", prior: ["neuralpropulsion", "caltech"] },
+      {
+        person: "omead-pooladzandi",
+        prior: ["neuralpropulsion", "caltech", "ucla"],
+      },
+      { person: "reza-sadri", prior: ["caltech", "instacart", "ucla"] },
+    ],
+    knownFor:
+      "Caltech spinout built on a compression theory that pushes model weights down to 1 bit and ternary; the Apache-2.0 Bonsai family and its custom llama.cpp and MLX kernels fit a 27B-class model into 3.9GB, small enough to run on a phone.",
+    location: CITIES.pasadena,
+  },
 ];
 
 /** Sorted big → small, which is how every view wants them. */

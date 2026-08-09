@@ -317,6 +317,10 @@ export const PEOPLE = {
   'christian-szegedy': { name: 'Christian Szegedy' },
   'yuan-cao': { name: 'Yuan Cao' },
   'markus-buehler': { name: 'Markus J. Buehler' },
+  'babak-hassibi': { name: 'Babak Hassibi' },
+  'sahin-lale': { name: 'Sahin Lale' },
+  'omead-pooladzandi': { name: 'Omead Pooladzandi' },
+  'reza-sadri': { name: 'Reza Sadri' },
 } satisfies Record<string, { name: string }>;
 
 /**
