@@ -2665,6 +2665,30 @@ const MATH_INC_MARK: CanvasMark = {
   inset: 0.68,
 };
 
+/**
+ * All four subpaths wind the same way, so the default nonzero rule merges the
+ * bars into the prism where they meet — the source relies on that, and setting
+ * `evenodd` here would punch the overlaps out as holes.
+ *
+ * Above the default inset because the artwork is only 42% ink inside its box —
+ * a triangle and three detached bars, with the gaps between them counted as
+ * width the fitter has to make room for. At MARK_INSET it reads as a small
+ * emblem in a large margin rather than as a mark of the same weight as the
+ * lettered hexes around it.
+ */
+const PRISMML_MARK: CanvasMark = {
+  shapes: [
+    {
+      d: 'M73.5 0 105 54H87l-28.5 49L73 128H0Zm19 62.5H131V79H83.5Zm-14.5 25h77.5V103H69Zm-4.5 25h66V128H83Z',
+    },
+  ],
+  x: 0,
+  y: 0,
+  width: 155.5,
+  height: 128,
+  inset: 0.72,
+};
+
 const SHORT_MARKS: Record<string, CanvasMark> = {
   'math-inc': MATH_INC_MARK,
   'deep-cogito': DEEP_COGITO_MARK,
@@ -2757,6 +2781,7 @@ const SHORT_MARKS: Record<string, CanvasMark> = {
   'prime-intellect': PRIME_INTELLECT_MARK,
   runway: RUNWAY_MARK,
   'unreasonable-labs': UNREASONABLE_LABS_MARK,
+  prismml: PRISMML_MARK,
 };
 
 /**
