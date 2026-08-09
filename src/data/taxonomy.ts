@@ -281,6 +281,12 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   // but `startup` is where this taxonomy puts every company that is neither a
   // tech giant nor a university, which is what the bucket has always been.
   bostondynamics: { label: 'Boston Dynamics', group: 'startup' },
+  // Listed on the NYSE, so not a startup either — same reasoning as above.
+  sentinelone: { label: 'SentinelOne', group: 'startup' },
+  // A Washington think tank. `government` is for people who worked *in*
+  // government, which an advocacy nonprofit is not, so it lands in the same
+  // residual bucket as Open Philanthropy.
+  bitcoinpolicy: { label: 'Bitcoin Policy Institute', group: 'startup' },
   kittai: { label: 'KITT.AI', group: 'startup' },
   neuralpropulsion: { label: 'Neural Propulsion Systems', group: 'startup' },
 

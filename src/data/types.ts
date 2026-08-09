@@ -268,6 +268,8 @@ export type OrgId =
   | 'plutodata'
   | 'imprintai'
   | 'bostondynamics'
+  | 'sentinelone'
+  | 'bitcoinpolicy'
   | 'broad'
   | 'pitt'
   | 'bonn'
@@ -400,7 +402,7 @@ export interface Lab {
   /** Former names, most recent first. Rendered on the lab page for SEO. */
   priorNames?: string[];
   valuation: Valuation;
-  year: number; // Year of public emergence.
+  year: number; // Year founded
   domain: DomainId;
   /** Cross-cutting attributes; see TagId. */
   tags?: TagId[];

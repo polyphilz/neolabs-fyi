@@ -2241,6 +2241,67 @@ export const LABS: Lab[] = [
     location: CITIES.redwoodCity,
   },
   {
+    slug: "physical-superintelligence",
+    name: "Physical Superintelligence",
+    // Thinner even than Grafton, which at least had a non-dilutive award to
+    // scale from. No round has ever been disclosed: PitchBook carries one row,
+    // Early Stage VC of 01-May-2026, with amount, raised-to-date and post-money
+    // all empty, and no tracker carries a figure at all. EDGAR full-text
+    // returns zero for "Physical Superintelligence", "Physical
+    // Superintelligence PBC", "Physical Superintelligence Inc" and "psi.inc"
+    // across every form type, not just D, and the company-name index lists no
+    // Form D filer under the name; the identical query returns Deep Cogito's D
+    // and D/A, so the absence is real rather than a broken search. The only
+    // account of the cap table is the company's own launch post of 15 Feb 2026,
+    // naming SV Angel, Valkyrie, Solari Capital, 021T Capital, Thiel Macro and
+    // Balaji Srinivasan alongside angels from OpenAI, SoftBank, NVIDIA, Hugging
+    // Face, Google DeepMind and World — investors without amounts,
+    // single-sourced to the company.
+    //
+    // Rejected, all of them name collisions: Tracxn's "PSI", a health-insurance
+    // provider; Crunchbase's "Superintelligence"; and the Dealroom, Caplight and
+    // UpMarket marks returned under the name, which belong to Physical
+    // Intelligence, the unrelated robotics lab already in this file.
+    //
+    // So neither method runs: there is no round to invert and no capital base to
+    // multiply, and multiple-of-raised is not merely degenerate but undefined.
+    // The nominal is a stage comparison. This file's seed cluster sits at
+    // $60-80M — Math, Inc. $60M, Unreasonable Labs $68M, Autoscience $70M,
+    // PrismML $80M — and every one of those has a disclosed $13.5-16.25M round
+    // behind it. A syndicate of comparable quality and one shipped artifact in
+    // GPD argue for the cluster; a raise undocumented anywhere argues against
+    // sitting inside it, so this takes the cluster floor, level with Math, Inc.
+    // on a similar profile. $40M is the floor — TechCrunch's 31 Mar 2026 typical
+    // AI seed is $10M at $40-45M post, and a round SV Angel and Thiel Macro join
+    // does not price below the ordinary seed. $100M is the ceiling: above it
+    // sits Grafton at $150M, and a lab priced there has a documented
+    // institutional round where this has a stage label. That stage label is
+    // itself the assumption — PitchBook's "Early Stage VC" spans seed and
+    // Series A, and nothing narrows it.
+    valuation: { usdM: 60, qualifier: "undisclosed" },
+    // Incorporated 2025; out of stealth 15 Feb 2026.
+    year: 2025,
+    // Not robotics, despite the name: there is no embodiment anywhere in the
+    // stack. The nearest neighbour here is Periodic Labs, not Physical
+    // Intelligence.
+    domain: "science",
+    tags: ["agents", "open-source"],
+    structure: "public-benefit",
+    founders: [
+      {
+        person: "matthew-pines",
+        prior: ["bitcoinpolicy", "sentinelone", "startup"],
+      },
+      { person: "alex-wissner-gross", prior: ["harvard", "startup"] },
+    ],
+    knownFor:
+      "Get Physics Done, an open-source agentic AI physicist that scopes a problem, plans the research, runs its own derivations and numerical checks and verifies the results against physical constraints; a public benefit corporation industrialising physics discovery rather than building robots.",
+    // Boston: 14 of 15 open roles are posted there, and the launch post has the
+    // team expanding in Boston and San Francisco. PitchBook's Sunny Isles Beach,
+    // FL is a registered address rather than an operating seat.
+    location: CITIES.boston,
+  },
+  {
     slug: "math-inc",
     name: "Math, Inc.",
     // Never priced in public. Crunchbase records two seed rounds and three

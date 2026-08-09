@@ -2689,6 +2689,35 @@ const PRISMML_MARK: CanvasMark = {
   inset: 0.72,
 };
 
+/**
+ * A psi, drawn as one closed outline: the stem runs the full height and the two
+ * arms curl back down from the shoulders, leaving a deep void either side of
+ * the stem.
+ *
+ * The source sets `fill-rule="evenodd"` on the root, but the artwork is a single
+ * subpath with nothing to punch out of it, so the two rules agree and the
+ * attribute is inert — it is dropped rather than carried over as a no-op that
+ * would imply holes the mark does not have. The viewBox is already the ink
+ * bounds, verified against the path's own extrema, so it is used as-is.
+ *
+ * Just above the default inset. It is a solid glyph, not line art, so it needs
+ * none of the room the spirals and dot fields take — but those two voids are
+ * nearly half the box, and at the type inset the mark reads lighter than the
+ * lettered hexes it sits among.
+ */
+const PHYSICAL_SUPERINTELLIGENCE_MARK: CanvasMark = {
+  shapes: [
+    {
+      d: 'M4 207c4 187 6 214 27 265 13 34 41 77 67 103 24 26 69 57 99 70 29 13 83 29 119 36l65 11 3 106 3 107 83 3 82 3v-217l75-13c41-7 101-26 134-42 33-16 74-46 92-67 18-20 44-61 58-92 25-53 26-64 29-268l4-212h-69c-37 0-75 5-83 10-12 7-16 46-20 207-5 186-7 201-29 241-18 30-39 49-75 67-27 14-65 25-83 25h-33V0h-170v550h-27c-16 0-46-9-68-19-23-10-53-32-67-49-14-17-31-54-37-82-6-28-11-122-11-210 0-131-3-161-16-174-11-12-35-16-86-16h-70l4 207Z',
+    },
+  ],
+  x: 0,
+  y: 0,
+  width: 944,
+  height: 911,
+  inset: 0.68,
+};
+
 const SHORT_MARKS: Record<string, CanvasMark> = {
   'math-inc': MATH_INC_MARK,
   'deep-cogito': DEEP_COGITO_MARK,
@@ -2782,6 +2811,7 @@ const SHORT_MARKS: Record<string, CanvasMark> = {
   runway: RUNWAY_MARK,
   'unreasonable-labs': UNREASONABLE_LABS_MARK,
   prismml: PRISMML_MARK,
+  'physical-superintelligence': PHYSICAL_SUPERINTELLIGENCE_MARK,
 };
 
 /**

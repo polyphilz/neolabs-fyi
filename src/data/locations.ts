@@ -25,6 +25,7 @@ export const CITIES = {
   southSf: city('South San Francisco', 'United States', 'US', 37.6547, -122.4077),
   newYork: city('New York', 'United States', 'US', 40.7128, -74.006),
   cambridgeMa: city('Cambridge, MA', 'United States', 'US', 42.3736, -71.1097),
+  boston: city('Boston', 'United States', 'US', 42.3601, -71.0589),
   pittsburgh: city('Pittsburgh', 'United States', 'US', 40.4406, -79.9959),
   seattle: city('Seattle', 'United States', 'US', 47.6062, -122.3321),
   miami: city('Miami', 'United States', 'US', 25.7617, -80.1918),
