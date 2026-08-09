@@ -261,6 +261,10 @@ export type OrgId =
   | 'freiburg'
   | 'ubc'
   | 'bosch'
+  | 'bloomsburyai'
+  | 'datasine'
+  | 'plutodata'
+  | 'imprintai'
   | 'startup';
 
 /**

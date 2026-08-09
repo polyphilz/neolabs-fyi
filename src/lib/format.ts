@@ -2437,7 +2437,49 @@ const DEEPGRAM_MARK: CanvasMark = {
   height: 632.5,
 };
 
+/**
+ * Orbital's ring: concentric arc segments on the left that resolve into
+ * straight bars on the right. Line art, so the shape carries `strokeWidth`
+ * and keeps the artwork's own geometry instead of being converted to
+ * outlines. The source viewBox stops at the path's *geometric* bounds and so
+ * clips half a stroke off the right and bottom edges; the box below is the
+ * true ink extent, the geometry grown by 13 (half of 26) on every side. A
+ * circular form in a square box reads smaller than its bounds suggest, which
+ * is what the wide inset compensates for.
+ */
+const ORBITAL_MARK: CanvasMark = {
+  shapes: [
+    {
+      d:
+        'M395 75.6C393.1 120.4 389.6 169.7 412.4 210.6C415.4 216 420.6 220.7 424.5 225.4'
+        + 'M448.7 79.6C450.5 107.6 449.1 137.9 457.3 164.9C474.4 221.1 522.6 269.6 581.9 279.5C621.3 286.1 662.7 283 702.5 283'
+        + 'M335 82.6C335 109 333.1 136.3 337.6 162.3C341.7 185.6 348.8 207.3 356.9 229.4'
+        + 'M499.1 91.6C505.4 115.9 509.2 142.8 519.6 165.6C523.3 173.6 528 180.8 533.7 187.3C545.2 200.3 558.9 211.5 575.4 217.5C598.5 225.9 622.5 225 646.6 225H677'
+        + 'M239.2 118.6C263.9 160.8 294.2 205.3 299.5 254.8'
+        + 'M192.4 151.7C208.4 180.7 224.9 209 237.4 239.7C242.5 252 249.1 266.2 250.6 279.5C251.7 288.9 249.6 299.8 249.5 309.4'
+        + 'M150.9 192.5C166.2 222.9 182.9 253.1 192.8 285.9C216.9 365.2 216 451.1 187.6 529.3C177.8 556.1 163.6 581.4 150.5 606.8'
+        + 'M114.6 246.4C127.9 277.4 140.6 307.6 147.2 340.9C157.4 392.3 152.8 447 137.6 496.9C131.8 516.1 122.8 534.1 114.6 552.3'
+        + 'M565.5 341H718.5'
+        + 'M575.6 400H724.4'
+        + 'M563.7 464.6C570.7 462.6 577.7 459.7 584.8 458.3C601.4 454.9 621.8 458 638.8 458C665.3 458 691.8 458 718.3 458'
+        + 'M249 490.5C249.4 500.5 251.8 512.4 250.3 522.3C248.2 535.6 241.8 549.5 236.7 561.9C224.2 592.1 207.9 620.6 192.7 649.4'
+        + 'M449.1 720.4C450.6 692.3 449 662.3 457.3 635.1C473.6 581.5 516.5 536.3 571.6 522C586.6 518.1 601.7 517.5 617.1 517C645.5 516.1 673.9 516 702.3 516'
+        + 'M303.5 547.5C286.8 594.9 264.2 637.7 239.5 681.3'
+        + 'M505.2 706.5C507.6 687.9 507.9 667.2 513.6 649.4C516.9 639.3 521.1 629.4 527.3 620.6C541 601.1 561 585.3 584.2 579C604.6 573.4 625.1 575 645.9 575H676'
+        + 'M356.9 570.6C338.5 619.3 332.7 665.5 336.3 717.4'
+        + 'M425.6 573.6C421.3 578.6 415.6 583.5 412.3 589.2C389.5 629.1 393 680.3 393 724.4',
+      strokeWidth: 26,
+    },
+  ],
+  x: 101.6,
+  y: 62.6,
+  width: 635.8,
+  height: 674.8,
+  inset: 0.78,
+};
+
 const SHORT_MARKS: Record<string, CanvasMark> = {
+  orbital: ORBITAL_MARK,
   cartesia: CARTESIA_MARK,
   fundamental: FUNDAMENTAL_MARK,
   'prior-labs': PRIOR_LABS_MARK,

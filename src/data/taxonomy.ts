@@ -264,6 +264,10 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   openphilanthropy: { label: 'Open Philanthropy', group: 'startup' },
   snorkelai: { label: 'Snorkel AI', group: 'startup' },
   greenfieldpartners: { label: 'Greenfield Partners', group: 'startup' },
+  bloomsburyai: { label: 'Bloomsbury AI', group: 'startup' },
+  datasine: { label: 'DataSine', group: 'startup' },
+  plutodata: { label: 'Pluto Data Analytics', group: 'startup' },
+  imprintai: { label: 'Imprint AI', group: 'startup' },
 
   // The five schools currently broken out as dedicated lineage rows. Other
   // institutions remain grouped in `academia` until that editorial taxonomy

@@ -1823,6 +1823,45 @@ export const LABS: Lab[] = [
       "Founded by Michigan particle physicists who repurposed dark-matter waveform analysis for speech; the Nova speech-to-text models and a voice-agent stack sold as enterprise API infrastructure.",
     location: CITIES.sf,
   },
+  {
+    slug: "orbital",
+    // "Orbital" is what the company calls itself — LinkedIn, the careers page
+    // and Godwin's own title all use it bare. The site is orbitalindustries.com
+    // and the Series B release says "Orbital Industries", so the longer form is
+    // a live alternate rather than a former name, and stays out of priorNames.
+    name: "Orbital",
+    priorNames: ["Orbital Materials"],
+    // Undisclosed. TNW and Resilience Media both state no post-money was
+    // released with the $50M Series B (Plural, 28 May 2026), and no figure
+    // exists for the seed, Series A or the Oct 2024 NVentures round either.
+    // The nominal is editorial, as it is for every `undisclosed` here: $71M of
+    // capital raised is what the company has taken in, not what it is worth. A
+    // $50M B at a hot-but-ordinary ~12.5% dilution implies ~$400M post, which
+    // is ~5.6x raised — between Xaira's 3.4x and Isomorphic's 5.8x. Dealroom
+    // models EV at $200-300M, consistent with the 20-25% dilution end; it is a
+    // tracker's model, so it corroborates rather than sets the figure. $500M
+    // (10% dilution) is the ceiling: a lab priced higher does not raise $50M.
+    valuation: { usdM: 400, qualifier: "undisclosed" },
+    // Founded and launched Sep 2022 as Orbital Materials; renamed 28 May 2026
+    // alongside the Series B. Broad press coverage only began with the Feb
+    // 2024 Series A.
+    year: 2022,
+    domain: "science",
+    tags: ["agents", "materials", "open-source", "open-weights"],
+    founders: [
+      { person: "jonathan-godwin", prior: ["deepmind", "bloomsburyai"] },
+      {
+        person: "james-gin-pollock",
+        prior: ["datasine", "plutodata", "imprintai"],
+      },
+      { person: "daniel-miodovnik" },
+    ],
+    knownFor:
+      "Orb, an Apache-licensed universal interatomic potential fast enough to simulate 100,000 atoms on one GPU, and CurieOS, the agent OS built on top of it; renamed from Orbital Materials as it began selling what those models designed — a PFAS-free two-phase refrigerant for 2,000W+ GPUs, pitched as the first AI-designed molecule to reach commercial market.",
+    // London HQ with a San Francisco office; 6 of 7 open roles are London. An
+    // earlier advanced-materials R&D site in Princeton, NJ is not the seat.
+    location: CITIES.london,
+  },
 ];
 
 /** Sorted big → small, which is how every view wants them. */
