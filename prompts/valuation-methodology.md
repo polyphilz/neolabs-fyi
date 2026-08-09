@@ -132,9 +132,9 @@ what it asserts.
 | --- | --- | --- |
 | Dealroom "enterprise value" bands | Models capital raised, not worth — the same $200–300M band appears for labs with wildly different profiles | Orbital, Inherent, Latent Labs |
 | Caplight / Forge / Hiive / UpMarket marks | Secondary-marketplace models, not rounds | EvolutionaryScale's $1.14B |
-| Auto-generated company profiles — sites such as nextomoro, valueaddvc, startuphub.ai | Figures with no traceable source; several contradict primary filings and the company's own statements | A Series B and post-money for one lab that no filing or outlet supports; a modelled "effective valuation" presented as a figure for another |
+| Auto-generated company profiles | Figures with no traceable source; several contradict primary filings and the company's own statements | A Series B and post-money for one lab that no filing or outlet supports; a modelled "effective valuation" presented as a figure for another |
 | Name collisions | A different company entirely | Dealroom's "Autoscience" is an unrelated consumer app; Forge's "Latent" is another firm; Crunchbase's Autoscience description belongs to a car-parts company |
-| Derivative lab indexes | Circular — likely built from datasets like this one | labindex.fyi |
+| Derivative lab indexes | Risk of circularity — another index may itself be sourced from datasets like this one, so it cannot independently corroborate | — |
 | FX round-trip artifacts | Spurious precision | Tracxn's `$50,000,647.82` for a $50M round |
 
 A tracker figure can **corroborate** a nominal you derived independently. It must never

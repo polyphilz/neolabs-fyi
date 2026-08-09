@@ -467,7 +467,7 @@ export const LABS: Lab[] = [
       { person: "reid-hoffman", prior: ["startup", "greylock"] },
     ],
     knownFor:
-      "The Pi assistant, then a 2024 Microsoft pseudo-acquihire of its co-founders and top talent; rebuilt since under CEO Sean White as an enterprise AI company.",
+      "The Pi assistant, then a 2024 Microsoft reverse acquihire of its co-founders and much of its team; rebuilt since under CEO Sean White as an enterprise AI company.",
     location: CITIES.paloAlto,
     exit: { type: "acquihire", absorbed: false, to: "Microsoft", year: 2024 },
   },
@@ -659,7 +659,7 @@ export const LABS: Lab[] = [
       },
     ],
     knownFor:
-      "French agentic/computer-use AI company, originally founded by a large ex-DeepMind contingent — most of whom departed within months of the 2024 seed round.",
+      "French agentic/computer-use AI company, founded by a large ex-DeepMind contingent.",
     location: CITIES.paris,
   },
   {
@@ -1546,10 +1546,11 @@ export const LABS: Lab[] = [
     // funding" at all — so there is not even a tracker EV range to argue with
     // here, and no secondary mark exists on Caplight, Forge, Hiive or
     // UpMarket. EDGAR full-text search returns zero Form D for "Logical
-    // Intelligence", "Logical Intelligence Inc", "Bodnia", "Isenbaev" and
-    // "Fetisov", and the EDGAR company index has no such registrant; the same
-    // query returns Deep Cogito's Form D and D/A, and "Pebblebed" returns four
-    // fund-level Form Ds, so the absence is real rather than a broken search.
+    // Intelligence" and "Logical Intelligence Inc", and none for the
+    // personal-name variants tried; the EDGAR company index has no such
+    // registrant either, and the same query returns Deep Cogito's Form D and
+    // D/A, while "Pebblebed" returns four fund-level Form Ds — so the absence
+    // is real rather than a broken search.
     //
     // What is on record is one seed, dated 1 Oct 2025 by CB Insights and 1 Nov
     // 2025 by PitchBook, with Pebblebed, Cathay Innovation and Roar Ventures
@@ -1654,10 +1655,10 @@ export const LABS: Lab[] = [
     // SiliconANGLE, R&D World, AIwire/BigDATAwire and FinSMEs; PitchBook's
     // Post-Val column is empty on the single row it carries. EDGAR full-text
     // returns zero for "Autoscience", "Autoscience Inc", "Autoscience
-    // Institute" and "Eliot Cowan" alike, while the identical query returns
-    // Deep Cogito's Form D (8 Apr 2026) and D/A (24 Apr 2026) — so the absence
-    // is real, and there is no Reg D filing to date the close or count the
-    // investors. Nothing has been announced since.
+    // Institute" and the founder's name alike, while the identical query
+    // returns Deep Cogito's Form D (8 Apr 2026) and D/A (24 Apr 2026) — so the
+    // absence is real, and there is no Reg D filing to date the close or count
+    // the investors. Nothing has been announced since.
     //
     // The $14 that stood here was capital raised, not worth. The nominal
     // inverts the seed at the house default of 20%: $70M. TechCrunch, 31 Mar
@@ -1741,9 +1742,9 @@ export const LABS: Lab[] = [
     // "Oumi PBC" while the identical query returns Deep Cogito's Form D and
     // D/A — the absence is real, not a broken search. StartupHub.ai's profile
     // ($63M raised, a Series A, an $810.9M "effective valuation" at 32%
-    // confidence, San Francisco, founded 2022, 39 staff) is wrong on every
-    // checkable field and is rejected outright — the same failure mode as the
-    // invented Essential AI Series B.
+    // confidence, San Francisco, founded 2022, 39 staff) contradicts every
+    // checkable field here and is not used — the same failure mode as the
+    // unsupported Essential AI Series B.
     //
     // So the nominal inverts the seed at the house default of 20%: $50M. This
     // one reads mid-band rather than pre-empted — two funds splitting a $10M
@@ -1837,22 +1838,19 @@ export const LABS: Lab[] = [
     // AI Ltd (16099785), incorporated 25 Nov 2024 as Persona Labs Ltd and
     // renamed 16 Apr 2026. Four allotments are on file, not the one previously
     // recorded: incorporation, 11 Mar 2025, 10 Jul 2025 and 26 Mar 2026. The
-    // last does state a premium, which an SH01 usually does not — 10,000
-    // ordinary shares for GBP 20,998.16, or GBP 2.0998 a share against 40,578
-    // in issue, pricing the company at about GBP 85,000. That is not a figure
-    // to record: the shares are voting ordinary in a block the same size as
-    // each of the three founder vehicles holds, so it prices founder stock and
-    // not the enterprise. Funding Spotter's "Cursive Ai Ltd Secures GBP 21k in
-    // Early-Stage Funding" (25 Apr 2026) is that same subscription
+    // last does state a premium, which an SH01 usually does not, implying about
+    // GBP 85,000 for the company. That is not a figure to record: the allotment
+    // is voting ordinary in a founder-sized block, so it prices founder stock
+    // and not the enterprise. Funding Spotter's "Cursive Ai Ltd Secures GBP 21k
+    // in Early-Stage Funding" (25 Apr 2026) is that same subscription
     // auto-generated into a round, and is rejected.
     //
     // What the register does establish is that no priced institutional round
-    // had closed by Mar 2026. The Nov 2025 confirmation statement shows the
-    // whole cap table — three founder vehicles at 10,000 ordinary each, and 578
-    // non-voting A ordinary split between two individuals and a Swedish holding
-    // company. SuperSeed is not on it, so its money sits on a convertible,
-    // which carries a cap and not a price. The UK Sovereign AI Fund allocation
-    // of Apr 2026 is up to 1M GPU hours of AIRR compute rather than equity —
+    // had closed by Mar 2026. The Nov 2025 confirmation statement shows a cap
+    // table of founder vehicles plus a small non-voting A class, with SuperSeed
+    // absent from it, so its money sits on a convertible, which carries a cap
+    // and not a price. The UK Sovereign AI Fund allocation of Apr 2026 is up to
+    // 1M GPU hours of AIRR compute rather than equity —
     // only Callosum took an equity cheque in that batch — so it is set aside,
     // though the fund holds a right of first refusal on future rounds.
     //
@@ -1862,7 +1860,7 @@ export const LABS: Lab[] = [
     // disclosed $10M seed, and Poetiq at $46M is the nearest structural twin,
     // senior ex-DeepMind researchers in this same domain. Cursive has less than
     // any of them: no disclosed amount, no priced round sixteen months after
-    // incorporation, and a manifesto page where they have shipped. The house
+    // incorporation, and nothing shipped where they have. The house
     // default of 20% on a SuperSeed-sized seed of GBP 3-4M gives GBP 15-20M
     // post, roughly $20-27M, and $25M sits in that band. That round size is
     // inferred from the investor's stage, not reported, and is the weakest link
@@ -2018,7 +2016,7 @@ export const LABS: Lab[] = [
       { person: "samuel-weinbach" },
     ],
     knownFor:
-      "Built the Luminous models as Europe's answer to OpenAI, then abandoned frontier scale for PhariaAI, a sovereign platform sold into government, defence and regulated industry.",
+      "Built the Luminous models as Europe's answer to OpenAI, then stepped back from frontier scale for PhariaAI, a sovereign platform sold into government, defence and regulated industry.",
     location: CITIES.heidelberg,
     // Announced 24 Apr 2026. Close is not cleanly documented: PitchBook
     // carries a 19 May 2026 deal date, but reporting that same day still
@@ -2070,8 +2068,8 @@ export const LABS: Lab[] = [
   },
   {
     slug: "orbital",
-    // "Orbital" is what the company calls itself — LinkedIn, the careers page
-    // and Godwin's own title all use it bare. The site is orbitalindustries.com
+    // "Orbital" is what the company calls itself — its LinkedIn page and the
+    // careers page both use it bare. The site is orbitalindustries.com
     // and the Series B release says "Orbital Industries", so the longer form is
     // a live alternate rather than a former name, and stays out of priorNames.
     name: "Orbital",
@@ -2496,9 +2494,9 @@ export const LABS: Lab[] = [
     year: 2025,
     // Pivoted. NEA's table and Dealroom still describe a forward-deployed lab
     // building autonomous agents for enterprises and government; that was the
-    // universalagi.ai business and it is gone. Everything published since
-    // roughly Aug 2025 is physics foundation models replacing CFD, so `agents`
-    // should not be restored from those sources.
+    // universalagi.ai business, which the company no longer does. Everything
+    // published since roughly Aug 2025 is physics foundation models replacing
+    // CFD, so `agents` should not be restored from those sources.
     domain: "physical",
     founders: [
       { person: "ameer-haj-ali", prior: ["brainco", "anyscale", "berkeley"] },
@@ -2521,16 +2519,16 @@ export const LABS: Lab[] = [
     // Rejected: Dealroom's $160-240M is its modelled "enterprise value" band,
     // on a profile it labels "Made with AI"; PitchBook, Crunchbase, Tracxn and
     // Caplight are blank or gated and TrueUp states "not available"; and
-    // startuphub.ai's $957M is comps output over a mis-scraped entity it also
-    // dates to 2023 in Columbus, Ohio running an AI consultancy. EDGAR has
+    // startuphub.ai's $957M is comps output over a mismatched entity record it
+    // also dates to 2023 in Columbus, Ohio running an AI consultancy. EDGAR has
     // nothing, under the name or four entity variants, full-text or company
     // index — the control query "Deep Cogito" returns its two known filings,
     // so the null is the search working rather than failing. The nominal is
     // therefore inverted from the round at the 20% seed default: 40/0.20 =
     // $200M. An oversubscribed book, two competing co-leads and a growth-stage
     // crossover in at seed argue against the 25% soft case; nothing shipped, a
-    // stub research page and ~15 people argue against the 15% pre-emption case,
-    // which no outlet reported anyway. $160M is the floor — 25%, and a book
+    // placeholder research page and ~15 people argue against the 15%
+    // pre-emption case, which no outlet reported anyway. $160M is the floor — 25%, and a book
     // that closes oversubscribed with two leads is not selling a quarter of
     // itself — and $270M the ceiling, 15%, where a seed priced that tightly is
     // normally reported as pre-empted by someone. The multiple-of-raised check
