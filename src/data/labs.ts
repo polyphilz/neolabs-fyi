@@ -799,7 +799,15 @@ export const LABS: Lab[] = [
   {
     slug: "evolutionaryscale",
     name: "EvolutionaryScale",
-    valuation: { usdM: 142, qualifier: "undisclosed" },
+    // $142M raised in two tranches: ~$40M led by Lux in Aug 2023, then $102M
+    // at the ESM3 launch in Jun 2024 (Nat Friedman and Daniel Gross with Lux,
+    // Amazon and Nvidia's NVentures). Only the first was ever priced in
+    // public — Forbes' sources put it at $200M post. The Jun 2024 tranche has
+    // no reported figure and the Nov 2025 Biohub transaction was explicitly
+    // undisclosed, so the nominal steps that anchor up for a $102M raise at
+    // ~17% dilution. UpMarket's $1.14B is a secondary-marketplace model
+    // rather than a round, and is not used.
+    valuation: { usdM: 600, qualifier: "undisclosed" },
     year: 2024,
     domain: "science",
     tags: ["drug-discovery", "open-weights"],
@@ -821,7 +829,15 @@ export const LABS: Lab[] = [
   {
     slug: "moonvalley",
     name: "Moonvalley",
-    valuation: { usdM: 84, qualifier: "undisclosed" },
+    // $154M raised, per the company's own release: a $70M seed (General
+    // Catalyst and Khosla, Nov 2024) and $84M more (General Catalyst, with
+    // CAA, CoreWeave and Comcast Ventures, Jul 2025). The 84 that stood here
+    // was the second round alone, not the total. Neither round was priced in
+    // public — Private Capital Journal called the second a "lofty valuation"
+    // without printing one — and the Reka merger was an all-share exchange
+    // with no ratio disclosed, so no price can be derived from it. The
+    // nominal prices the $84M at ~17% dilution.
+    valuation: { usdM: 500, qualifier: "undisclosed" },
     year: 2024,
     domain: "media",
     tags: ["video"],
@@ -994,7 +1010,17 @@ export const LABS: Lab[] = [
   {
     slug: "essential-ai",
     name: "Essential AI",
-    valuation: { usdM: 57, qualifier: "undisclosed" },
+    // ~$65M raised, per the company: an $8.3M seed (Thrive) and a $56.5M
+    // Series A (March Capital, with Google, Nvidia, AMD and Thrive, Dec
+    // 2023); PitchBook carries $76M, implying an extension that was never
+    // announced. Nothing was ever priced in public. The nominal prices the
+    // Series A at ~22% dilution and deliberately does not step up from
+    // there, because the lab did not: no round followed in the two and a half
+    // years to the Nvidia acquihire, and reporting around that deal has
+    // Vaswani struggling to raise. The "$1B valuation / $175M Series B led by
+    // Lightspeed" figures on nextomoro and valueaddvc are AI-generated and
+    // contradicted by Crunchbase, Tracxn and PitchBook alike — do not adopt.
+    valuation: { usdM: 250, qualifier: "undisclosed" },
     year: 2023,
     domain: "general",
     tags: ["open-weights"],
@@ -1693,11 +1719,23 @@ export const LABS: Lab[] = [
   {
     slug: "prior-labs",
     name: "Prior Labs",
-    // Price undisclosed by both parties. SAP's release commits to up to €1B of
-    // follow-on investment over four years, which is not a sale price, and
-    // Forbes' "more than $1.14B" conflates the two. The only hard number on
-    // record is the €9M pre-seed of Feb 2025, used here as the nominal figure.
-    valuation: { usdM: 10, qualifier: "undisclosed" },
+    // Price never disclosed — SAP says so outright in both the 4 May
+    // announcement and the 17 Jul completion notice — and the >€1B attached to
+    // the deal is a four-year commitment to invest *into* the lab, not
+    // consideration paid for it. Forbes' ">$1.14B" is that same commitment in
+    // dollars and Forbes states it correctly as such; the conflation belongs
+    // to Tech.eu ("acquired ... for over €1 billion"), not to them.
+    //
+    // The nominal is inferred instead from the one reported figure that does
+    // bear on price: Forbes, and separately Pathfounders, have the founders
+    // taking "more than half a billion dollars in cash upfront." That is
+    // founder proceeds only, so grossing it up for what Balderton, XTX and
+    // Atlantic Labs held after a single €9M pre-seed — the company's first and
+    // only round — puts total consideration near $700-800M. Reported rather
+    // than disclosed, and a floor at that, so the qualifier stays
+    // `undisclosed`; with `structure: 'subsidiary'` this renders as "Not
+    // independently valued" and the figure only sets a bubble radius.
+    valuation: { usdM: 750, qualifier: "undisclosed" },
     year: 2024,
     domain: "applied",
     tags: ["academic-spinout", "open-source", "open-weights", "tabular"],
