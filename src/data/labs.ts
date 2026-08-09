@@ -1889,6 +1889,31 @@ export const LABS: Lab[] = [
     // careers page labels that same office "SFO".
     location: CITIES.sanMateo,
   },
+  {
+    slug: "irregular",
+    name: "Irregular",
+    priorNames: ["Pattern Labs"],
+    // $80M across two back-to-back rounds announced together on 17 Sep 2025 —
+    // ~$30M from Sequoia, then ~$50M weeks later with Sequoia, Redpoint, Swish
+    // and angels (Wiz's Assaf Rappaport, Eon's Ofir Ehrlich). The company never
+    // priced it publicly and Calcalist reports the valuation as undisclosed;
+    // $450M post is TechCrunch's, from a source close to the deal, and Forbes
+    // carries the same figure in a headline. Two independent outlets on one
+    // point value is why this is `exact` rather than `rumored`. Secondary-market
+    // data still implied $450M in July 2026 and no newer round is on record.
+    valuation: { usdM: 450, qualifier: "exact" },
+    year: 2023,
+    domain: "applied",
+    tags: ["security"],
+    founders: [
+      // Unit 81 and Unit 8200 are different IDF units — one founder from each.
+      { person: "dan-lahav", prior: ["ibm", "unit81"] },
+      { person: "omer-nevo", prior: ["google", "unit8200"] },
+    ],
+    knownFor:
+      "Frontier AI security lab that stress-tests models for offensive cyber capability inside simulated networks; its evaluations ship inside OpenAI and Anthropic system cards, alongside the SOLVE vulnerability-scoring framework.",
+    location: CITIES.telAviv,
+  },
 ];
 
 /** Sorted big → small, which is how every view wants them. */

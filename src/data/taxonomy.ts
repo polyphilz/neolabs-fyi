@@ -50,7 +50,8 @@ export const DOMAINS: Record<
   },
   applied: {
     label: 'Applied',
-    blurb: 'Enterprise models, agent platforms, and models for structured business data.',
+    blurb:
+      'Enterprise models, agent platforms, structured-data AI, and AI security/evaluation tools.',
   },
   safety: {
     label: 'AI safety & interpretability',
@@ -87,6 +88,7 @@ export const TAGS: Record<TagId, string> = {
   math: 'Math',
   vision: 'Vision',
   agents: 'Agents',
+  security: 'Security',
   'training-infra-tools': 'Training infra / tooling',
   video: 'Video',
   voice: 'Voice',
@@ -109,6 +111,7 @@ export const TAG_ORDER: TagId[] = [
   'math',
   'vision',
   'agents',
+  'security',
   'training-infra-tools',
   'video',
   'voice',
@@ -174,6 +177,10 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   twitter: { label: 'Twitter', group: 'bigtech' },
   snap: { label: 'Snap', group: 'bigtech' },
 
+  // Two distinct IDF units, deliberately kept apart: Irregular's founders came
+  // from one each. They share the `government` group, so this is two labels on
+  // one hub, not two hubs.
+  unit81: { label: 'Unit 81', group: 'government' },
   unit8200: { label: 'Unit 8200', group: 'government' },
   uidai: { label: 'UIDAI / Aadhaar', group: 'government' },
   whitehouse: { label: 'White House / NSC', group: 'government' },
