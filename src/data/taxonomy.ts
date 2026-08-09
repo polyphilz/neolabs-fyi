@@ -219,6 +219,7 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   eleuther: { label: 'EleutherAI', group: 'startup' },
   alephalpha: { label: 'Aleph Alpha', group: 'startup' },
   bunchai: { label: 'Bunch', group: 'startup' },
+  brainco: { label: 'Brain Co.', group: 'startup' },
   chartbeat: { label: 'Chartbeat', group: 'startup' },
   forai: { label: 'FOR.ai', group: 'startup' },
   highflyer: { label: 'High-Flyer', group: 'startup' },

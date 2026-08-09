@@ -2455,6 +2455,58 @@ export const LABS: Lab[] = [
       "Caltech spinout built on a compression theory that pushes model weights down to 1 bit and ternary; the Apache-2.0 Bonsai family and its custom llama.cpp and MLX kernels fit a 27B-class model into 3.9GB, small enough to run on a phone.",
     location: CITIES.pasadena,
   },
+  {
+    slug: "universalagi",
+    name: "UniversalAGI",
+    // Never priced. PitchBook records one Early Stage VC deal dated 1 Jul 2025
+    // with Amount, Raised to Date and Post-Val all empty; Premier Alternatives
+    // renders valuation and total funding alike as N/A; no investor has been
+    // named by anyone; and a Harmonic-sourced list still marked the company as
+    // raising in May 2026, so that round is the only one closed.
+    //
+    // Rejected: Airframe's "Raised $10M" is an auto-generated profile with no
+    // traceable source, and capital raised is not worth in any case. Dealroom's
+    // Jul 2025 entry tags the round "Buyout", the company "Acquired", and names
+    // Affinity Partners as the investor — Affinity led the Series A of Brain
+    // Co., a different company, so that record reads as cross-contamination and
+    // no exit is derived from it. Crunchbase's "Universal AGI" is a third
+    // entity again, on universalagi.ai. The "$500 million valuation" Forbes
+    // reported in Nov 2025 belongs to AGI, Inc., and was an open ask rather
+    // than a close.
+    //
+    // EDGAR has nothing: zero hits for "UniversalAGI", "Universal AGI",
+    // "UniversalAGI, Inc." and "UniversalAGI Inc" both across all forms and
+    // filtered to Form D, and the company-name index matches nothing. The
+    // control query returns Deep Cogito's D and D/A, so the absence is real
+    // rather than a broken search.
+    //
+    // With no round size there is nothing to invert and no denominator for the
+    // multiple check, so the nominal is a stage comparison. $150M is Grafton
+    // Sciences' mark and is where this lands: Grafton has fifteen people and
+    // nothing published against a disclosed $42.5M base, this has ~20 people, a
+    // shipped model, a public API and a technical report against no disclosed
+    // capital at all, and the two roughly offset. $75M is the floor — about a
+    // $15M seed at 20%, and a team this size with a live product does not price
+    // below an ordinary seed post. $300M is the ceiling: Deep Cogito's mark,
+    // earned on a competitively priced $40M Series A with a Form D behind it
+    // and $53.4M raised, where this has one undisclosed seed and no filing.
+    // The round was priced eleven months before anything shipped; if a size
+    // ever surfaces, rebuild this by inversion rather than adjusting it.
+    valuation: { usdM: 150, qualifier: "undisclosed" },
+    year: 2025,
+    // Pivoted. NEA's table and Dealroom still describe a forward-deployed lab
+    // building autonomous agents for enterprises and government; that was the
+    // universalagi.ai business and it is gone. Everything published since
+    // roughly Aug 2025 is physics foundation models replacing CFD, so `agents`
+    // should not be restored from those sources.
+    domain: "physical",
+    founders: [
+      { person: "ameer-haj-ali", prior: ["brainco", "anyscale", "berkeley"] },
+    ],
+    knownFor:
+      "Large physics models in place of the CAE loop: SUV-PT predicts surface pressure, wall shear stress and drag straight from 3D geometry in seconds where high-fidelity CFD takes days, on an in-house Latent Interaction Field Transformer trained on millions of generated simulations.",
+    location: CITIES.sf,
+  },
 ];
 
 /** Sorted big → small, which is how every view wants them. */

@@ -83,6 +83,7 @@ export type OrgId =
   | 'chipletz'
   | 'carnegierobotics'
   | 'bunchai'
+  | 'brainco'
   | 'cambridge'
   | 'cambridgequantum'
   | 'characterai'

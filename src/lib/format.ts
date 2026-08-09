@@ -2718,6 +2718,36 @@ const PHYSICAL_SUPERINTELLIGENCE_MARK: CanvasMark = {
   inset: 0.68,
 };
 
+/**
+ * A ring between two chevrons that open toward it and taper away — `<O>`. One
+ * path, four subpaths, straight from the source.
+ *
+ * The `evenodd` is kept. It is strictly inert — the inner circle is drawn with
+ * the opposite sweep to the outer one, so nonzero winding cancels to zero
+ * inside it and punches the same hole — but unlike the psi above, this artwork
+ * genuinely does carve a counter out of the shape around it, which is the case
+ * the flag exists to express. The chevrons clear the ring on both sides, so the
+ * rule never reaches them either way. The viewBox is already the ink bounds:
+ * the ring owns the full height, the chevrons the left and right edges.
+ *
+ * Wide, at 2.1:1, and light for its box — the ring is nearly half hole and the
+ * two chevrons are thin — so it takes the inset Reflection and Discovery Loop
+ * use at that same aspect rather than the default.
+ */
+const UNIVERSALAGI_MARK: CanvasMark = {
+  shapes: [
+    {
+      d: 'M42 0a20 20 0 1 1 0 40 20 20 0 1 1 0-40Zm0 6.25a13.75 13.75 0 1 0 0 27.5 13.75 13.75 0 1 0 0-27.5ZM21 8v6l-11 6 11 6v6L0 23v-6Zm42 0v6l11 6-11 6v6l21-9v-6Z',
+      fillRule: 'evenodd',
+    },
+  ],
+  x: 0,
+  y: 0,
+  width: 84,
+  height: 40,
+  inset: 0.72,
+};
+
 const SHORT_MARKS: Record<string, CanvasMark> = {
   'math-inc': MATH_INC_MARK,
   'deep-cogito': DEEP_COGITO_MARK,
@@ -2812,6 +2842,7 @@ const SHORT_MARKS: Record<string, CanvasMark> = {
   'unreasonable-labs': UNREASONABLE_LABS_MARK,
   prismml: PRISMML_MARK,
   'physical-superintelligence': PHYSICAL_SUPERINTELLIGENCE_MARK,
+  universalagi: UNIVERSALAGI_MARK,
 };
 
 /**
