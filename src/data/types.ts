@@ -265,6 +265,8 @@ export type OrgId =
   | 'datasine'
   | 'plutodata'
   | 'imprintai'
+  | 'bostondynamics'
+  | 'broad'
   | 'startup';
 
 /**

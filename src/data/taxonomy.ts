@@ -268,6 +268,10 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   datasine: { label: 'DataSine', group: 'startup' },
   plutodata: { label: 'Pluto Data Analytics', group: 'startup' },
   imprintai: { label: 'Imprint AI', group: 'startup' },
+  // Not a startup by any normal reading — thirty years old and Hyundai-owned —
+  // but `startup` is where this taxonomy puts every company that is neither a
+  // tech giant nor a university, which is what the bucket has always been.
+  bostondynamics: { label: 'Boston Dynamics', group: 'startup' },
 
   // The five schools currently broken out as dedicated lineage rows. Other
   // institutions remain grouped in `academia` until that editorial taxonomy
@@ -354,6 +358,7 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   ucdavis: { label: 'UC Davis', group: 'academia' },
   freiburg: { label: 'University of Freiburg', group: 'academia' },
   ubc: { label: 'University of British Columbia', group: 'academia' },
+  broad: { label: 'Broad Institute', group: 'academia' },
 };
 
 /**

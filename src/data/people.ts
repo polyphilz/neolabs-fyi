@@ -305,6 +305,9 @@ export const PEOPLE = {
   'jonathan-godwin': { name: 'Jonathan Godwin' },
   'james-gin-pollock': { name: 'James Gin-Pollock' },
   'daniel-miodovnik': { name: 'Daniel Miodovnik' },
+  'pete-florence': { name: 'Pete Florence' },
+  'andy-zeng': { name: 'Andy Zeng' },
+  'andrew-barry': { name: 'Andrew Barry' },
 } satisfies Record<string, { name: string }>;
 
 /**

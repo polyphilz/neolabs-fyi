@@ -1862,6 +1862,33 @@ export const LABS: Lab[] = [
     // earlier advanced-materials R&D site in Princeton, NJ is not the seat.
     location: CITIES.london,
   },
+  {
+    slug: "generalist-ai",
+    name: "Generalist AI",
+    // $400M announced 4 Jun 2026, led by Radical Ventures, with 8VC, Union
+    // Square, Hanabi and Norwest joining Nvidia's NVentures, Bezos Expeditions,
+    // Boldstart, Spark and NFDG. The company's own post confirms the round and
+    // a total "more than half a billion" but states no price; the $2B
+    // post-money is Bloomberg's, carried unchanged by every outlet since, so
+    // it's recorded as reported rather than rumored.
+    valuation: { usdM: 2_000, qualifier: "exact" },
+    // Incorporated March 2024 — Boldstart dates its first cheque to 24 Mar
+    // 2024 — and out of stealth with a research preview in June 2025.
+    year: 2024,
+    domain: "physical",
+    tags: ["robot-foundation-models"],
+    founders: [
+      { person: "pete-florence", prior: ["deepmind", "mit"] },
+      { person: "andy-zeng", prior: ["deepmind", "princeton"] },
+      { person: "andrew-barry", prior: ["broad", "bostondynamics", "mit"] },
+    ],
+    knownFor:
+      "GEN-0 and GEN-1, embodied foundation models pretrained from scratch on hundreds of thousands of hours of raw physical interaction collected with handheld grippers rather than in simulation; the DeepMind robotics researchers behind PaLM-E and RT-2, selling cross-embodiment robot intelligence rather than robots.",
+    // Two offices, the Bay Area and Boston. San Mateo is the headquarters of
+    // record in Bloomberg, PitchBook and the company's own LinkedIn; the
+    // careers page labels that same office "SFO".
+    location: CITIES.sanMateo,
+  },
 ];
 
 /** Sorted big → small, which is how every view wants them. */

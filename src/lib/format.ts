@@ -116,6 +116,7 @@ const CANVAS_NAMES: Record<string, string> = {
   'adaption-labs': 'Adaption',
   'essential-ai': 'Essential',
   'genesis-ai': 'Genesis',
+  'generalist-ai': 'Generalist',
   'sakana-ai': 'Sakana',
   'axiom-math': 'Axiom',
   'rhoda-ai': 'Rhoda',
@@ -2478,8 +2479,29 @@ const ORBITAL_MARK: CanvasMark = {
   inset: 0.78,
 };
 
+/**
+ * Generalist's G, three disjoint solids — a chevron, a wedged disc and a
+ * notched square — rather than one continuous letterform. The source viewBox
+ * is already the ink bounds, so it is used as-is. The gaps between the three
+ * pieces are most of that box, so the mark takes a wider inset than a solid
+ * one to keep its optical weight in line with its neighbours.
+ */
+const GENERALIST_MARK: CanvasMark = {
+  shapes: [
+    {
+      d: 'M401.5-.25 578.75 101.75V307.25l-88.5 51-88.75-153-88.75 153-88.5-51V101.75ZM278.46 417.996978A184 184 0 1 0 367.75 575.75H187.38ZM517.75 405.75H779.25V746.25h-340.5v-170.5h177Z',
+    },
+  ],
+  x: -0.25,
+  y: -0.25,
+  width: 779.5,
+  height: 760,
+  inset: 0.7,
+};
+
 const SHORT_MARKS: Record<string, CanvasMark> = {
   orbital: ORBITAL_MARK,
+  'generalist-ai': GENERALIST_MARK,
   cartesia: CARTESIA_MARK,
   fundamental: FUNDAMENTAL_MARK,
   'prior-labs': PRIOR_LABS_MARK,
