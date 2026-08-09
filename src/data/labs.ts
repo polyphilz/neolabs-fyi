@@ -2244,6 +2244,58 @@ export const LABS: Lab[] = [
     // references in circulation are personal locations, not the company's.
     location: CITIES.paloAlto,
   },
+  {
+    slug: "unreasonable-labs",
+    name: "Unreasonable Labs",
+    // Never priced in public. The $13.5M announced 10 Mar 2026 on emergence
+    // from stealth — Playground Global leading, AIX Ventures, E14 Fund and
+    // MS&AD Ventures joining — carries no valuation, and neither do
+    // BusinessWire, HPCwire, Ventureburn, The AI Insider, Pulse 2.0 or
+    // Cambridge Today. PitchBook's Post-Val column is empty on the single row
+    // it carries; Crunchbase, Preqin, CB Insights and Tracxn all show the round
+    // with no figure; there is no Dealroom enterprise-value band and no
+    // secondary-market mark under the name. Crunchbase's other "Unreasonable
+    // Labs" is a programme of Unreasonable Alchemy LLC, the Boulder impact
+    // accelerator, and is a different company entirely.
+    //
+    // The round is harder-edged than the announcement. Knoxus.AI Ltd (CIK
+    // 2090126), the filing entity, incorporated in California in 2025, has a
+    // Form D of 7 Oct 2025 and a D/A of 3 Feb 2026: $12,500,000 offered,
+    // $12,499,996 sold, $4 left, first sale 22 Sep 2025, three accredited
+    // investors, and Playground's Sasha Ostojic named a director. So the price
+    // was set in September 2025 and the March 2026 announcement is publicity,
+    // not a close; the ~$1M between the filing and the announced total sits
+    // outside this offering. A full-text search on the trading name returns
+    // nothing — the filing is under the legal entity — while the identical
+    // query returns Deep Cogito's Form D and D/A, so the absence is real.
+    //
+    // The nominal inverts the announced round at the house default of 20%:
+    // $68M. A $1.2B deep-tech fund led and took a board seat, which argues
+    // tighter — but the offering merely filled rather than upsizing, on a
+    // three-investor syndicate, with nothing shipped and the company six months
+    // from leaving stealth, where Autoscience prices at 20% on a larger round
+    // with a shipped product and paying customers. The multiple-of-raised test
+    // is degenerate on a one-round company (5.0x is 1/0.20 restated). $54M is
+    // the floor (25%, the soft end of TechCrunch's 31 Mar 2026 band — a round
+    // Playground leads and boards does not price at the market's bottom) and
+    // $90M the ceiling (15%, a pre-empted seed, which eleven months without a
+    // follow-on does not support). This is the September 2025 price carried
+    // forward unrefreshed.
+    valuation: { usdM: 68, qualifier: "undisclosed" },
+    year: 2026,
+    domain: "science",
+    tags: ["materials"],
+    founders: [
+      {
+        person: "yuan-cao",
+        prior: ["deepmind", "google", "baidu", "kittai", "jhu"],
+      },
+      { person: "markus-buehler", prior: ["mit", "caltech", "maxplanck"] },
+    ],
+    knownFor:
+      "Unreasonable.DISCOVERY, a cross-domain discovery engine that pairs LLMs with neurosymbolic abstractions over a unified world model of physics, biology, chemistry and materials — built to compose new hypotheses rather than retrieve known facts.",
+    location: CITIES.paloAlto,
+  },
 ];
 
 /** Sorted big → small, which is how every view wants them. */

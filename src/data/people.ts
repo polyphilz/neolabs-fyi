@@ -315,6 +315,8 @@ export const PEOPLE = {
   'anubhav-dubey': { name: 'Anubhav Dubey' },
   'jesse-michael-han': { name: 'Jesse Michael Han' },
   'christian-szegedy': { name: 'Christian Szegedy' },
+  'yuan-cao': { name: 'Yuan Cao' },
+  'markus-buehler': { name: 'Markus J. Buehler' },
 } satisfies Record<string, { name: string }>;
 
 /**

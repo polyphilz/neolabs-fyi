@@ -272,6 +272,7 @@ export type OrgId =
   | 'pitt'
   | 'bonn'
   | 'cadence'
+  | 'kittai'
   | 'startup';
 
 /**
