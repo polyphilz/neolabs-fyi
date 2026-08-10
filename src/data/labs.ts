@@ -611,6 +611,12 @@ export const LABS: Lab[] = [
     knownFor:
       "Action and world models trained on gameplay video to perceive, predict and act in virtual and physical environments.",
     location: CITIES.newYork,
+    // Not a subsidiary: it shares a parent with Medal rather than sitting under
+    // it, and holds its own institutional cap table at a priced $2.3B. The
+    // "registered in the Netherlands" line in circulation is one outlet
+    // conflating it with Medal's Dutch entity; the charter jurisdiction is
+    // unconfirmed, but "PBC" is a US term and the lab runs from New York.
+    structure: "public-benefit",
   },
   {
     slug: "liquid-ai",
@@ -1520,6 +1526,10 @@ export const LABS: Lab[] = [
     year: 2026,
     domain: "rsi",
     tags: ["agents"],
+    // Asserted first-person in the company's own manifesto, and corroborated
+    // by Index. The UK has no PBC statute and the opco is an ordinary Ltd, so
+    // the chartered entity is the Delaware parent above it — unlocated in any
+    // registry so far, EDGAR included.
     structure: "public-benefit",
     founders: [
       { person: "tantum-collins", prior: ["deepmind", "whitehouse"] },
