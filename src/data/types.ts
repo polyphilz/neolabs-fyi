@@ -208,6 +208,7 @@ export type OrgId =
   | 'seoulnational'
   | 'shandong'
   | 'washington'
+  | 'washu'
   | 'amsterdam'
   | 'toronto'
   | 'tuwien'

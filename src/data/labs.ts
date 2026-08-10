@@ -796,6 +796,7 @@ export const LABS: Lab[] = [
     founders: [
       { person: "geoffrey-von-maltzahn", prior: ["mit", "startup"] },
       { person: "noubar-afeyan", prior: ["mit", "startup"], isBacker: true },
+      { person: "molly-gibson", prior: ["washu", "startup"] },
     ],
     knownFor:
       "Flagship Pioneering's scientific superintelligence venture: the Lila Iris reasoning model driving AI Science Factory autonomous labs, which have closed the loop across hundreds of thousands of experiments spanning antibodies, genetic medicines, catalysts and coatings.",
@@ -1414,7 +1415,10 @@ export const LABS: Lab[] = [
     year: 2023,
     domain: "applied",
     tags: ["agents"],
-    founders: [{ person: "wang-xiaochuan", prior: ["sogou"] }],
+    founders: [
+      { person: "wang-xiaochuan", prior: ["sogou"] },
+      { person: "ru-liyun", prior: ["sogou", "startup", "tsinghua"] },
+    ],
     knownFor:
       "Sogou's founder; shifted strategic focus from the general-purpose LLM race toward AI-for-healthcare, while continuing to develop its base model series.",
     location: CITIES.beijing,

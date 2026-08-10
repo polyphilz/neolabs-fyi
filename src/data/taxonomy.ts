@@ -300,6 +300,7 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   cmu: { label: 'Carnegie Mellon', group: 'cmu' },
   berkeley: { label: 'UC Berkeley', group: 'berkeley' },
   washington: { label: 'U. Washington', group: 'washington' },
+  washu: { label: 'WashU', group: 'academia' },
   caltech: { label: 'Caltech', group: 'academia' },
   princeton: { label: 'Princeton', group: 'academia' },
   technion: { label: 'Technion', group: 'academia' },
