@@ -355,6 +355,8 @@ export const ORGS: Record<OrgId, { label: string; group: LineageGroup }> = {
   columbia: { label: 'Columbia', group: 'academia' },
   michigan: { label: 'U. Michigan', group: 'academia' },
   mcgill: { label: 'McGill', group: 'academia' },
+  hkust: { label: 'HKUST', group: 'academia' },
+  utaustin: { label: 'UT Austin', group: 'academia' },
   georgiatech: { label: 'Georgia Tech', group: 'academia' },
   ista: { label: 'ISTA (Austria)', group: 'academia' },
   lse: { label: 'London School of Economics', group: 'academia' },

@@ -98,6 +98,7 @@ export const LABS: Lab[] = [
         person: "patrick-esser",
         prior: ["stabilityai", "runway", "heidelberg"],
       },
+      { person: "dominik-lorenz", prior: ["stabilityai", "lmu"] },
     ],
     knownFor:
       "The Stable Diffusion authors' lab; the FLUX family of image models, part of it Apache-licensed, now extending into video and robot manipulation.",
@@ -393,6 +394,10 @@ export const LABS: Lab[] = [
     founders: [
       { person: "yann-lecun", prior: ["meta"] },
       { person: "alexandre-lebrun", prior: ["meta", "startup"] },
+      { person: "saining-xie", prior: ["meta", "deepmind", "nyu"] },
+      { person: "pascale-fung", prior: ["meta", "hkust", "columbia"] },
+      { person: "laurent-solly", prior: ["meta"] },
+      { person: "michael-rabbat", prior: ["meta", "mcgill"] },
     ],
     knownFor: "LeCun's post-Meta bet on world models over LLMs.",
     location: CITIES.paris,
@@ -675,7 +680,13 @@ export const LABS: Lab[] = [
     year: 2024,
     domain: "physical",
     tags: ["robot-foundation-models"],
-    founders: [{ person: "jagdeep-singh", prior: ["startup"] }],
+    founders: [
+      { person: "jagdeep-singh", prior: ["startup"] },
+      { person: "eric-chan", prior: ["stanford"] },
+      { person: "gordon-wetzstein", prior: ["stanford", "mit", "ubc"] },
+      { person: "andrew-wooten" },
+      { person: "changan-chen", prior: ["utaustin", "stanford", "meta"] },
+    ],
     knownFor:
       "Serial founder Jagdeep Singh's robotics startup; FutureVision, a video-pretrained foundation model ('Direct Video-Action') that predicts the next frames of a scene and converts them into motor commands, driving a bimanual manipulation platform on factory lines.",
     location: CITIES.sf,
@@ -1089,6 +1100,8 @@ export const LABS: Lab[] = [
         prior: ["anthropic", "google", "deepmind"],
       },
       { person: "harsh-mehta", prior: ["anthropic", "google"] },
+      { person: "shayan-salehian", prior: ["xai", "twitter"] },
+      { person: "tara-rezaei" },
     ],
     knownFor:
       "Founded by ex-Anthropic researchers Behnam Neyshabur and Harsh Mehta, building self-improving AI for scientific R&D; backed by a16z and Kleiner Perkins.",
