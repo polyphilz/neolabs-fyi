@@ -379,7 +379,10 @@ export const LABS: Lab[] = [
       { person: "caiming-xiong", prior: ["salesforce", "startup"] },
       { person: "yuandong-tian", prior: ["meta"] },
       { person: "tim-shi", prior: ["openai", "startup"] },
-      { person: "jeff-clune", prior: ["deepmind", "openai", "alberta"] },
+      {
+        person: "jeff-clune",
+        prior: ["ubc", "deepmind", "openai", "uber", "michiganstate"],
+      },
     ],
     knownFor:
       "Self-improving AI; raised $500M+ within four months of founding.",
@@ -417,7 +420,10 @@ export const LABS: Lab[] = [
         person: "meelan-lee",
         prior: ["chipletz", "google", "qualcomm", "atheros"],
       },
-      { person: "michael-carbin", prior: ["mit", "microsoft", "mosaicml"] },
+      {
+        person: "michael-carbin",
+        prior: ["mit", "databricks", "mosaicml", "microsoft"],
+      },
       {
         person: "sara-achour",
         prior: ["stanford", "sendyne", "aarno", "qualcomm", "salk"],
@@ -700,7 +706,10 @@ export const LABS: Lab[] = [
     tags: ["math", "open-source"],
     founders: [
       { person: "carina-hong", prior: ["stanford"] },
-      { person: "shubho-sengupta", prior: ["meta", "google"] },
+      {
+        person: "shubho-sengupta",
+        prior: ["meta", "baidu", "shazam", "intel", "sun", "ucdavis"],
+      },
     ],
     knownFor:
       "AxiomProver, an AI system for mathematical research that generates formally verified Lean proofs.",
@@ -1317,8 +1326,21 @@ export const LABS: Lab[] = [
     domain: "science",
     tags: ["materials"],
     founders: [
-      { person: "chad-edwards", prior: ["deepmind"] },
-      { person: "max-welling", prior: ["amsterdam", "microsoft"] },
+      { person: "chad-edwards", prior: ["kit", "startup"] },
+      {
+        person: "max-welling",
+        prior: [
+          "caltech",
+          "amsterdam",
+          "utrecht",
+          "toronto",
+          "cifar",
+          "microsoft",
+          "qualcomm",
+          "scyfer",
+          "ucirvine",
+        ],
+      },
     ],
     knownFor:
       "AI materials-discovery platform — expanding from carbon capture into semiconductors, batteries, coatings and catalysts.",
