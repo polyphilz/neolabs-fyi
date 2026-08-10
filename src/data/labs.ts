@@ -149,6 +149,7 @@ export const LABS: Lab[] = [
     valuation: { usdM: 1_000, qualifier: "undisclosed" },
     year: 2026,
     domain: "rsi",
+    structure: "public-benefit",
     founders: [
       { person: "jeff-dean", prior: ["google", "deepmind", "washington"] },
       { person: "sanjay-ghemawat", prior: ["google", "mit"] },
@@ -156,7 +157,7 @@ export const LABS: Lab[] = [
       { person: "oriol-vinyals", prior: ["deepmind", "google"] },
     ],
     knownFor:
-      "Google's Chief Scientist, a Senior Fellow, and both Gemini co-leads leaving at once to automate the scientific method. A public benefit corporation.",
+      "Three of the most-cited researchers in AI and two of the most-cited in distributed systems. Search, Spanner, MoE, distillation, Chinchilla laws and more. Now working on automating the scientific method.",
     location: CITIES.paloAlto,
   },
   {
@@ -466,7 +467,7 @@ export const LABS: Lab[] = [
       { person: "reid-hoffman", prior: ["startup", "greylock"] },
     ],
     knownFor:
-      "The Pi assistant, then a 2024 Microsoft reverse acquihire of its co-founders and much of its team; rebuilt since under CEO Sean White as an enterprise AI company.",
+      "The Pi assistant, then a 2024 Microsoft reverse acquihire of its co-founders and much of its team; rebuilt since as an enterprise AI company.",
     location: CITIES.paloAlto,
     exit: { type: "acquihire", absorbed: false, to: "Microsoft", year: 2024 },
   },
@@ -936,7 +937,7 @@ export const LABS: Lab[] = [
       { person: "josh-albrecht", prior: ["startup"] },
     ],
     knownFor:
-      "Reached unicorn status early via a 2023 Nvidia-backed round; now known for Sculptor, a sandboxed parallel coding-agent tool.",
+      "Agent lab building Sculptor, a sandboxed environment for running coding agents in parallel, alongside other tools.",
     location: CITIES.sf,
   },
   {
@@ -1421,7 +1422,7 @@ export const LABS: Lab[] = [
       },
     ],
     knownFor:
-      "The Yi model family; stopped pretraining in March 2025 and now builds enterprise applications on DeepSeek's models.",
+      "The Yi open-weight model family through early 2025; now enterprise and sovereign AI for industry and government.",
     location: CITIES.beijing,
   },
 
@@ -2009,7 +2010,7 @@ export const LABS: Lab[] = [
       { person: "samuel-weinbach" },
     ],
     knownFor:
-      "Built the Luminous models as Europe's answer to OpenAI, then stepped back from frontier scale for PhariaAI, a sovereign platform sold into government, defence and regulated industry.",
+      "Europe's early frontier lab, from the Luminous models to PhariaAI — a sovereign AI platform built for government, defence and regulated industry.",
     location: CITIES.heidelberg,
     // Announced 24 Apr 2026. Close is not cleanly documented: PitchBook
     // carries a 19 May 2026 deal date, but reporting that same day still
