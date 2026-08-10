@@ -123,7 +123,6 @@ const jsonLd = {
         founders.map((f) => (
           <li>
             <strong>{PEOPLE[f.person].name}</strong>
-            {f.departed && <span class="muted"> (departed)</span>}
             {f.isBacker && <span class="muted"> (backer)</span>}
             {f.prior?.length ? <span class="muted"> — previously {f.prior.map((o) => ORGS[o].label).join(', ')}</span> : null}
           </li>

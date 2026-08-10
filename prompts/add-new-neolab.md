@@ -19,13 +19,11 @@ You must retrieve the following pieces of information:
 5. The lab's latest valuation, or estimated valuation based on typical multiples. See `prompts/valuation-methodology.md`
 
 <co-founder-research>
-For each co-founder, you must gather:
-    - Whether they remain at the lab or not
-    - What their prior affiliations are. A prior affiliation is defined as a past place of employment, or
-      the school where the individual did their PhD. Bachelors degrees, master degrees, internships, advisor/investor
-      designations, EIR positions, and other roles of this ilk are not to be included. 1-3 prior affiliations are
-      common. If the individual has more than that, use best judgement on whether they are relevant for this lab
-      or not
+For each co-founder, you must gather what their prior affiliations are. A prior affiliation is defined as a past
+place of employment, or the school where the individual did their PhD. Bachelors degrees, master degrees, internships,
+advisor/investor designations, EIR positions, and other roles of this ilk are not to be included. 1-3 prior
+affiliations are common. If the individual has more than that, use best judgement on whether they are relevant for this
+lab or not.
 </co-founder-research>
 
 <research-area-disclaimer>

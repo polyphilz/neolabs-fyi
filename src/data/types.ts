@@ -363,8 +363,6 @@ export interface LabFounder {
   person: PersonId;
   /** Notable prior affiliations, as of founding this lab. */
   prior?: OrgId[];
-  /** No longer at this lab. Still a founder — founding is historical fact. */
-  departed?: true;
   /**
    * Provided capital, or is the corporate parent, rather than founding
    * research. Excluded from lineage edges — a funder's employer is not a

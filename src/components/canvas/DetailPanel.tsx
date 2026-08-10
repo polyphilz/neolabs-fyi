@@ -95,7 +95,6 @@ export function DetailPanel({ lab, openedAt, onClose }: Props) {
             <li key={f.person}>
               <span className="founder-name">
                 {PEOPLE[f.person].name}
-                {f.departed && <span className="muted"> (departed)</span>}
                 {f.isBacker && <span className="muted"> (backer)</span>}
               </span>
               {f.prior?.length ? (

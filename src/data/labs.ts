@@ -169,10 +169,10 @@ export const LABS: Lab[] = [
     founders: [
       { person: "mira-murati", prior: ["openai"] },
       { person: "john-schulman", prior: ["openai", "anthropic"] },
-      { person: "barret-zoph", prior: ["openai"], departed: true },
-      { person: "lilian-weng", prior: ["openai"], departed: true },
-      { person: "luke-metz", prior: ["openai"], departed: true },
-      { person: "andrew-tulloch", prior: ["openai", "meta"], departed: true },
+      { person: "barret-zoph", prior: ["openai"] },
+      { person: "lilian-weng", prior: ["openai"] },
+      { person: "luke-metz", prior: ["openai"] },
+      { person: "andrew-tulloch", prior: ["openai", "meta"] },
     ],
     knownFor:
       "A research and product company building AI systems that are more understandable, customisable and capable.",
@@ -201,7 +201,7 @@ export const LABS: Lab[] = [
     domain: "general",
     founders: [
       { person: "ilya-sutskever", prior: ["toronto", "google", "openai"] },
-      { person: "daniel-gross", prior: ["apple"], departed: true },
+      { person: "daniel-gross", prior: ["apple"] },
       { person: "daniel-levy", prior: ["openai", "stanford"] },
     ],
     knownFor:
@@ -310,7 +310,7 @@ export const LABS: Lab[] = [
       { person: "david-silver", prior: ["deepmind"] },
     ],
     knownFor:
-      "David Silver’s lab building reinforcement-learning “superlearners” that learn from experience rather than human data.",
+      "David Silver's lab building reinforcement-learning \"superlearners\" that learn from experience rather than human data.",
     location: CITIES.london,
   },
   {
@@ -323,13 +323,12 @@ export const LABS: Lab[] = [
     founders: [
       {
         person: "fei-fei-li",
-        prior: ["google", "stanford", "princeton", "uiuc"],
+        prior: ["google", "stanford", "princeton", "uiuc", "caltech"],
       },
       { person: "justin-johnson", prior: ["stanford", "meta", "michigan"] },
       {
         person: "christoph-lassner",
         prior: ["epicgames", "meta", "bodylabs", "amazon"],
-        departed: true,
       },
       {
         person: "ben-mildenhall",
@@ -430,7 +429,7 @@ export const LABS: Lab[] = [
     founders: [
       { person: "eric-zelikman", prior: ["xai", "stanford"] },
       { person: "georges-harik", prior: ["google"] },
-      { person: "andi-peng", prior: ["anthropic"], departed: true },
+      { person: "andi-peng", prior: ["anthropic"] },
       { person: "yuchen-he", prior: ["xai", "openai", "meta"] },
       { person: "noah-goodman", prior: ["google", "stanford"] },
     ],
@@ -462,8 +461,8 @@ export const LABS: Lab[] = [
     year: 2022,
     domain: "applied",
     founders: [
-      { person: "mustafa-suleyman", prior: ["deepmind"], departed: true },
-      { person: "karen-simonyan", prior: ["deepmind"], departed: true },
+      { person: "mustafa-suleyman", prior: ["deepmind"] },
+      { person: "karen-simonyan", prior: ["deepmind"] },
       { person: "reid-hoffman", prior: ["startup", "greylock"] },
     ],
     knownFor:
@@ -483,12 +482,10 @@ export const LABS: Lab[] = [
       {
         person: "alex-yu",
         prior: ["berkeley", "google", "adobe"],
-        departed: true,
       },
       {
         person: "alberto-taiuti",
         prior: ["apple", "codeplay"],
-        departed: true,
       },
     ],
     knownFor:
@@ -646,16 +643,14 @@ export const LABS: Lab[] = [
         person: "laurent-sifre",
         prior: ["polytechnique", "ponts", "deepmind"],
       },
-      { person: "daan-wierstra", prior: ["idsia", "deepmind"], departed: true },
+      { person: "daan-wierstra", prior: ["idsia", "deepmind"] },
       {
         person: "karl-tuyls",
         prior: ["vub", "maastricht", "liverpool", "deepmind"],
-        departed: true,
       },
       {
         person: "julien-perolat",
         prior: ["lille", "deepmind"],
-        departed: true,
       },
     ],
     knownFor:
@@ -975,14 +970,13 @@ export const LABS: Lab[] = [
       {
         person: "cyprien-de-masson-dautume",
         prior: ["deepmind"],
-        departed: true,
       },
       {
         person: "qi-liu",
         prior: ["deepmind", "meta", "microsoft", "oxford", "nus", "shandong"],
       },
       { person: "mikel-artetxe", prior: ["meta", "deepmind", "basque"] },
-      { person: "yi-tay", prior: ["google", "ntu"], departed: true },
+      { person: "yi-tay", prior: ["google", "ntu"] },
     ],
     knownFor:
       "Models for physical-world intelligence: reasoning, simulation and action across robots, wearables, media and edge devices.",
@@ -1419,12 +1413,11 @@ export const LABS: Lab[] = [
       { person: "anita-huang", prior: ["sinovation", "google", "startup"] },
       { person: "shen-pengfei", prior: ["baidu", "startup"] },
       { person: "qi-ruifeng", prior: ["sap", "microsoft", "cisco"] },
-      { person: "gu-xuemei", prior: ["google", "alibaba"], departed: true },
-      { person: "dai-zonghong", prior: ["huawei", "startup"], departed: true },
+      { person: "gu-xuemei", prior: ["google", "alibaba"] },
+      { person: "dai-zonghong", prior: ["huawei", "startup"] },
       {
         person: "li-xiangang",
         prior: ["baidu", "didi", "startup", "peking"],
-        departed: true,
       },
     ],
     knownFor:
@@ -2012,7 +2005,7 @@ export const LABS: Lab[] = [
     domain: "applied",
     tags: ["multimodal", "sovereign"],
     founders: [
-      { person: "jonas-andrulis", prior: ["apple"], departed: true },
+      { person: "jonas-andrulis", prior: ["apple"] },
       { person: "samuel-weinbach" },
     ],
     knownFor:
@@ -2060,7 +2053,7 @@ export const LABS: Lab[] = [
     founders: [
       { person: "scott-stephenson", prior: ["michigan", "ucdavis"] },
       { person: "adam-sypniewski", prior: ["michigan"] },
-      { person: "noah-shutty", departed: true },
+      { person: "noah-shutty" },
     ],
     knownFor:
       "Founded by Michigan particle physicists who repurposed dark-matter waveform analysis for speech; the Nova speech-to-text models and a voice-agent stack sold as enterprise API infrastructure.",
@@ -2340,7 +2333,6 @@ export const LABS: Lab[] = [
       {
         person: "christian-szegedy",
         prior: ["xai", "google", "cadence", "bonn"],
-        departed: true,
       },
     ],
     knownFor:
