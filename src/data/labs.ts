@@ -630,7 +630,10 @@ export const LABS: Lab[] = [
     domain: "general",
     tags: ["sovereign"],
     founders: [
-      { person: "david-ha", prior: ["google", "utokyo", "goldmansachs"] },
+      {
+        person: "david-ha",
+        prior: ["google", "stabilityai", "utokyo", "goldmansachs"],
+      },
       { person: "llion-jones", prior: ["google"] },
       { person: "ren-ito", prior: ["stabilityai", "mercari"] },
     ],
@@ -862,7 +865,7 @@ export const LABS: Lab[] = [
     founders: [
       { person: "joshua-meier", prior: ["meta", "openai", "absci"] },
       { person: "jack-dent", prior: ["stripe"] },
-      { person: "matthew-mcpartlon", prior: ["vantai"] },
+      { person: "matthew-mcpartlon", prior: ["vantai", "absci", "uchicago"] },
       { person: "jacques-boitreaud", prior: ["aqemia"] },
     ],
     knownFor:
@@ -877,7 +880,7 @@ export const LABS: Lab[] = [
     domain: "safety",
     founders: [
       { person: "eric-ho", prior: ["startup"] },
-      { person: "tom-mcgrath", prior: ["deepmind"] },
+      { person: "tom-mcgrath", prior: ["deepmind", "imperial"] },
       { person: "dan-balsam", prior: ["startup"] },
     ],
     knownFor:
@@ -974,9 +977,9 @@ export const LABS: Lab[] = [
     domain: "world",
     founders: [
       { person: "joon-sung-park", prior: ["stanford"] },
-      { person: "michael-bernstein", prior: ["stanford"] },
-      { person: "percy-liang", prior: ["stanford"] },
-      { person: "lainie-yallen", prior: ["startup", "mcgill"] },
+      { person: "michael-bernstein", prior: ["stanford", "mit", "meta"] },
+      { person: "percy-liang", prior: ["stanford", "berkeley"] },
+      { person: "lainie-yallen", prior: ["valence", "hebbia"] },
     ],
     knownFor: "The Stanford generative-agents lineage, commercialised.",
     location: CITIES.paloAlto,
@@ -988,8 +991,8 @@ export const LABS: Lab[] = [
     year: 2025,
     domain: "rsi",
     founders: [
-      { person: "francois-chollet", prior: ["google"] },
-      { person: "mike-knoop", prior: ["startup"] },
+      { person: "francois-chollet", prior: ["google", "arcprize"] },
+      { person: "mike-knoop", prior: ["zapier", "arcprize"] },
     ],
     knownFor:
       "Keras and Zapier founders betting on program synthesis over scaling.",
@@ -1004,7 +1007,7 @@ export const LABS: Lab[] = [
     domain: "applied",
     tags: ["agents", "open-source"],
     founders: [
-      { person: "kanjun-qiu", prior: ["startup"] },
+      { person: "kanjun-qiu", prior: ["dropbox", "startup"] },
       { person: "josh-albrecht", prior: ["startup"] },
     ],
     knownFor:
@@ -1021,10 +1024,10 @@ export const LABS: Lab[] = [
     founders: [
       { person: "amnon-shashua", prior: ["mobileye", "hebrew"] },
       { person: "shai-shalev-shwartz", prior: ["mobileye", "hebrew"] },
-      { person: "yoav-levine", prior: ["ai21"] },
-      { person: "or-sharir", prior: ["ai21"] },
-      { person: "noam-wies", prior: ["startup"] },
-      { person: "gal-beniamini", prior: ["google"] },
+      { person: "yoav-levine", prior: ["ai21", "hebrew"] },
+      { person: "or-sharir", prior: ["ai21", "caltech", "hebrew"] },
+      { person: "noam-wies", prior: ["ai21", "hebrew"] },
+      { person: "gal-beniamini", prior: ["google", "hebrew"] },
     ],
     knownFor:
       "A once-stealth lab pursuing 'Artificial Expert Intelligence' — deep domain-expert AI rather than AGI — now public with its first system, WarpSpeed, for GPU kernel optimisation.",
@@ -1085,8 +1088,8 @@ export const LABS: Lab[] = [
     tags: ["open-source", "open-weights", "training-infra-tools"],
     founders: [
       { person: "mark-mcquade", prior: ["huggingface", "roboflow"] },
-      { person: "jacob-solawetz", prior: ["startup"] },
-      { person: "brian-benedict", prior: ["huggingface"] },
+      { person: "jacob-solawetz", prior: ["roboflow"] },
+      { person: "brian-benedict", prior: ["huggingface", "tecton"] },
     ],
     knownFor:
       "Small enterprise language models; absorbed mergekit (created by Charles Goddard, now Arcee's Chief of Frontier Research) via a 2024 merger.",
@@ -1451,8 +1454,11 @@ export const LABS: Lab[] = [
     domain: "general",
     tags: ["multimodal", "open-weights"],
     founders: [
-      { person: "jiang-daxin", prior: ["microsoft"] },
-      { person: "zhu-yibo", prior: ["microsoft"] },
+      { person: "jiang-daxin", prior: ["microsoft", "ntu"] },
+      {
+        person: "zhu-yibo",
+        prior: ["google", "bytedance", "microsoft", "ucsb"],
+      },
       { person: "jiao-binxing", prior: ["microsoft"] },
     ],
     knownFor:
@@ -1468,7 +1474,7 @@ export const LABS: Lab[] = [
     tags: ["humanoid", "robot-foundation-models"],
     founders: [
       { person: "wang-he", prior: ["peking", "stanford"] },
-      { person: "yao-tengzhou" },
+      { person: "yao-tengzhou", prior: ["abb"] },
     ],
     knownFor:
       "Embodied foundation models and autonomous retail stores; over $900M raised.",
@@ -1508,10 +1514,10 @@ export const LABS: Lab[] = [
       { person: "shen-pengfei", prior: ["baidu", "startup"] },
       { person: "qi-ruifeng", prior: ["sap", "microsoft", "cisco"] },
       { person: "gu-xuemei", prior: ["google", "alibaba"] },
-      { person: "dai-zonghong", prior: ["huawei", "startup"] },
+      { person: "dai-zonghong", prior: ["huawei", "alibaba"] },
       {
         person: "li-xiangang",
-        prior: ["baidu", "didi", "startup", "peking"],
+        prior: ["baidu", "didi", "peking"],
       },
     ],
     knownFor:
@@ -1529,8 +1535,8 @@ export const LABS: Lab[] = [
     domain: "general",
     tags: ["open-weights", "sovereign", "voice"],
     founders: [
-      { person: "vivek-raghavan", prior: ["uidai", "startup"] },
-      { person: "pratyush-kumar", prior: ["microsoft"] },
+      { person: "vivek-raghavan", prior: ["uidai", "startup", "cmu"] },
+      { person: "pratyush-kumar", prior: ["microsoft", "ibm", "iitmadras"] },
     ],
     knownFor:
       "Foundation models and speech built for Indian languages; selected under the IndiaAI Mission to build an indigenous foundational model.",
@@ -2100,8 +2106,8 @@ export const LABS: Lab[] = [
     domain: "applied",
     tags: ["multimodal", "sovereign"],
     founders: [
-      { person: "jonas-andrulis", prior: ["apple"] },
-      { person: "samuel-weinbach" },
+      { person: "jonas-andrulis", prior: ["apple", "pallasludens"] },
+      { person: "samuel-weinbach", prior: ["deloitte"] },
     ],
     knownFor:
       "Europe's early frontier lab, from the Luminous models to PhariaAI — a sovereign AI platform built for government, defence and regulated industry.",
