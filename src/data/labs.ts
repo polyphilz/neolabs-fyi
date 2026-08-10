@@ -154,8 +154,8 @@ export const LABS: Lab[] = [
     founders: [
       { person: "jeff-dean", prior: ["google", "deepmind", "washington"] },
       { person: "sanjay-ghemawat", prior: ["google", "mit"] },
-      { person: "quoc-le", prior: ["google"] },
-      { person: "oriol-vinyals", prior: ["deepmind", "google"] },
+      { person: "quoc-le", prior: ["google", "stanford"] },
+      { person: "oriol-vinyals", prior: ["deepmind", "google", "berkeley"] },
     ],
     knownFor:
       "Three of the most-cited researchers in AI and two of the most-cited in distributed systems. Search, Spanner, MoE, distillation, Chinchilla laws and more. Now working on automating the scientific method.",
@@ -190,7 +190,19 @@ export const LABS: Lab[] = [
     domain: "physical",
     founders: [
       { person: "jeff-bezos", prior: ["amazon"] },
-      { person: "vik-bajaj", prior: ["google", "startup"] },
+      {
+        person: "vik-bajaj",
+        prior: [
+          "xaira",
+          "stanford",
+          "foresite",
+          "grail",
+          "berkeley",
+          "lbnl",
+          "verily",
+          "google",
+        ],
+      },
     ],
     knownFor:
       "Jeff Bezos' return to an operating role; AI for the physical economy.",
@@ -219,8 +231,11 @@ export const LABS: Lab[] = [
     domain: "general",
     tags: ["open-weights", "sovereign"],
     founders: [
-      { person: "misha-laskin", prior: ["deepmind"] },
-      { person: "ioannis-antonoglou", prior: ["deepmind"] },
+      {
+        person: "misha-laskin",
+        prior: ["deepmind", "claireai", "uchicago", "berkeley"],
+      },
+      { person: "ioannis-antonoglou", prior: ["deepmind", "ucl"] },
     ],
     knownFor:
       "American open-weights frontier models, built by ex-DeepMind researchers.",
@@ -248,8 +263,8 @@ export const LABS: Lab[] = [
     domain: "coding",
     tags: ["agents", "open-weights"],
     founders: [
-      { person: "jason-warner", prior: ["github", "salesforce", "canonical"] },
-      { person: "eiso-kant", prior: ["startup"] },
+      { person: "jason-warner", prior: ["github", "heroku", "canonical"] },
+      { person: "eiso-kant", prior: ["athenian", "sourced", "tyba"] },
     ],
     knownFor:
       "Founded by GitHub's former CTO; builds frontier foundation models purpose-built for software development.",
@@ -444,10 +459,16 @@ export const LABS: Lab[] = [
     domain: "general",
     founders: [
       { person: "eric-zelikman", prior: ["xai", "stanford"] },
-      { person: "georges-harik", prior: ["google"] },
-      { person: "andi-peng", prior: ["anthropic"] },
+      {
+        person: "georges-harik",
+        prior: ["notbadai", "hslabs", "google", "sgi", "uiuc", "michigan"],
+      },
+      {
+        person: "andi-peng",
+        prior: ["anthropic", "diu", "microsoft", "whitehouse", "mit"],
+      },
       { person: "yuchen-he", prior: ["xai", "openai", "meta"] },
-      { person: "noah-goodman", prior: ["google", "stanford"] },
+      { person: "noah-goodman", prior: ["stanford", "deepmind", "uber"] },
     ],
     knownFor:
       "Human-centric frontier lab founded by alumni of xAI, OpenAI, Meta, Anthropic, Google, and Stanford; $480M seed within months of founding.",
@@ -477,8 +498,8 @@ export const LABS: Lab[] = [
     year: 2022,
     domain: "applied",
     founders: [
-      { person: "mustafa-suleyman", prior: ["deepmind"] },
-      { person: "karen-simonyan", prior: ["deepmind"] },
+      { person: "mustafa-suleyman", prior: ["deepmind", "google"] },
+      { person: "karen-simonyan", prior: ["deepmind", "oxford"] },
       { person: "reid-hoffman", prior: ["startup", "greylock"] },
     ],
     knownFor:
@@ -558,8 +579,16 @@ export const LABS: Lab[] = [
       { person: "david-baker", prior: ["washington"] },
       { person: "hetu-kamisetty", prior: ["meta", "washington", "cmu"] },
       {
-        person: "vikram-bajaj",
-        prior: ["foresite", "verily", "grail", "berkeley"],
+        person: "vik-bajaj",
+        prior: [
+          "stanford",
+          "foresite",
+          "grail",
+          "berkeley",
+          "lbnl",
+          "verily",
+          "google",
+        ],
       },
     ],
     knownFor:
@@ -601,9 +630,9 @@ export const LABS: Lab[] = [
     domain: "general",
     tags: ["sovereign"],
     founders: [
-      { person: "david-ha", prior: ["google"] },
+      { person: "david-ha", prior: ["google", "utokyo", "goldmansachs"] },
       { person: "llion-jones", prior: ["google"] },
-      { person: "ren-ito", prior: ["startup"] },
+      { person: "ren-ito", prior: ["stabilityai", "mercari"] },
     ],
     knownFor:
       "Japan's first AI unicorn, co-founded by a Transformer co-author; nature-inspired model merging and AI for science, betting on sample efficiency over raw compute.",
@@ -618,14 +647,14 @@ export const LABS: Lab[] = [
     tags: ["video"],
     founders: [
       { person: "pim-de-witte", prior: ["medal"] },
-      { person: "eloi-alonso", prior: ["geneva", "ubisoft", "microsoft"] },
+      { person: "eloi-alonso", prior: ["geneva", "ubisoft"] },
       {
         person: "adam-jelley",
-        prior: ["cambridge", "dataiku", "edinburgh", "microsoft"],
+        prior: ["edinburgh", "dataiku"],
       },
       {
         person: "vincent-micheli",
-        prior: ["epfl", "geneva", "microsoft", "wayve"],
+        prior: ["geneva"],
       },
     ],
     knownFor:
@@ -731,9 +760,12 @@ export const LABS: Lab[] = [
     year: 2025,
     domain: "general",
     founders: [
-      { person: "ben-spector", prior: ["stanford"] },
+      { person: "ben-spector", prior: ["stanford", "prod"] },
       { person: "asher-spector", prior: ["stanford"] },
-      { person: "aidan-smith", prior: ["georgiatech", "neuralink"] },
+      {
+        person: "aidan-smith",
+        prior: ["thielfellowship", "neuralink", "chesscom"],
+      },
     ],
     knownFor:
       "A research lab pursuing radically more data-efficient AI, especially in data-constrained fields such as robotics and science.",
@@ -763,7 +795,7 @@ export const LABS: Lab[] = [
     tags: ["math"],
     founders: [
       { person: "vlad-tenev", prior: ["startup", "stanford"] },
-      { person: "tudor-achim", prior: ["cmu", "stanford", "startup", "quora"] },
+      { person: "tudor-achim", prior: ["helmai", "stanford", "quora"] },
     ],
     knownFor:
       "Co-founded by Robinhood's Vlad Tenev (chairman) and CEO Tudor Achim, building formally verified mathematical superintelligence (the Aristotle model).",

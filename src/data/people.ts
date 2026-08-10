@@ -194,7 +194,6 @@ export const PEOPLE = {
   'anmol-gulati': { name: 'Anmol Gulati' },
   'julia-villagra': { name: 'Julia Villagra' },
   'hetu-kamisetty': { name: 'Hetu Kamisetty' },
-  'vikram-bajaj': { name: 'Vikram Bajaj' },
   'moshe-shalev': { name: 'Moshe Shalev' },
   'mathias-lechner': { name: 'Mathias Lechner' },
   'alexander-amini': { name: 'Alexander Amini' },
