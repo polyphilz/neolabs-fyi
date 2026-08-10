@@ -277,12 +277,6 @@ export function lineageGroupsOf(lab: Lab): LineageGroup[] {
   return groups.size ? [...groups] : ['startup'];
 }
 
-/** No longer operating as itself. Derived, never stored, so it cannot drift
- * out of sync with `exit`. */
-export function isDefunct(lab: Lab): boolean {
-  return lab.exit?.absorbed === true;
-}
-
 // ---------------------------------------------------------------------------
 // Valuation — magnitude bands, smallest to largest, left to right
 // ---------------------------------------------------------------------------

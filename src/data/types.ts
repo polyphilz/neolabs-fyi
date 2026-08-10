@@ -366,19 +366,6 @@ export interface LabFounder {
 }
 
 /** An acquisition, team absorption, or shutdown. */
-export interface Exit {
-  type: 'acquired' | 'acquihire' | 'shutdown';
-  /**
-   * The lab no longer operates as itself. `false` for a partial acquihire, or
-   * an acquisition run on as a subsidiary. Drives the derived `isDefunct`.
-   */
-  absorbed: boolean;
-  /** Who absorbed it. A lab slug when they are on the map ('reka'), else a
-   * plain name. Omitted for a shutdown. */
-  to?: string;
-  year: number;
-}
-
 /** Legal or ownership structure worth surfacing alongside the lab record. */
 export type Structure = 'subsidiary' | 'nonprofit' | 'public-benefit';
 
@@ -406,6 +393,4 @@ export interface Lab {
   location: Location;
   /** Non-standard legal or ownership structure — see Structure. */
   structure?: Structure;
-  /** An acquisition, absorption, or shutdown. */
-  exit?: Exit;
 }

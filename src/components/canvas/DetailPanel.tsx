@@ -50,15 +50,6 @@ export function DetailPanel({ lab, openedAt, onClose }: Props) {
 
         <header className="drawer-head">
           <h2>{lab.name}</h2>
-          {lab.exit && (
-            <span className="badge badge-quiet">
-              {lab.exit.type === "shutdown"
-                ? "Shut down"
-                : lab.exit.absorbed
-                  ? `Acquired by ${lab.exit.to}`
-                  : `Partly acquihired by ${lab.exit.to}`}
-            </span>
-          )}
           {lab.structure && (
             <span className="badge badge-quiet">
               {STRUCTURE_LABEL[lab.structure]}

@@ -178,6 +178,7 @@ export const LABS: Lab[] = [
     knownFor:
       "A research and product company building AI systems that are more understandable, customisable and capable.",
     location: CITIES.sf,
+    structure: "public-benefit",
   },
   {
     slug: "project-prometheus",
@@ -469,7 +470,10 @@ export const LABS: Lab[] = [
     knownFor:
       "The Pi assistant, then a 2024 Microsoft reverse acquihire of its co-founders and much of its team; rebuilt since as an enterprise AI company.",
     location: CITIES.paloAlto,
-    exit: { type: "acquihire", absorbed: false, to: "Microsoft", year: 2024 },
+    // Not a Microsoft subsidiary: the 2024 deal licensed the models and hired
+    // the team, deliberately leaving the company intact and independently
+    // owned. Its public benefit charter survived the transition.
+    structure: "public-benefit",
   },
   {
     slug: "luma-ai",
@@ -713,6 +717,7 @@ export const LABS: Lab[] = [
     knownFor:
       "AI models for software development, including ultra-long-context systems.",
     location: CITIES.sf,
+    structure: "public-benefit",
   },
   {
     slug: "harmonic",
@@ -810,6 +815,7 @@ export const LABS: Lab[] = [
     knownFor:
       "One of the first companies built entirely around mechanistic interpretability; Ember, an API for inspecting and steering model internals.",
     location: CITIES.sf,
+    structure: "public-benefit",
   },
   {
     slug: "evolutionaryscale",
@@ -834,12 +840,7 @@ export const LABS: Lab[] = [
     knownFor:
       "Creator of ESM3, a generative model for protein sequence, structure and function that produced a novel fluorescent protein; its team later joined Biohub.",
     location: CITIES.newYork,
-    exit: {
-      type: "acquihire",
-      absorbed: true,
-      to: "Chan Zuckerberg Biohub",
-      year: 2025,
-    },
+    structure: "public-benefit",
   },
   {
     slug: "moonvalley",
@@ -878,7 +879,9 @@ export const LABS: Lab[] = [
     knownFor:
       "Marey, a filmmaking-focused generative video model trained on licensed footage and built for precise creative control; later joined forces with Reka.",
     location: CITIES.toronto,
-    exit: { type: "acquired", absorbed: true, to: "reka", year: 2026 },
+    // The Jun 2026 Reka combination was an all-stock merger, so Reka holds the
+    // equity; how much of a separate Moonvalley entity survives it is unclear.
+    structure: "subsidiary",
   },
   {
     slug: "aaru",
@@ -1044,7 +1047,6 @@ export const LABS: Lab[] = [
     knownFor:
       "An open platform for deep-learning research and engineering; released Rnj-1, an open-weight language-model family for code and STEM work.",
     location: CITIES.sf,
-    exit: { type: "acquihire", absorbed: false, to: "Nvidia", year: 2026 },
   },
   {
     slug: "zyphra",
@@ -1140,6 +1142,7 @@ export const LABS: Lab[] = [
     knownFor:
       "Less-invasive, high-bandwidth brain-computer interfaces combining biology, devices and AI.",
     location: CITIES.sf,
+    structure: "public-benefit",
   },
   {
     slug: "inferact",
@@ -1240,6 +1243,7 @@ export const LABS: Lab[] = [
     ],
     knownFor: "FDM-1, a video-first computer-use model.",
     location: CITIES.sf,
+    structure: "public-benefit",
   },
   {
     slug: "adaption-labs",
@@ -1985,10 +1989,9 @@ export const LABS: Lab[] = [
     knownFor:
       "Creator of TabPFN, a tabular foundation model that predicts on structured data by in-context learning over synthetic priors instead of per-dataset gradient training; spun out of the AutoML lab at Freiburg.",
     location: CITIES.freiburg,
+    // SAP acquisition announced 4 May 2026, closed 17 Jul 2026; SAP runs it on
+    // as an independent unit under its own name.
     structure: "subsidiary",
-    // Announced 4 May 2026, closed 17 Jul 2026. SAP runs it on as an
-    // independent unit under its own name, hence absorbed: false.
-    exit: { type: "acquired", absorbed: false, to: "SAP", year: 2026 },
   },
   {
     slug: "aleph-alpha",
@@ -2017,7 +2020,6 @@ export const LABS: Lab[] = [
     // described the merger as in process, and no primary statement from
     // either company or a named regulator confirms completion. Recorded as
     // absorbed on the balance of that evidence rather than on a settled fact.
-    exit: { type: "acquired", absorbed: true, to: "cohere", year: 2026 },
   },
   {
     slug: "edison-scientific",
@@ -2460,7 +2462,7 @@ export const LABS: Lab[] = [
     // Jul 2025 entry tags the round "Buyout", the company "Acquired", and names
     // Affinity Partners as the investor — Affinity led the Series A of Brain
     // Co., a different company, so that record reads as cross-contamination and
-    // no exit is derived from it. Crunchbase's "Universal AGI" is a third
+    // nothing is derived from it. Crunchbase's "Universal AGI" is a third
     // entity again, on universalagi.ai. The "$500 million valuation" Forbes
     // reported in Nov 2025 belongs to AGI, Inc., and was an open ask rather
     // than a close.

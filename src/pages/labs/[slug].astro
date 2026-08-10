@@ -86,20 +86,6 @@ const jsonLd = {
         <dd>{lab.location.city}, {lab.location.country}</dd>
       </div>
       {
-        lab.exit && (
-          <div>
-            <dt>Status</dt>
-            <dd>
-              {lab.exit.type === 'shutdown'
-                ? 'Shut down'
-                : lab.exit.absorbed
-                  ? `Acquired by ${lab.exit.to}`
-                  : `Partly acquihired by ${lab.exit.to}`}
-            </dd>
-          </div>
-        )
-      }
-      {
         lab.structure && (
           <div>
             <dt>Structure</dt>
