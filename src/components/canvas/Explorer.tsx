@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { LAB_BY_SLUG } from '../../data/labs';
-import { TAG_ORDER } from '../../data/taxonomy';
+import { STANDARD_STRUCTURE, STRUCTURE_FILTER_ORDER, TAG_ORDER } from '../../data/taxonomy';
 import type { Lab } from '../../data/types';
 import type { Basemap } from '../../lib/basemap';
 import {
@@ -35,21 +35,40 @@ const VIEW_TITLES: Record<Filters['view'], string> = {
   table: 'neolabs.fyi | Every neolab in a sortable table',
 };
 
-function sameFilters(a: Filters, b: Filters): boolean {
-  const sameList = <T,>(left: T[], right: T[]) =>
-    left.length === right.length && left.every((value, index) => value === right[index]);
+const sameList = <T,>(left: T[], right: T[]) =>
+  left.length === right.length && left.every((value, index) => value === right[index]);
 
-  return (
-    a.view === b.view &&
-    a.sizeScale === b.sizeScale &&
-    a.minUsdM === b.minUsdM &&
-    a.maxUsdM === b.maxUsdM &&
-    a.minYear === b.minYear &&
-    a.maxYear === b.maxYear &&
-    sameList(a.domains, b.domains) &&
-    sameList(a.lineage, b.lineage) &&
-    sameList(a.tags, b.tags)
-  );
+/**
+ * How to compare each filter field, keyed so that the type demands an entry for
+ * every one of them. Adding a field to Filters without saying how it compares
+ * fails to compile, and removing one leaves an entry with nowhere to go.
+ *
+ * That exhaustiveness is the whole point. This was a hand-written chain of &&s,
+ * and a field missing from it made sameFilters answer "identical" for two
+ * states that differed only in the field it had forgotten — which silently
+ * discarded that part of every deep link, while the chips that set the same
+ * field went on working.
+ */
+const FILTER_EQUALITY: {
+  [K in keyof Filters]: (a: Filters[K], b: Filters[K]) => boolean;
+} = {
+  view: Object.is,
+  sizeScale: Object.is,
+  minUsdM: Object.is,
+  maxUsdM: Object.is,
+  minYear: Object.is,
+  maxYear: Object.is,
+  domains: sameList,
+  lineage: sameList,
+  tags: sameList,
+  structures: sameList,
+};
+
+const FILTER_KEYS = Object.keys(FILTER_EQUALITY) as (keyof Filters)[];
+
+function sameFilters(a: Filters, b: Filters): boolean {
+  const equal = <K extends keyof Filters>(key: K) => FILTER_EQUALITY[key](a[key], b[key]);
+  return FILTER_KEYS.every((key) => equal(key));
 }
 
 /**
@@ -119,6 +138,15 @@ export function Explorer({ labs, basemap }: Props) {
     () => TAG_ORDER.filter((t) => labs.some((l) => l.tags?.includes(t))),
     [labs]
   );
+  const structuresInUse = useMemo(
+    () =>
+      STRUCTURE_FILTER_ORDER.filter((s) =>
+        s === STANDARD_STRUCTURE
+          ? labs.some((l) => !l.structure)
+          : labs.some((l) => l.structure === s)
+      ),
+    [labs]
+  );
 
   const update = useCallback((next: Partial<Filters>) => {
     setFilters((f) => ({ ...f, ...next }));
@@ -150,6 +178,7 @@ export function Explorer({ labs, basemap }: Props) {
         <FilterIsland
           filters={filters}
           tagsInUse={tagsInUse}
+          structuresInUse={structuresInUse}
           bounds={bounds}
           shown={visible.length}
           total={labs.length}

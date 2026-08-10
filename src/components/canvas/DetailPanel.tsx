@@ -59,9 +59,6 @@ export function DetailPanel({ lab, openedAt, onClose }: Props) {
                   : `Partly acquihired by ${lab.exit.to}`}
             </span>
           )}
-          {lab.status === "public" && (
-            <span className="badge badge-quiet">Listed</span>
-          )}
           {lab.structure && (
             <span className="badge badge-quiet">
               {STRUCTURE_LABEL[lab.structure]}

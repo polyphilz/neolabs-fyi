@@ -5,7 +5,10 @@ import {
   DOMAIN_ORDER,
   LINEAGE_GROUPS,
   LINEAGE_ORDER,
+  STRUCTURE_FILTER_LABEL,
+  STRUCTURE_FILTER_SHORT,
   TAGS,
+  type StructureFilter,
 } from "../../data/taxonomy";
 import type { DomainId, LineageGroup, TagId } from "../../data/types";
 import { VALUATION_BUCKETS } from "../../lib/color";
@@ -17,6 +20,12 @@ interface Props {
   filters: Filters;
   /** Tags present in the dataset; the group hides when there are none. */
   tagsInUse: TagId[];
+  /**
+   * Structure buckets present in the dataset. The group needs two of them to be
+   * worth showing: every lab without a special structure falls into the standard
+   * bucket, so a lone entry would be a chip that selects the whole dataset.
+   */
+  structuresInUse: StructureFilter[];
   bounds: {
     minUsdM: number;
     maxUsdM: number;
@@ -55,6 +64,7 @@ function toggle<T>(list: T[], value: T): T[] {
 export function FilterIsland({
   filters,
   tagsInUse,
+  structuresInUse,
   bounds,
   shown,
   total,
@@ -85,7 +95,10 @@ export function FilterIsland({
   }, [open]);
 
   const chipCount =
-    filters.domains.length + filters.lineage.length + filters.tags.length;
+    filters.domains.length +
+    filters.lineage.length +
+    filters.tags.length +
+    filters.structures.length;
   const activeCount = chipCount || (dirty ? 1 : 0);
   const categoricalView =
     filters.view === "area" ||
@@ -263,6 +276,25 @@ export function FilterIsland({
                 })
               }
             />
+            {structuresInUse.length > 1 && (
+              <ChipGroup
+                label="Structure"
+                options={structuresInUse.map((s) => ({
+                  id: s,
+                  label: STRUCTURE_FILTER_SHORT[s],
+                  title: STRUCTURE_FILTER_LABEL[s],
+                }))}
+                selected={filters.structures}
+                onToggle={(id) =>
+                  onChange({
+                    structures: toggle(
+                      filters.structures,
+                      id as StructureFilter,
+                    ),
+                  })
+                }
+              />
+            )}
             {tagsInUse.length > 0 && (
               <ChipGroup
                 label="Tags"

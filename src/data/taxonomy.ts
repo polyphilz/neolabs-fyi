@@ -500,3 +500,41 @@ export const STRUCTURE_LABEL: Record<Structure, string> = {
   nonprofit: 'Non-profit',
   'public-benefit': 'Public benefit corporation',
 };
+
+const STRUCTURE_ORDER: Structure[] = ['public-benefit', 'nonprofit', 'subsidiary'];
+
+/** Chip-length forms; STRUCTURE_LABEL carries the full name for the tooltip. */
+const STRUCTURE_SHORT: Record<Structure, string> = {
+  subsidiary: 'Subsidiary',
+  nonprofit: 'Non-profit',
+  'public-benefit': 'Public benefit',
+};
+
+/**
+ * Filter-only value for a lab carrying no `structure` at all — the ordinary
+ * case, and the great majority of the dataset. It exists so "everything without
+ * a special structure" is selectable without inventing a data value that every
+ * ordinary lab would then have to set.
+ *
+ * Named "standard" rather than "for-profit" because public benefit corporations
+ * and corporate subsidiaries are for-profit too; what separates this bucket
+ * from them is the absence of anything unusual, not the presence of a profit
+ * motive.
+ */
+export const STANDARD_STRUCTURE = 'standard';
+export type StructureFilter = Structure | typeof STANDARD_STRUCTURE;
+
+export const STRUCTURE_FILTER_ORDER: StructureFilter[] = [
+  ...STRUCTURE_ORDER,
+  STANDARD_STRUCTURE,
+];
+
+export const STRUCTURE_FILTER_SHORT: Record<StructureFilter, string> = {
+  ...STRUCTURE_SHORT,
+  [STANDARD_STRUCTURE]: 'Standard for-profit',
+};
+
+export const STRUCTURE_FILTER_LABEL: Record<StructureFilter, string> = {
+  ...STRUCTURE_LABEL,
+  [STANDARD_STRUCTURE]: 'Standard for-profit company',
+};

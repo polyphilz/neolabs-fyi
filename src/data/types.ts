@@ -35,12 +35,6 @@ export interface Valuation {
   highUsdM?: number;
   /** Figure is rumored / unconfirmed. */
   rumored?: boolean;
-  /**
-   * ISO date the figure was true. Only meaningful for `status: 'public'` labs,
-   * whose "valuation" is a market cap that moves every trading day. A private
-   * round's figure has no expiry; a market cap does.
-   */
-  asOf?: string;
 }
 
 /**
@@ -410,9 +404,6 @@ export interface Lab {
   founders: LabFounder[];
   knownFor: string;
   location: Location;
-  /** How the lab is owned. Absent = private. `public` = now listed, so its
-   * "valuation" is a market cap that moves daily. */
-  status?: 'private' | 'public';
   /** Non-standard legal or ownership structure — see Structure. */
   structure?: Structure;
   /** An acquisition, absorption, or shutdown. */

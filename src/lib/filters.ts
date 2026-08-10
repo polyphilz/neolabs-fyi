@@ -1,4 +1,11 @@
-import { DOMAIN_ORDER, LINEAGE_ORDER, TAG_ORDER } from '../data/taxonomy';
+import {
+  DOMAIN_ORDER,
+  LINEAGE_ORDER,
+  STANDARD_STRUCTURE,
+  STRUCTURE_FILTER_ORDER,
+  TAG_ORDER,
+  type StructureFilter,
+} from '../data/taxonomy';
 import type { DomainId, Lab, LineageGroup, TagId } from '../data/types';
 import {
   VIEW_IDS,
@@ -21,6 +28,12 @@ export interface Filters {
   lineage: LineageGroup[];
   /** A lab must carry every selected tag, not just one — these narrow. */
   tags: TagId[];
+  /**
+   * Legal structure. A lab has at most one, so selections widen the way domains
+   * do. Labs carrying no structure answer to STANDARD_STRUCTURE, which is what
+   * makes the ordinary majority selectable alongside the exceptions.
+   */
+  structures: StructureFilter[];
 }
 
 export function bounds(labs: Lab[]) {
@@ -36,7 +49,15 @@ export function bounds(labs: Lab[]) {
 
 export function defaultFilters(labs: Lab[]): Filters {
   const b = bounds(labs);
-  return { view: 'area', sizeScale: 'log', ...b, domains: [], lineage: [], tags: [] };
+  return {
+    view: 'area',
+    sizeScale: 'log',
+    ...b,
+    domains: [],
+    lineage: [],
+    tags: [],
+    structures: [],
+  };
 }
 
 export function applyFilters(labs: Lab[], f: Filters): Lab[] {
@@ -46,6 +67,10 @@ export function applyFilters(labs: Lab[], f: Filters): Lab[] {
     if (f.domains.length && !f.domains.includes(lab.domain)) return false;
     if (f.lineage.length && !lineageGroupsOf(lab).some((g) => f.lineage.includes(g))) return false;
     if (f.tags.length && !f.tags.every((t) => lab.tags?.includes(t))) return false;
+    if (f.structures.length) {
+      const structure: StructureFilter = lab.structure ?? STANDARD_STRUCTURE;
+      if (!f.structures.includes(structure)) return false;
+    }
     return true;
   });
 }
@@ -60,7 +85,8 @@ export function isDefault(f: Filters, labs: Lab[]): boolean {
     (f.view === 'valuation' || f.view === 'table' || f.sizeScale === 'log') &&
     !f.domains.length &&
     !f.lineage.length &&
-    !f.tags.length
+    !f.tags.length &&
+    !f.structures.length
   );
 }
 
@@ -86,6 +112,7 @@ export function toParams(
   if (f.domains.length) p.set('area', f.domains.join(','));
   if (f.lineage.length) p.set('from', f.lineage.join(','));
   if (f.tags.length) p.set('tag', f.tags.join(','));
+  if (f.structures.length) p.set('org', f.structures.join(','));
   if (selected) p.set('lab', selected);
   return p;
 }
@@ -118,6 +145,7 @@ export function fromParams(
       domains: list('area', DOMAIN_ORDER),
       lineage: list('from', LINEAGE_ORDER),
       tags: list('tag', TAG_ORDER),
+      structures: list('org', STRUCTURE_FILTER_ORDER),
     },
     selected: p.get('lab'),
     query: p.get('q') ?? '',

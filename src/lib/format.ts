@@ -49,9 +49,6 @@ export function valuationCaveat(lab: Lab): string | null {
   if (lab.structure === 'subsidiary' && v.qualifier === 'undisclosed') {
     return 'Corporate subsidiary; no standalone valuation disclosed';
   }
-  if (lab.status === 'public') {
-    return v.asOf ? `Market cap as of ${v.asOf} — moves daily` : 'Market cap — moves daily';
-  }
   // Deliberately says less than it could. "Round announced" is not true of
   // every holder — Grafton has never had one — and the part that always holds
   // is the part worth saying.
