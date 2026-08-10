@@ -1158,7 +1158,7 @@ export const LABS: Lab[] = [
       },
       { person: "harsh-mehta", prior: ["anthropic", "google"] },
       { person: "shayan-salehian", prior: ["xai", "twitter"] },
-      { person: "tara-rezaei" },
+      { person: "tara-rezaei", prior: ["openai", "prod"] },
     ],
     knownFor:
       "Founded by ex-Anthropic researchers Behnam Neyshabur and Harsh Mehta, building self-improving AI for scientific R&D; backed by a16z and Kleiner Perkins.",
