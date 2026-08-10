@@ -77,7 +77,7 @@ export const LABS: Lab[] = [
     tags: ["multimodal", "video"],
     founders: [
       { person: "cristobal-valenzuela" },
-      { person: "anastasis-germanidis", prior: ["ibm", "chartbeat"] },
+      { person: "anastasis-germanidis", prior: ["chartbeat"] },
       { person: "alejandro-matamala" },
     ],
     knownFor:
@@ -169,11 +169,11 @@ export const LABS: Lab[] = [
     domain: "general",
     tags: ["open-source", "open-weights", "training-infra-tools"],
     founders: [
-      { person: "mira-murati", prior: ["openai"] },
-      { person: "john-schulman", prior: ["openai", "anthropic"] },
-      { person: "barret-zoph", prior: ["openai"] },
-      { person: "lilian-weng", prior: ["openai"] },
-      { person: "luke-metz", prior: ["openai"] },
+      { person: "mira-murati", prior: ["openai", "leapmotion", "tesla"] },
+      { person: "john-schulman", prior: ["openai", "anthropic", "berkeley"] },
+      { person: "barret-zoph", prior: ["openai", "google"] },
+      { person: "lilian-weng", prior: ["openai", "affirm", "indiana"] },
+      { person: "luke-metz", prior: ["openai", "google"] },
       { person: "andrew-tulloch", prior: ["openai", "meta"] },
     ],
     knownFor:
@@ -234,8 +234,8 @@ export const LABS: Lab[] = [
     domain: "physical",
     tags: ["academic-spinout", "robot-foundation-models"],
     founders: [
-      { person: "deepak-pathak", prior: ["cmu", "berkeley"] },
-      { person: "abhinav-gupta", prior: ["cmu", "meta"] },
+      { person: "deepak-pathak", prior: ["berkeley", "cmu", "meta"] },
+      { person: "abhinav-gupta", prior: ["cmu", "meta", "ai2", "umd"] },
     ],
     knownFor: "Robot foundation models out of Carnegie Mellon.",
     location: CITIES.pittsburgh,
@@ -313,7 +313,7 @@ export const LABS: Lab[] = [
       { person: "david-silver", prior: ["deepmind"] },
     ],
     knownFor:
-      "David Silver's lab building reinforcement-learning \"superlearners\" that learn from experience rather than human data.",
+      'David Silver\'s lab building reinforcement-learning "superlearners" that learn from experience rather than human data.',
     location: CITIES.london,
   },
   {
@@ -326,16 +326,16 @@ export const LABS: Lab[] = [
     founders: [
       {
         person: "fei-fei-li",
-        prior: ["google", "stanford", "princeton", "uiuc", "caltech"],
+        prior: ["google", "stanford", "uiuc", "caltech"],
       },
       { person: "justin-johnson", prior: ["stanford", "meta", "michigan"] },
       {
         person: "christoph-lassner",
-        prior: ["epicgames", "meta", "bodylabs", "amazon"],
+        prior: ["epicgames", "meta", "amazon", "tubingen"],
       },
       {
         person: "ben-mildenhall",
-        prior: ["google", "fyusion", "pixar", "berkeley"],
+        prior: ["google", "berkeley"],
       },
     ],
     knownFor:
@@ -374,10 +374,13 @@ export const LABS: Lab[] = [
         prior: ["salesforce", "stanford", "startup"],
       },
       { person: "tim-rocktaschel", prior: ["deepmind", "ucl"] },
-      { person: "alexey-dosovitskiy", prior: ["google"] },
-      { person: "josh-tobin", prior: ["openai", "startup"] },
+      {
+        person: "alexey-dosovitskiy",
+        prior: ["inceptive", "google", "moscowstate", "intel"],
+      },
+      { person: "josh-tobin", prior: ["openai", "berkeley"] },
       { person: "caiming-xiong", prior: ["salesforce", "startup"] },
-      { person: "yuandong-tian", prior: ["meta"] },
+      { person: "yuandong-tian", prior: ["meta", "cmu", "google"] },
       { person: "tim-shi", prior: ["openai", "startup"] },
       {
         person: "jeff-clune",
@@ -426,7 +429,7 @@ export const LABS: Lab[] = [
       },
       {
         person: "sara-achour",
-        prior: ["stanford", "sendyne", "aarno", "qualcomm", "salk"],
+        prior: ["stanford", "mit"],
       },
     ],
     knownFor:
@@ -497,7 +500,7 @@ export const LABS: Lab[] = [
       { person: "amit-jain", prior: ["apple", "circlemedical"] },
       {
         person: "alex-yu",
-        prior: ["berkeley", "google", "adobe"],
+        prior: ["berkeley"],
       },
       {
         person: "alberto-taiuti",
@@ -548,10 +551,16 @@ export const LABS: Lab[] = [
     domain: "science",
     tags: ["drug-discovery"],
     founders: [
-      { person: "marc-tessier-lavigne", prior: ["stanford", "genentech"] },
+      {
+        person: "marc-tessier-lavigne",
+        prior: ["stanford", "genentech", "rockefeller", "ucsf", "ucl"],
+      },
       { person: "david-baker", prior: ["washington"] },
-      { person: "hetu-kamisetty", prior: ["meta", "washington"] },
-      { person: "vikram-bajaj", prior: ["foresite"] },
+      { person: "hetu-kamisetty", prior: ["meta", "washington", "cmu"] },
+      {
+        person: "vikram-bajaj",
+        prior: ["foresite", "verily", "grail", "berkeley"],
+      },
     ],
     knownFor:
       "An AI-native drug-discovery company combining model research, data generation and therapeutic development.",
@@ -1004,9 +1013,9 @@ export const LABS: Lab[] = [
       },
       {
         person: "qi-liu",
-        prior: ["deepmind", "meta", "microsoft", "oxford", "nus", "shandong"],
+        prior: ["oxford", "meta"],
       },
-      { person: "mikel-artetxe", prior: ["meta", "deepmind", "basque"] },
+      { person: "mikel-artetxe", prior: ["meta", "basque"] },
       { person: "yi-tay", prior: ["google", "ntu"] },
     ],
     knownFor:
@@ -1088,7 +1097,10 @@ export const LABS: Lab[] = [
         prior: ["cambridgequantum", "uiuc", "ibm", "xerion"],
       },
       { person: "danny-martinelli" },
-      { person: "beren-millidge", prior: ["conjecture", "oxford", "edinburgh"] },
+      {
+        person: "beren-millidge",
+        prior: ["conjecture", "oxford", "edinburgh"],
+      },
       {
         person: "tomas-figliolia",
         prior: ["apple", "xilinx", "qualcomm", "jhu"],
@@ -1630,9 +1642,7 @@ export const LABS: Lab[] = [
     year: 2025,
     domain: "science",
     tags: ["agents", "math"],
-    founders: [
-      { person: "eve-bodnia", prior: ["ucsb"] },
-    ],
+    founders: [{ person: "eve-bodnia", prior: ["ucsb"] }],
     knownFor:
       "Energy-based reasoning models and formal-verification agents that enforce constraints and produce machine-checkable answers for critical systems.",
     location: CITIES.sf,
@@ -2082,10 +2092,19 @@ export const LABS: Lab[] = [
     domain: "science",
     tags: ["agents", "drug-discovery"],
     founders: [
-      { person: "sam-rodriques", prior: ["futurehouse", "franciscrick", "mit"] },
+      {
+        person: "sam-rodriques",
+        prior: ["futurehouse", "franciscrick", "mit"],
+      },
       {
         person: "andrew-white",
-        prior: ["futurehouse", "rochester", "uchicago", "washington", "maxplanck"],
+        prior: [
+          "futurehouse",
+          "rochester",
+          "uchicago",
+          "washington",
+          "maxplanck",
+        ],
       },
     ],
     knownFor:
